@@ -1,0 +1,118 @@
+version: "3.8"
+services:
+  nginx:
+    image: nginx:user
+    container_name: nginx
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - front
+      - user
+      - game
+      - logic
+    volumes:
+      - nginx:/etc/nginx
+    env_file :
+      - .env
+    networks:
+      - transcendence
+    restart: always
+  front:
+    image: front:user
+    container_name: front
+    build: ./front
+    expose:
+      - "80"
+    volumes:
+      - front:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file :
+      - .env
+    networks:
+      - transcendence
+    restart: always
+  user:
+    image: user:user
+    container_name: user
+    build: ./user
+    expose:
+      - "3000"
+    volumes:
+      - user:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file :
+      - .env
+    networks:
+      - transcendence
+    restart: always
+  game:
+    image: game:user
+    container_name: game
+    build: ./game
+    expose:
+      - "3000"
+    volumes:
+      - game:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file :
+      - .env
+    networks:
+      - transcendence
+    restart: always
+  logic:
+    image: logic:user
+    container_name: logic
+    build: ./logic
+    expose:
+      - "3000"
+    volumes:
+      - logic:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file :
+      - .env
+    networks:
+      - transcendence
+    restart: always
+
+volumes:
+  nginx:
+    name: nginx
+    driver: local
+    driver_opts:
+      device: ../sources/nginx
+      o : bind
+      type : none
+  front:
+    name: front
+    driver: local
+    driver_opts:
+      device: ../sources/front
+      o : bind
+      type : none
+  user:
+    name: user
+    driver: local
+    driver_opts:
+      device: ../sources/user
+      o : bind
+      type : none
+  game:
+    name: game
+    driver: local
+    driver_opts:
+      device: ../sources/game
+      o : bind
+      type : none
+  logic:
+    name: logic
+    driver: local
+    driver_opts:
+      device: ../sources/logic
+      o : bind
+      type : none
+
+networks:
+  transcendence:
+    name: transcendence
