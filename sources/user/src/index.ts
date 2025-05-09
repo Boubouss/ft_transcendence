@@ -1,14 +1,12 @@
 import fastify from "fastify";
-//import userRoutes from "./routes/userRoutes";
-//import myPlugin from "./plugins/myPlugin";
+import crud from "./routes/crud";
+import { errorHandler } from "./errors/errorHandler";
 
 const app = fastify();
 
-// Enregistrer les plugins
-//app.register(myPlugin);
+app.register(crud, { prefix: "/crud" });
 
-// Enregistrer les routes
-//app.register(userRoutes, { prefix: "/users" });
+app.setErrorHandler(errorHandler);
 
 const start = async () => {
 	try {

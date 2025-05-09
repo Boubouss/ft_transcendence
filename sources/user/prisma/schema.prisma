@@ -19,7 +19,6 @@ model User {
   email       String    @unique
   avatar      String
   password    String
-  token       String
   sender      User[]    @relation("FriendRequest")
   receiver    User[]    @relation("FriendRequest")
   friends     User[]    @relation("Friendship")
