@@ -1,0 +1,25 @@
+{
+  "name": "logic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist/",
+    "format": "npx prettier --write ."
+  },
+  "author": "Damien Trala",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^5.3.2",
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.14",
+    "@types/ws": "^8.18.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  }
+}
