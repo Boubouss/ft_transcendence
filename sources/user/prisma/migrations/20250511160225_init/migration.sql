@@ -10,6 +10,15 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "Configuration" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "userId" INTEGER NOT NULL,
+    "code2FA" TEXT,
+    "is2FA" BOOLEAN NOT NULL DEFAULT false,
+    CONSTRAINT "Configuration_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "_FriendRequest" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
@@ -27,6 +36,9 @@ CREATE TABLE "_Friendship" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Configuration_userId_key" ON "Configuration"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_FriendRequest_AB_unique" ON "_FriendRequest"("A", "B");

@@ -6,7 +6,6 @@ export function errorHandler(
 	reply: FastifyReply
 ) {
 	if (error.validation) {
-		// Erreur de validation
 		reply.status(400).send({
 			statusCode: 400,
 			error: "Bad Request",
@@ -27,8 +26,14 @@ export function errorHandler(
 			message: "User not found",
 			validationErrors: error.validation,
 		});
+	} else if (error.message == "Invalid password") {
+		reply.status(400).send({
+			statusCode: 400,
+			error: "Bad Request",
+			message: "Invalid password",
+			validationErrors: error.validation,
+		});
 	} else {
-		// Autres erreurs
 		console.log(error.code);
 		reply.send(error);
 	}

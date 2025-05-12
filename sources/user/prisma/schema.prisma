@@ -14,16 +14,24 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  name        String
-  email       String    @unique
-  avatar      String
-  password    String
-  sender      User[]    @relation("FriendRequest")
-  receiver    User[]    @relation("FriendRequest")
-  friends     User[]    @relation("Friendship")
-  friendOf    User[]    @relation("Friendship")
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+  id              Int               @id @default(autoincrement())
+  name            String
+  email           String            @unique
+  avatar          String
+  password        String
+  sender          User[]            @relation("FriendRequest")
+  receiver        User[]            @relation("FriendRequest")
+  friends         User[]            @relation("Friendship")
+  friendOf        User[]            @relation("Friendship")
+  configuration   Configuration?    @relation("UserToConfiguration")
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
 }
 
+model Configuration {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation("UserToConfiguration", fields: [userId], references: [id])
+  userId    Int      @unique
+  code2FA   String?
+  is2FA     Boolean  @default(false)
+}
