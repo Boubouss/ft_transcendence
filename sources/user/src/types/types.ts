@@ -1,9 +1,7 @@
 export type User = {
-	id: number;
+	id?: number;
 	name: string;
 	email: string;
-	avatar: string;
-	token: string;
-	friends: User[];
-	friendRequests: User[];
+	avatar?: string;
+	password?: string;
 };
