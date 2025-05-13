@@ -1,6 +1,6 @@
 export interface CreateGameRequestBody {
   gameId: string;
-  playersId: { [key: number]: string };
+  playersId: [string];
 }
 
 export enum GameState {
@@ -72,7 +72,7 @@ export class Game {
 
   constructor(config: CreateGameRequestBody) {
     this.gameId = config.gameId;
-    this.playersExpected = new Set(Object.values(config.playersId));
+    this.playersExpected = new Set(config.playersId);
 
     this.gameField = new GameField();
     const h: number = this.gameField.getHeight();

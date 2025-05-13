@@ -19,24 +19,25 @@ app.register(() => {
     (connection, request) => {
       const query = request.query as { gameId: string; playerId: string };
 
-      const game = games.get(query.gameId);
-
-      if (!game) {
-        connection.close(wsCode, `No game with gameId: ${query.gameId}`);
-        return;
-      }
-      if (!game.getPlayersExpected().has(query.playerId)) {
-        connection.close(wsCode, `The player is not expected to this game`);
-        return;
-      }
-      if (game.getPlayersConnected().has(query.playerId)) {
-        connection.close(wsCode, `The player is already connected to the game`);
-        return;
-      }
-
-      // check if the player is already connected in a game?
-
-      game.addPlayer(query.playerId);
+      connection.on("open", () => {
+        const game = games.get(query.gameId);
+        if (!game) {
+          connection.close(wsCode, `No game with gameId: ${query.gameId}`);
+          return;
+        }
+        if (!game.getPlayersExpected().has(query.playerId)) {
+          connection.close(wsCode, `The player is not expected to this game`);
+          return;
+        }
+        if (game.getPlayersConnected().has(query.playerId)) {
+          connection.close(
+            wsCode,
+            `The player is already connected to the game`,
+          );
+          return;
+        }
+        game.addPlayer(query.playerId);
+      });
 
       connection.on("message", (message) => {
         console.log(`${message}`);
@@ -60,7 +61,6 @@ app.post(
       console.log("the game already exist");
       return;
     }
-    // check if the player is already expected in a game?
     games.set(String(body.gameId), new Game(body));
   },
 );
@@ -79,6 +79,7 @@ setInterval(() => {
   });
 }, 1000 / 60);
 
+// debug
 setInterval(() => {
   console.log(games);
 }, 5000);

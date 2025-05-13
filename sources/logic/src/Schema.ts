@@ -5,9 +5,9 @@ export const schemaCreateGame = {
     properties: {
       gameId: { type: "string" },
       playersId: {
-        type: "object",
-        minProperties: 2,
-        additionalProperties: { type: "string" },
+        type: "array",
+        items: { type: "string" },
+        minItems: 2,
       },
     },
   },
