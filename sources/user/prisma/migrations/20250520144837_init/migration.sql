@@ -1,9 +1,9 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "avatar" TEXT NOT NULL,
+    "avatar" TEXT NOT NULL DEFAULT '',
     "password" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL
@@ -13,7 +13,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Configuration" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "userId" INTEGER NOT NULL,
-    "code2FA" TEXT,
+    "code2FA" TEXT NOT NULL DEFAULT '',
     "is2FA" BOOLEAN NOT NULL DEFAULT false,
     CONSTRAINT "Configuration_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -33,6 +33,9 @@ CREATE TABLE "_Friendship" (
     CONSTRAINT "_Friendship_A_fkey" FOREIGN KEY ("A") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "_Friendship_B_fkey" FOREIGN KEY ("B") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

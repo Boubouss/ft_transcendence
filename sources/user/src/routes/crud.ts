@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from "fastify";
-import { User } from "../types/types";
+import { UserCreate, UserUpdate } from "../types/types";
 import { createSchema, updateSchema } from "../validations/userSchema";
 import {
 	getUsers,
@@ -23,13 +23,13 @@ const crud: FastifyPluginAsync = async (fastify, opts) => {
 	});
 
 	fastify.post("/user", { schema: createSchema }, async (request, reply) => {
-		const user: User = request.body as User;
+		const user: UserCreate = request.body as UserCreate;
 		return createUser(user);
 	});
 
 	fastify.put("/user/:id", { schema: updateSchema }, async (request, reply) => {
 		const { id } = request.params as { id: string };
-		const user: User = request.body as User;
+		const user: UserUpdate = request.body as UserUpdate;
 		return updateUser(parseInt(id), user);
 	});
 

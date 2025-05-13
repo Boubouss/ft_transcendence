@@ -15,9 +15,9 @@ datasource db {
 
 model User {
   id              Int               @id @default(autoincrement())
-  name            String
+  username        String            @unique
   email           String            @unique
-  avatar          String
+  avatar          String            @default("")
   password        String
   sender          User[]            @relation("FriendRequest")
   receiver        User[]            @relation("FriendRequest")
@@ -32,6 +32,6 @@ model Configuration {
   id        Int      @id @default(autoincrement())
   user      User     @relation("UserToConfiguration", fields: [userId], references: [id])
   userId    Int      @unique
-  code2FA   String?
+  code2FA   String   @default("")
   is2FA     Boolean  @default(false)
 }

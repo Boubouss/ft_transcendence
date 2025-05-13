@@ -1,10 +1,10 @@
 export const createSchema = {
 	body: {
 		type: "object",
-		required: ["name", "email", "password"],
+		required: ["username", "email", "password"],
 		properties: {
 			id: { type: "integer" },
-			name: { type: "string", minLength: 3, maxLength: 20 },
+			username: { type: "string", minLength: 3, maxLength: 20 },
 			email: { type: "string", format: "email" },
 			avatar: { type: "string" },
 			password: {
@@ -22,8 +22,6 @@ export const configSchema = {
 	type: "object",
 	properties: {
 		id: { type: "number" },
-		userId: { type: "number" },
-		code2FA: { type: "string" },
 		is2FA: { type: "boolean" },
 	},
 	additionalProperties: false,
@@ -32,10 +30,10 @@ export const configSchema = {
 export const updateSchema = {
 	body: {
 		type: "object",
-		required: ["name", "email"],
+		required: ["id", "configuration"],
 		properties: {
 			id: { type: "integer" },
-			name: { type: "string", minLength: 3, maxLength: 20 },
+			username: { type: "string", minLength: 3, maxLength: 20 },
 			email: { type: "string", format: "email" },
 			avatar: { type: "string" },
 			password: {
@@ -53,9 +51,9 @@ export const updateSchema = {
 export const authSchema = {
 	body: {
 		type: "object",
-		required: ["email", "password"],
+		required: ["username", "password"],
 		properties: {
-			email: { type: "string", format: "email" },
+			username: { type: "string", minLength: 3, maxLength: 20 },
 			password: {
 				type: "string",
 				minLength: 8,
@@ -70,7 +68,7 @@ export const authSchema = {
 export const auth2FASchema = {
 	body: {
 		type: "object",
-		required: ["code", "email"],
+		required: ["code", "username"],
 		properties: {
 			code: { type: "string" },
 			email: { type: "string", format: "email" },
