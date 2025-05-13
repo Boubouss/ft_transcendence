@@ -1,0 +1,5 @@
+/* src/components/molecules/searchForm/SearchForm.css */
+.search-form {
+  display: flex;
+  gap: 10px;
+}
