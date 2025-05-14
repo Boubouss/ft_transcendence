@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Configuration, User } from "../types/types";
+import { Configuration, UserAuth, User, UserCreate, UserUpdate, ConfigAuth } from "../types/types";
 import * as bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
@@ -14,85 +14,139 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function getUsers() {
-	return await prisma.user.findMany();
+	return await prisma.user.findMany({
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			avatar: true,
+			configuration: {
+				select: {
+					id: true,
+					is2FA: true
+				}
+			}
+		},
+	});
 }
 
 export async function getUserById(id: number) {
 	return await prisma.user.findUnique({
 		where: { id },
-		include: { configuration: true },
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			avatar: true,
+			configuration: {
+				select: {
+					id: true,
+					is2FA: true
+				}
+			}
+		},
+		
 	});
 }
 
 export async function getUserByEmail(email: string) {
 	return await prisma.user.findUnique({
 		where: { email },
-		include: { configuration: true },
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			avatar: true,
+			configuration: {
+				select: {
+					id: true,
+					is2FA: true
+				}
+			}
+		},
 	});
 }
 
-export async function createUser(userData: User) {
+export async function getUserAuth(email: string) {
+	return await prisma.user.findUnique({
+		where: { email },
+		select: {
+			password: true
+		},
+		
+	});
+}
+
+export async function createUser(userData: UserCreate) {
 	if (userData.password) {
 		const saltRounds = 10;
 		userData.password = await bcrypt.hash(userData.password, saltRounds);
 	}
 
-	if (!userData.avatar) {
-		userData.avatar = "default";
-	}
-
-	const result = await prisma.$transaction(async (prisma: PrismaClient) => {
-		const user = await prisma.user.create({
+	const result = await prisma.$transaction(async (prisma) => {
+		const user: User = await prisma.user.create({
 			data: userData,
-		});
-
-		const configuration = await prisma.configuration.create({
-			data: {
-				userId: user.id,
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				avatar: true,
 			},
 		});
 
-		user.configuration = configuration;
+		const configuration: Configuration = await prisma.configuration.create({
+			data: {
+				userId: user.id,
+			},
+			select: {
+				id: true,
+				is2FA: true
+			}
+		});
 
-		return user;
+		return { ...user, configuration };
 	});
 
 	return result;
 }
 
-export async function updateUser(id: number, data: User) {
+export async function updateUser(id: number, data: UserUpdate) {
 	if (data.password) {
 		const saltRounds = 10;
 		data.password = await bcrypt.hash(data.password, saltRounds);
 	}
 
 	const { id: userId, configuration: config, ...userData } = data;
-	const { id: configId, userId: configUserId, ...configData } = config;
+	const { id: configId, ...configData } = config;
 
-	const result = await prisma.$transaction(async (prisma: PrismaClient) => {
-		const user = await prisma.user.update({
+	const result = await prisma.$transaction(async (prisma) => {
+		const user: User = await prisma.user.update({
 			where: { id },
 			data: userData,
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				avatar: true,
+			},
 		});
 
-		const configuration = await prisma.configuration.update({
+		const configuration: Configuration = await prisma.configuration.update({
 			where: { userId: id },
 			data: configData,
+			select: {
+				id: true,
+				is2FA: true
+			}
 		});
 
-		const { code2FA, ...config } = configuration;
-
-		user.configuration = config;
-
-		const { password, ...response } = user;
-
-		return response;
+		return { ...user, configuration };
 	});
 
 	return result;
 }
 
-export async function updateConfig(data: Configuration) {
+export async function updateConfig(data: ConfigAuth) {
 	const { id, ...configData } = data;
 	return await prisma.configuration.update({
 		where: { id },
@@ -101,27 +155,35 @@ export async function updateConfig(data: Configuration) {
 }
 
 export async function deleteUser(id: number) {
-	const result = await prisma.$transaction(async (prisma: PrismaClient) => {
-		const configuration = await prisma.configuration.delete({
+	const result = await prisma.$transaction(async (prisma) => {
+		const configuration: Configuration = await prisma.configuration.delete({
 			where: { userId: id },
+			select: {
+				id: true,
+				is2FA: true
+			}
 		});
 
-		const user = await prisma.user.delete({
+		const user: User = await prisma.user.delete({
 			where: { id },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				avatar: true,
+			},
 		});
 
-		user.configuration = configuration;
-
-		return { user };
+		return { ...user, configuration };
 	});
 	return result;
 }
 
-export async function authUser(password: string, user: User) {
-	return await bcrypt.compare(password, user.password ?? "");
+export async function authUser(password: string, user: UserAuth) {
+	return await bcrypt.compare(password, user.password);
 }
 
-export async function generate2FA(user: User) {
+export async function generate2FA(user: UserAuth) {
 	const { email } = user;
 
 	const code = Math.floor(100000 + Math.random() * 900000).toString();

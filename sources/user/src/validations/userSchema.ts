@@ -22,8 +22,6 @@ export const configSchema = {
 	type: "object",
 	properties: {
 		id: { type: "number" },
-		userId: { type: "number" },
-		code2FA: { type: "string" },
 		is2FA: { type: "boolean" },
 	},
 	additionalProperties: false,
@@ -32,7 +30,7 @@ export const configSchema = {
 export const updateSchema = {
 	body: {
 		type: "object",
-		required: ["name", "email"],
+		required: ["id", "configuration"],
 		properties: {
 			id: { type: "integer" },
 			name: { type: "string", minLength: 3, maxLength: 20 },
