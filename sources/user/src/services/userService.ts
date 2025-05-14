@@ -71,7 +71,15 @@ export async function getUserAuth(email: string) {
 	return await prisma.user.findUnique({
 		where: { email },
 		select: {
-			password: true
+			email: true,
+			password: true,
+			configuration: {
+				select: {
+					id: true,
+					is2FA: true,
+					code2FA: true,					
+				}
+			} 
 		},
 		
 	});
@@ -204,3 +212,4 @@ export async function generate2FA(user: UserAuth) {
 	}
 	return;
 }
+
