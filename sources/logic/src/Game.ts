@@ -61,6 +61,10 @@ class Paddle {
     this.dx = 0;
     this.dy = 0;
   }
+  setPosition(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
 class Ball {
@@ -77,29 +81,43 @@ class Ball {
     this.dx = 0;
     this.dy = 0;
   }
+  setPosition(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+  setVelocity(dx: number, dy: number) {
+    this.dx = dx;
+    this.dy = dy;
+  }
 }
 
 export class Game {
-  //meta data
+  // meta data
   private gameId: string;
   private players: Map<string, Player> = new Map();
 
-  //game objects
+  // game objects
   private gameField: GameField;
   private paddleL: Paddle;
   private paddleR: Paddle;
   private ball: Ball;
 
-  //ingame data
+  // ingame data
   private gameState: GameState = GameState.Init;
-  private playersActive: Array<string> = new Array();
-  private playersInactive: Array<string> = new Array();
+  private playersQueue: Array<string>;
+  private playerL: string;
+  private playerR: string;
 
   constructor(config: CreateGameRequestBody) {
     this.gameId = config.gameId;
     config.playersId.forEach((playerId: string) => {
       this.players.set(playerId, new Player(playerId));
     });
+
+    this.playersQueue = Array(...this.players.keys());
+    // might need to check the len of playersQueue or the return values
+    this.playerL = this.playersQueue.shift() as string;
+    this.playerR = this.playersQueue.shift() as string;
 
     this.gameField = new GameField();
     const h: number = this.gameField.getHeight();
