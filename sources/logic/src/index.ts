@@ -24,21 +24,20 @@ app.register(() => {
       if (!game) {
         return connection.close(wsCode, `No game with gameId: ${gameId}`);
       }
-      if (!game.getPlayersExpected().has(playerId)) {
+      if (!game.getPlayersId().has(playerId)) {
         return connection.close(wsCode, `The player is not expected`);
       }
       if (game.getPlayersConnected().has(playerId)) {
         return connection.close(wsCode, `The player is already connected`);
       }
-      game.addPlayer(playerId);
+      game.setPlayerConnection(playerId, true);
 
       connection.on("message", (message) => {
         console.log(`${message}`);
       });
 
       connection.on("close", () => {
-        games.get(gameId)?.delPlayer(playerId);
-        console.log("websocket deconnected");
+        games.get(gameId)?.setPlayerConnection(playerId, false);
       });
     },
   );
@@ -74,5 +73,8 @@ setInterval(() => {
 
 // debug
 setInterval(() => {
-  console.log(games);
+  games.forEach((game) => {
+    console.log(game.getPlayersConnected());
+    console.log(game);
+  });
 }, 5000);

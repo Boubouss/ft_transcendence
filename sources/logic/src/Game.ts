@@ -1,12 +1,32 @@
 export interface CreateGameRequestBody {
   gameId: string;
-  playersId: [string];
+  playersId: string[];
 }
 
 export enum GameState {
   Init,
   Paused,
   Running,
+}
+
+class Player {
+  private playerId: string;
+  private score: number;
+  private connected: boolean;
+  constructor(playerId: string) {
+    this.playerId = playerId;
+    this.score = 0;
+    this.connected = false;
+  }
+  isConnected() {
+    return this.connected;
+  }
+  getId() {
+    return this.playerId;
+  }
+  setConnected(bool: boolean) {
+    this.connected = bool;
+  }
 }
 
 class GameField {
@@ -60,46 +80,55 @@ class Ball {
 }
 
 export class Game {
-  private gameState: GameState = GameState.Init;
-  private playersExpected: Set<string>;
-  private playersConnected: Set<string> = new Set();
+  //meta data
   private gameId: string;
+  private players: Map<string, Player> = new Map();
 
+  //game objects
   private gameField: GameField;
   private paddleL: Paddle;
   private paddleR: Paddle;
   private ball: Ball;
 
+  //ingame data
+  private gameState: GameState = GameState.Init;
+  private playersActive: Array<string> = new Array();
+  private playersInactive: Array<string> = new Array();
+
   constructor(config: CreateGameRequestBody) {
     this.gameId = config.gameId;
-    this.playersExpected = new Set(config.playersId);
+    config.playersId.forEach((playerId: string) => {
+      this.players.set(playerId, new Player(playerId));
+    });
 
     this.gameField = new GameField();
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
     this.paddleL = new Paddle(20, h / 2);
-    this.paddleR = new Paddle(h - 20, h / 2);
+    this.paddleR = new Paddle(w - 20, h / 2);
     this.ball = new Ball(w / 2, h / 2);
   }
-  getPlayersExpected() {
-    return this.playersExpected;
+
+  getPlayersId() {
+    return new Set(this.players.keys());
   }
   getPlayersConnected() {
-    return this.playersConnected;
+    return new Set(
+      [...this.players.entries()]
+        .filter(([_, player]) => player.isConnected())
+        .map(([id, _]) => id),
+    );
   }
   setGameState(state: GameState) {
     this.gameState = state;
   }
-  addPlayer(player: string) {
-    this.playersConnected.add(player);
+  setPlayerConnection(playerId: string, bool: boolean) {
+    this.players.get(playerId)?.setConnected(bool);
   }
-  delPlayer(player: string) {
-    this.playersConnected.delete(player);
-  }
-  update() {
-    const full =
-      this.playersConnected.size === this.playersExpected.size &&
-      [...this.playersConnected].every((id) => this.playersExpected.has(id));
+  handleGameState() {
+    const full = [...this.players.values()].every((player) =>
+      player.isConnected(),
+    );
 
     if (this.gameState == GameState.Init && full) {
       console.log(`Game: ${this.gameId} starting`);
@@ -111,5 +140,9 @@ export class Game {
       console.log(`Game: ${this.gameId} resuming`);
       this.gameState = GameState.Running;
     }
+  }
+  update() {
+    this.handleGameState();
+    if (this.gameState != GameState.Running) return;
   }
 }
