@@ -14,7 +14,12 @@ export const schemaCreateGame = {
 };
 
 export const schemaWebsocket = {
-  querystring: {
-    properties: { gameId: { type: "string" }, playerId: { type: "string" } },
+  params: {
+    type: "object",
+    required: ["gameId", "playerId"],
+    properties: {
+      gameId: { type: "string" },
+      playerId: { type: "string" },
+    },
   },
 };

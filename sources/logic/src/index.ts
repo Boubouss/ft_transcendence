@@ -10,41 +10,34 @@ const wsCode = 4000; // placeholder
 let games = new Map<string, Game>();
 const app = fastify();
 app.register(websocketPlugin);
-app.register(require("fastify-qs"));
 
 app.register(() => {
   app.get(
-    "/ws",
+    "/ws/:gameId/:playerId",
     { schema: schemaWebsocket, websocket: true },
     (connection, request) => {
-      const query = request.query as { gameId: string; playerId: string };
+      const params = request.params as { gameId: string; playerId: string };
+      const gameId = params.gameId;
+      const playerId = params.playerId;
+      const game = games.get(gameId);
 
-      connection.on("open", () => {
-        const game = games.get(query.gameId);
-        if (!game) {
-          connection.close(wsCode, `No game with gameId: ${query.gameId}`);
-          return;
-        }
-        if (!game.getPlayersExpected().has(query.playerId)) {
-          connection.close(wsCode, `The player is not expected to this game`);
-          return;
-        }
-        if (game.getPlayersConnected().has(query.playerId)) {
-          connection.close(
-            wsCode,
-            `The player is already connected to the game`,
-          );
-          return;
-        }
-        game.addPlayer(query.playerId);
-      });
+      if (!game) {
+        return connection.close(wsCode, `No game with gameId: ${gameId}`);
+      }
+      if (!game.getPlayersExpected().has(playerId)) {
+        return connection.close(wsCode, `The player is not expected`);
+      }
+      if (game.getPlayersConnected().has(playerId)) {
+        return connection.close(wsCode, `The player is already connected`);
+      }
+      game.addPlayer(playerId);
 
       connection.on("message", (message) => {
         console.log(`${message}`);
       });
 
       connection.on("close", () => {
-        games.get(query.gameId)?.delPlayer(query.playerId);
+        games.get(gameId)?.delPlayer(playerId);
         console.log("websocket deconnected");
       });
     },
