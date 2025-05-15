@@ -1,17 +1,8 @@
 import { FastifyPluginAsync } from "fastify";
 import { User, Credential, Credential2FA, UserCreate, UserAuth } from "../types/types";
-import {
-	createSchema,
-	authSchema,
-	auth2FASchema,
-} from "../validations/userSchema";
-import {
-	createUser,
-	authUser,
-	getUserAuth,
-	updateConfig,
-	generate2FA,
-} from "../services/userService";
+import { createSchema, authSchema, auth2FASchema } from "../validations/userSchema";
+import { createUser } from "../services/userService";
+import { authUser, getUserAuth, updateConfig, generate2FA } from "../services/authService";
 
 const auth: FastifyPluginAsync = async (fastify, opts) => {
 	fastify.post(

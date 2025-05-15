@@ -39,14 +39,6 @@ export type UserAuth = {
 	configuration: ConfigAuth;
 };
 
-export type UserFriend = {
-	id: number;
-	name: string;
-	avatar: string;
-}
-
-export type FriendList = UserFriend[];
-
 export type Credential = {
 	email: string;
 	password: string;
@@ -57,12 +49,38 @@ export type Credential2FA = {
 	code: string;
 };
 
-export type FriendShip = {
-	userId: number;
-	online: UserFriend[];
-	offline: UserFriend[];
+export type Friend = {
+	id: number;
+	name: string;
+	avatar: string;
 }
 
-export type Connected = {
-	[key: number]: WebSocket;
+export type FriendList = {
+	friends: Friend[]
+}
+
+export type FriendRequestList = {
+	receiver: Friend[]
+}
+
+export type FriendShip = {
+	userId: number;
+	online: Friend[];
+	offline: Friend[];
+	requests: Friend[];
+}
+
+export type SocketList = {
+	[key: string]: WebSocket;
+}
+
+export enum	ActionFriendRequest {
+	SEND = "SEND",
+	ACCEPT = "ACCEPT",
+	DECLINE = "DECLINE"
+}
+
+export type SocketMessage = {
+	action: ActionFriendRequest;
+	id: number;
 }
