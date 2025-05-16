@@ -18,17 +18,20 @@ class Player {
     this.score = 0;
     this.socket = null;
   }
-  isConnected() {
+  public isConnected() {
     return this.socket !== null;
   }
-  getId() {
+  public getId() {
     return this.playerId;
   }
-  setConnected(socket: WebSocket | null) {
+  public setConnected(socket: WebSocket | null) {
     this.socket = socket;
   }
-  getSocket() {
+  public getSocket() {
     return this.socket;
+  }
+  public toJSON() {
+    return { playerId: this.playerId, score: this.score };
   }
 }
 
@@ -40,10 +43,10 @@ class GameField {
     this.h = h;
     this.w = w;
   }
-  getHeight() {
+  public getHeight() {
     return this.h;
   }
-  getWidth() {
+  public getWidth() {
     return this.w;
   }
 }
@@ -64,9 +67,12 @@ class Paddle {
     this.dx = 0;
     this.dy = 0;
   }
-  setPosition(x: number, y: number) {
+  public setPosition(x: number, y: number) {
     this.x = x;
     this.y = y;
+  }
+  public toJSON() {
+    return { x: this.x, y: this.y, h: this.h, w: this.w };
   }
 }
 
@@ -84,13 +90,22 @@ class Ball {
     this.dx = 0;
     this.dy = 0;
   }
-  setPosition(x: number, y: number) {
+  public setPosition(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
-  setVelocity(dx: number, dy: number) {
+  public setVelocity(dx: number, dy: number) {
     this.dx = dx;
     this.dy = dy;
+  }
+  public toJSON() {
+    return {
+      x: this.x,
+      y: this.y,
+      r: this.r,
+      dx: this.dx,
+      dy: this.dy,
+    };
   }
 }
 
@@ -130,23 +145,23 @@ export class Game {
     this.ball = new Ball(w / 2, h / 2);
   }
 
-  getPlayersId() {
+  public getPlayersId() {
     return new Set(this.players.keys());
   }
-  getPlayersConnected() {
+  public getPlayersConnected() {
     return new Set(
       [...this.players.entries()]
         .filter(([_, player]) => player.isConnected())
         .map(([id, _]) => id),
     );
   }
-  setGameState(state: GameState) {
+  private setGameState(state: GameState) {
     this.gameState = state;
   }
-  setPlayerConnection(playerId: string, socket: WebSocket | null) {
+  public setPlayerConnection(playerId: string, socket: WebSocket | null) {
     this.players.get(playerId)?.setConnected(socket);
   }
-  handleGameState() {
+  private handleGameState() {
     const full = [...this.players.values()].every((player) =>
       player.isConnected(),
     );
@@ -162,13 +177,25 @@ export class Game {
       this.gameState = GameState.Running;
     }
   }
-  broadcast() {
+
+  public toJSON() {
+    return {
+      gameId: this.gameId,
+      state: GameState[this.gameState],
+      players: [[...this.players.values()].map((player) => player.toJSON())],
+      paddleR: this.paddleR.toJSON(),
+      paddleL: this.paddleL.toJSON(),
+      ball: this.ball.toJSON(),
+    };
+  }
+
+  public broadcast(message: string) {
     //define the game state
     this.players.forEach((player, id) => {
-      if (player.isConnected()) player.getSocket()!.send("test");
+      if (player.isConnected()) player.getSocket()?.send(message);
     });
   }
-  update() {
+  public update() {
     this.handleGameState();
     if (this.gameState != GameState.Running) return;
   }

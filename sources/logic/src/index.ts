@@ -69,6 +69,6 @@ setInterval(() => {
   games.forEach((game) => {
     game.update();
     // broadcast only when running ?
-    game.broadcast();
+    game.broadcast(JSON.stringify(game.toJSON()));
   });
 }, 1000 / 60);
