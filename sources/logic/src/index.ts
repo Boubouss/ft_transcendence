@@ -32,7 +32,7 @@ app.register(() => {
       }
       game.setPlayerConnection(playerId, true);
 
-      connection.on("message", (message) => {
+      connection.on("message", (message: string) => {
         console.log(`${message}`);
       });
 
