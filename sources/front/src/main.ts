@@ -1,8 +1,8 @@
-import './style.css';
+import './assets/styles/style.css';
 
 const app = document.createElement('div');
 app.innerHTML = `
-  <div class="text-3xl font-bold text-blue-500 p-10">
+  <div class="text-3xl font-bold text-red-500 p-10">
     Hello Tailwind
   </div>
 `;
