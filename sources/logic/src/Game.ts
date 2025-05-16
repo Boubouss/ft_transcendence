@@ -12,20 +12,23 @@ export enum GameState {
 class Player {
   private playerId: string;
   private score: number;
-  private connected: boolean;
+  private socket: WebSocket | null;
   constructor(playerId: string) {
     this.playerId = playerId;
     this.score = 0;
-    this.connected = false;
+    this.socket = null;
   }
   isConnected() {
-    return this.connected;
+    return this.socket !== null;
   }
   getId() {
     return this.playerId;
   }
-  setConnected(bool: boolean) {
-    this.connected = bool;
+  setConnected(socket: WebSocket | null) {
+    this.socket = socket;
+  }
+  getSocket() {
+    return this.socket;
   }
 }
 
@@ -140,8 +143,8 @@ export class Game {
   setGameState(state: GameState) {
     this.gameState = state;
   }
-  setPlayerConnection(playerId: string, bool: boolean) {
-    this.players.get(playerId)?.setConnected(bool);
+  setPlayerConnection(playerId: string, socket: WebSocket | null) {
+    this.players.get(playerId)?.setConnected(socket);
   }
   handleGameState() {
     const full = [...this.players.values()].every((player) =>
@@ -158,6 +161,12 @@ export class Game {
       console.log(`Game: ${this.gameId} resuming`);
       this.gameState = GameState.Running;
     }
+  }
+  broadcast() {
+    //define the game state
+    this.players.forEach((player, id) => {
+      if (player.isConnected()) player.getSocket()!.send("test");
+    });
   }
   update() {
     this.handleGameState();

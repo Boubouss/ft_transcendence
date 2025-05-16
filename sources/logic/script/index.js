@@ -5,7 +5,11 @@ const playerId = "0";
 const wsUrl = `ws://localhost:${port}/ws/${gameId}/${playerId}`;
 const socket = new WebSocket(wsUrl);
 
-socket.addEventListener("message", (event) => console.log(event.data));
+const textField = document.getElementById("textField");
+
+socket.addEventListener("message", (event) => {
+  textField.innerHTML = event.data;
+});
 
 window.addEventListener("keydown", (event) => {
   if (socket.readyState !== WebSocket.OPEN) {

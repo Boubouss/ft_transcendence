@@ -30,14 +30,14 @@ app.register(() => {
       if (game.getPlayersConnected().has(playerId)) {
         return connection.close(wsCode, `The player is already connected`);
       }
-      game.setPlayerConnection(playerId, true);
+      game.setPlayerConnection(playerId, connection);
 
       connection.on("message", (message: string) => {
         console.log(`${message}`);
       });
 
       connection.on("close", () => {
-        games.get(gameId)?.setPlayerConnection(playerId, false);
+        games.get(gameId)?.setPlayerConnection(playerId, null);
       });
     },
   );
@@ -68,13 +68,7 @@ app.listen({ port: port }, (err) => {
 setInterval(() => {
   games.forEach((game) => {
     game.update();
+    // broadcast only when running ?
+    game.broadcast();
   });
 }, 1000 / 60);
-
-// debug
-setInterval(() => {
-  games.forEach((game) => {
-    console.log(game.getPlayersConnected());
-    console.log(game);
-  });
-}, 5000);
