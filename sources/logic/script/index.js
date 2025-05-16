@@ -1,26 +1,23 @@
-const port = 3000;
-const gameId = "100";
-const playerId = "0";
-
-const wsUrl = `ws://localhost:${port}/ws/${gameId}/${playerId}`;
-const socket = new WebSocket(wsUrl);
-
+const portInput = document.getElementById("port");
+const gameIdInput = document.getElementById("gameId");
+const playerIdInput = document.getElementById("playerId");
 const textField = document.getElementById("textField");
+const confirm = document.getElementById("confirm");
 
-socket.addEventListener("message", (event) => {
-  textField.innerHTML = event.data;
-});
+function connect() {
+  const wsUrl = `ws://localhost:${portInput.value}/ws/${gameIdInput.value}/${playerIdInput.value}`;
+  const socket = new WebSocket(wsUrl);
 
-window.addEventListener("keydown", (event) => {
-  if (socket.readyState !== WebSocket.OPEN) {
-    console.warn("websocket not open");
-    return;
-  }
-  if (event.key === "ArrowUp") {
-    socket.send("Up"); //should be replaced by JSON
-    console.log("Up");
-  } else if (event.key === "ArrowDown") {
-    socket.send("Down"); //should be replaced by JSON
-    console.log("Down");
-  }
-});
+  socket.addEventListener("message", (event) => {
+    textField.innerHTML = event.data;
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (socket.readyState !== WebSocket.OPEN) return;
+    if (event.key === "ArrowUp") {
+      socket.send(JSON.stringify({ input: "up" }));
+    } else if (event.key === "ArrowDown") {
+      socket.send(JSON.stringify({ input: "down" }));
+    }
+  });
+}

@@ -33,7 +33,28 @@ app.register(() => {
       game.setPlayerConnection(playerId, connection);
 
       connection.on("message", (message: string) => {
-        console.log(`${message}`);
+        let data;
+        try {
+          data = JSON.parse(message) as { input?: string };
+        } catch (e) {
+          return;
+        }
+
+        // send an error message as JSON?
+        if (typeof data !== "object") {
+          return;
+        }
+        if (!data.input) {
+          return;
+        }
+        if (typeof data.input !== "string") {
+          return;
+        }
+        if (data.input !== "up" && data.input !== "down") {
+          return;
+        }
+        console.log("setting the player input");
+        game.setPlayerInput(playerId, data.input);
       });
 
       connection.on("close", () => {
