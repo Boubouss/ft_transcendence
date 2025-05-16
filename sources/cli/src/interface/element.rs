@@ -10,16 +10,20 @@ use termion::color::{Bg, Fg, Rgb};
 pub enum ElementKind {
     Text,
     Button,
+    Input,
 }
 
 pub enum ElementAction {
+    LoadMain,
     LoadLogin,
+    Input,
     Exit,
 }
 
 pub struct Element {
     kind: ElementKind,
     content: String,
+    value: String,
     action: Option<ElementAction>,
     pos: Position,
     size: Size,
@@ -36,12 +40,50 @@ impl Element {
         Self {
             kind,
             content,
+            value: String::new(),
             action: None,
             pos,
             size,
             color: Fg(COLOR),
             background_color: Bg(BACKGROUND_COLOR),
         }
+    }
+
+    pub fn get_content(&self, is_selected: bool) -> String {
+        let x = self.pos.x;
+        let mut y = self.pos.y;
+        let mut steps = 0;
+        let result = String::new();
+
+        print!("{}", termion::cursor::Goto(x, y));
+        print!("{}", self.color);
+
+        if is_selected {
+            print!("{}", Bg(Rgb(0, 255, 0)));
+        } else {
+            print!("{}", self.background_color);
+        }
+
+        for character in self.value.chars() {
+            print!("{}", character);
+            steps += 1;
+        }
+
+        if self.kind == ElementKind::Input && is_selected {
+            print!("_");
+        }
+
+        for it in self.content.char_indices().skip(steps) {
+            print!("{}", it.1);
+
+            if it.1 == '\n' && it.0 < self.content.len() {
+                y += 1;
+
+                print!("{}", termion::cursor::Goto(x, y));
+            }
+        }
+
+        result
     }
 
     pub fn get_kind(&self) -> &ElementKind {
@@ -89,27 +131,16 @@ impl Element {
         }
     }
 
-    pub fn render(&self, is_selected: bool) {
-        let x = self.pos.x;
-        let mut y = self.pos.y;
-
-        print!("{}", termion::cursor::Goto(x, y));
-        print!("{}", self.color);
-
-        if is_selected {
-            print!("{}", Bg(Rgb(0, 255, 0)));
-        } else {
-            print!("{}", self.background_color);
+    pub fn handle_input(&mut self, input: char) {
+        if !self.value.is_empty() && input as u8 == 127 {
+            self.value.pop();
+            return;
         }
 
-        for it in self.content.char_indices() {
-            print!("{}", it.1);
-
-            if it.1 == '\n' && it.0 < self.content.len() {
-                y += 1;
-
-                print!("{}", termion::cursor::Goto(x, y));
-            }
+        if self.value.len() >= 20 || !input.is_alphanumeric() {
+            return;
         }
+
+        self.value.push(input);
     }
 }
