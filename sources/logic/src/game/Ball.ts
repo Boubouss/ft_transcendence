@@ -20,7 +20,7 @@ export class Ball {
     this.dx = dx;
     this.dy = dy;
   }
-  public toJSON() {
+  public toJson() {
     return {
       x: this.x,
       y: this.y,
