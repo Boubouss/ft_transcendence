@@ -18,7 +18,7 @@ export class Paddle {
     this.x = x;
     this.y = y;
   }
-  public toJSON() {
+  public toJson() {
     return { x: this.x, y: this.y, h: this.h, w: this.w };
   }
 }
