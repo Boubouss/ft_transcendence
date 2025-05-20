@@ -1,8 +1,10 @@
+import { PlayerInput } from "../type/Type";
+
 export class Player {
   private playerId: string;
   private score: number;
   private socket: WebSocket | null;
-  private input: "up" | "down" | null;
+  private input: PlayerInput;
   constructor(playerId: string) {
     this.playerId = playerId;
     this.score = 0;
@@ -21,8 +23,11 @@ export class Player {
   public getSocket() {
     return this.socket;
   }
-  public setInput(input: "up" | "down" | null) {
+  public setInput(input: PlayerInput) {
     this.input = input;
+  }
+  public getInput() {
+    return this.input;
   }
   public toJson() {
     return { playerId: this.playerId, score: this.score, input: this.input };
