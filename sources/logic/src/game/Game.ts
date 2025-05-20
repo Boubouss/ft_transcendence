@@ -57,22 +57,6 @@ export class Game {
   public setPlayerConnection(playerId: string, socket: WebSocket | null) {
     this.players.get(playerId)?.setConnected(socket);
   }
-  private handleGameState(): GameState | undefined {
-    const full = ![...this.players.values()].some(
-      (player) => !player.isConnected(),
-    );
-
-    if (this.gameState == GameState.Init && full) {
-      return (this.gameState = GameState.Running);
-    }
-    if (this.gameState == GameState.Running && !full) {
-      return (this.gameState = GameState.Paused);
-    }
-    if (this.gameState == GameState.Paused && full) {
-      return (this.gameState = GameState.Running);
-    }
-  }
-
   public toJson() {
     return {
       gameId: this.gameId,
@@ -95,7 +79,17 @@ export class Game {
     });
   }
   public update() {
-    this.handleGameState();
+    //todo: websocket could set to false onclose and we recheck only if false
+    const full = ![...this.players.values()].some((p) => !p.isConnected());
+
+    if (this.gameState == GameState.Init && full) {
+      this.gameState = GameState.Running;
+    } else if (this.gameState == GameState.Running && !full) {
+      this.gameState = GameState.Paused;
+    } else if (this.gameState == GameState.Paused && full) {
+      this.gameState = GameState.Running;
+    }
+
     if (this.gameState != GameState.Running) return;
   }
 }
