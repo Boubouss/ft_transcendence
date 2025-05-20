@@ -24,7 +24,7 @@ export class Player {
   public setInput(input: "up" | "down" | null) {
     this.input = input;
   }
-  public toJSON() {
+  public toJson() {
     return { playerId: this.playerId, score: this.score, input: this.input };
   }
 }

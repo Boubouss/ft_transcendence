@@ -57,28 +57,30 @@ export class Game {
   public setPlayerConnection(playerId: string, socket: WebSocket | null) {
     this.players.get(playerId)?.setConnected(socket);
   }
-  private handleGameState() {
-    const full = [...this.players.values()].every((player) =>
-      player.isConnected(),
+  private handleGameState(): GameState | undefined {
+    const full = ![...this.players.values()].some(
+      (player) => !player.isConnected(),
     );
 
     if (this.gameState == GameState.Init && full) {
-      this.gameState = GameState.Running;
-    } else if (this.gameState == GameState.Running && !full) {
-      this.gameState = GameState.Paused;
-    } else if (this.gameState == GameState.Paused && full) {
-      this.gameState = GameState.Running;
+      return (this.gameState = GameState.Running);
+    }
+    if (this.gameState == GameState.Running && !full) {
+      return (this.gameState = GameState.Paused);
+    }
+    if (this.gameState == GameState.Paused && full) {
+      return (this.gameState = GameState.Running);
     }
   }
 
-  public toJSON() {
+  public toJson() {
     return {
       gameId: this.gameId,
       state: GameState[this.gameState],
-      players: [[...this.players.values()].map((player) => player.toJSON())],
-      paddleR: this.paddleR.toJSON(),
-      paddleL: this.paddleL.toJSON(),
-      ball: this.ball.toJSON(),
+      players: [[...this.players.values()].map((player) => player.toJson())],
+      paddleR: this.paddleR.toJson(),
+      paddleL: this.paddleL.toJson(),
+      ball: this.ball.toJson(),
     };
   }
 
