@@ -1,0 +1,30 @@
+export class Player {
+  private playerId: string;
+  private score: number;
+  private socket: WebSocket | null;
+  private input: "up" | "down" | null;
+  constructor(playerId: string) {
+    this.playerId = playerId;
+    this.score = 0;
+    this.socket = null;
+    this.input = null;
+  }
+  public isConnected() {
+    return this.socket !== null;
+  }
+  public getId() {
+    return this.playerId;
+  }
+  public setConnected(socket: WebSocket | null) {
+    this.socket = socket;
+  }
+  public getSocket() {
+    return this.socket;
+  }
+  public setInput(input: "up" | "down" | null) {
+    this.input = input;
+  }
+  public toJSON() {
+    return { playerId: this.playerId, score: this.score, input: this.input };
+  }
+}
