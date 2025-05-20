@@ -8,6 +8,9 @@ module.exports = {
       fontFamily: {
         jaro: ['Jaro', 'sans-serif'],
       },
+      fontSize: {
+        '4.5xl': '2.6rem',
+      },
     },
   },
   plugins: [],
