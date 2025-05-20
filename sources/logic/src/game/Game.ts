@@ -4,6 +4,7 @@ import { GameField } from "./GameField";
 import { GameState } from "../type/Enum";
 import { Paddle } from "./Paddle";
 import { Player } from "./Player";
+import { PlayerInput } from "../type/Type";
 
 export class Game {
   // meta data
@@ -68,7 +69,7 @@ export class Game {
     };
   }
 
-  public setPlayerInput(playerId: string, input: "up" | "down" | null) {
+  public setPlayerInput(playerId: string, input: PlayerInput) {
     this.players.get(playerId)?.setInput(input);
   }
 
@@ -78,6 +79,7 @@ export class Game {
       if (player.isConnected()) player.getSocket()?.send(message);
     });
   }
+
   public update() {
     //todo: websocket could set to false onclose and we recheck only if false
     const full = ![...this.players.values()].some((p) => !p.isConnected());
@@ -89,7 +91,22 @@ export class Game {
     } else if (this.gameState == GameState.Paused && full) {
       this.gameState = GameState.Running;
     }
-
     if (this.gameState != GameState.Running) return;
+
+    //retard way of handling players inputs
+    for (const [playerId, paddle] of [
+      [this.playerL, this.paddleL],
+      [this.playerR, this.paddleR],
+    ] as [string, Paddle][]) {
+      const player = this.players.get(playerId);
+      if (!player) continue;
+      const input = player.getInput();
+      if (!input) continue;
+      paddle.move(input);
+      player.setInput(null);
+    }
+
+    //checks
+    //...
   }
 }
