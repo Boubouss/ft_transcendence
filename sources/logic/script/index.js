@@ -8,6 +8,11 @@ function connect() {
   const wsUrl = `ws://localhost:${portInput.value}/ws/${gameIdInput.value}/${playerIdInput.value}`;
   const socket = new WebSocket(wsUrl);
 
+  socket.addEventListener("close", (event) => {
+    textField.innerHTML = `${event.code}<br>${event.reason}`;
+    socket.close();
+  });
+
   socket.addEventListener("message", (event) => {
     try {
       const message_parsed = JSON.parse(event.data);
