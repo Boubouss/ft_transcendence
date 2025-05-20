@@ -1,11 +1,12 @@
 import fastify from "fastify";
 import websocketPlugin from "@fastify/websocket";
-import { schemaWebsocket, schemaCreateGame } from "./Schema";
-import { CreateGameRequestBody, Game } from "./Game";
+import { CreateGameRequestBody } from "./type/Interface";
+import { Game } from "./game/Game";
+import { schemaWebsocket, schemaCreateGame } from "./type/Schema";
 
 // tmp
-const port: number = 3000; // should not be hardcoded
-const wsCode = 4000; // placeholder
+const PORT: number = 3000; // should not be hardcoded
+const WSCODE = 4000; // placeholder
 
 let games = new Map<string, Game>();
 const app = fastify();
@@ -22,13 +23,13 @@ app.register(() => {
       const game = games.get(gameId);
 
       if (!game) {
-        return connection.close(wsCode, `No game with gameId: ${gameId}`);
+        return connection.close(WSCODE, `No game with gameId: ${gameId}`);
       }
       if (!game.getPlayersId().has(playerId)) {
-        return connection.close(wsCode, `The player is not expected`);
+        return connection.close(WSCODE, `The player is not expected`);
       }
       if (game.getPlayersConnected().has(playerId)) {
-        return connection.close(wsCode, `The player is already connected`);
+        return connection.close(WSCODE, `The player is already connected`);
       }
       game.setPlayerConnection(playerId, connection);
 
@@ -69,11 +70,12 @@ app.post(
   },
 );
 
-app.listen({ port: port }, (err) => {
+app.listen({ port: PORT }, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);
   }
+  console.log(`Server listenning on port: ${PORT}`);
 });
 
 setInterval(() => {

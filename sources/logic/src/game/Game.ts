@@ -1,9 +1,14 @@
-import { Ball } from "./game/Ball";
-import { CreateGameRequestBody } from "./type/Interface";
-import { GameField } from "./game/GameField";
-import { GameState } from "./type/Enum";
-import { Paddle } from "./game/Paddle";
-import { Player } from "./game/Player";
+import { CreateGameRequestBody } from "../type/Interface";
+import { Ball } from "./Ball";
+import { GameField } from "./GameField";
+import { Paddle } from "./Paddle";
+import { Player } from "./Player";
+
+export enum GameState {
+  Init,
+  Paused,
+  Running,
+}
 
 export class Game {
   // meta data
