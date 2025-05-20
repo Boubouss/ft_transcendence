@@ -1,12 +1,12 @@
-import { createCustomButton } from "../Buttons/CustomButton.ts";
+import { createCustomButton } from "@/components/Buttons/CustomButton";
+import { getToken } from "@utils/authStorage.ts";
+import { t } from "@utils/i18n.ts";
 
 export function renderNavBar() {
   const app = document.createElement("div");
 
   app.innerHTML = `
-      <div id="button-container" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-6">
-      </div>
-    </div>
+    <div id="button-container" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-6"></div>
   `;
 
   const buttonContainer = app.querySelector("#button-container")!;
@@ -16,50 +16,33 @@ export function renderNavBar() {
     width: "274px",
     height: "93px",
     textColor: "text-black",
-    borderColor: "border-black",
     borderWidth: "border-2",
     borderRadius: "rounded-[20px]",
-    fontStyle: "font-jaro font-semibold", // police sans serif semi-bold
-    fontSizeClass: "text-4xl",
-    // position : ne pas mettre ici, géré par le container flex
+    fontStyle: "font-jaro font-semibold",
+    fontSizeClass: "text-5xl",
   };
-
-  function addHoverEffect(button: HTMLButtonElement) {
-    button.addEventListener("mouseenter", () => {
-      button.classList.add("shadow-lg", "brightness-110");
-    });
-    button.addEventListener("mouseleave", () => {
-      button.classList.remove("shadow-lg", "brightness-110");
-    });
-  }
 
   const local_button = createCustomButton({
     ...commonButtonOptions,
-    redirectUrl: "/local",
-    text: "Local",
+    text: t("local"),
   });
-  addHoverEffect(local_button);
-
 
   const multiplayer_button = createCustomButton({
     ...commonButtonOptions,
-    redirectUrl: "/multiplayer",
-    text: "Multiplayer",
+    text: t("multiplayer"),
   });
-  addHoverEffect(multiplayer_button);
 
-  multiplayer_button.style.filter = "brightness(0.6)";
+  if (!getToken())
+    multiplayer_button.style.filter = "brightness(0.6)";
 
   const quit_button = createCustomButton({
     ...commonButtonOptions,
-    redirectUrl: "/quit",
-    text: "Carriere",
+    text: t("career"),
   });
-  addHoverEffect(quit_button);
 
   buttonContainer.appendChild(local_button);
   buttonContainer.appendChild(multiplayer_button);
   buttonContainer.appendChild(quit_button);
 
-  document.body.appendChild(app);
+  return app;  // retourne l'élément, c’est important !
 }
