@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Player {
+  id              Int               @id @default(autoincrement())
+  user_id         Int               @unique
+  matches         Match[]           @relation("PlayerToMatch")
+  matches_wins    Match[]
+  tournament_wins Tournament[]
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+}
+
+model Match {
+  id              Int               @id @default(autoincrement())
+  players         Player[]          @relation("PlayerToMatch")
+  round           Round             @relation(fields: [roundId], references: [id])
+  roundId         Int
+  winner          Player?           @relation(fields: [winnerId], references: [id])
+  winnerId        Int?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+}
+
+model Round {
+  id              Int               @id @default(autoincrement())
+  matches         Match[]
+  tournament      Tournament        @relation(fields: [tournamentId], references: [id])
+  tournamentId    Int
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+}
+
+model Tournament {
+  id              Int               @id @default(autoincrement())
+  rounds          Round[]
+  winner          Player?           @relation(fields: [winnerId], references: [id])
+  winnerId        Int?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+}
