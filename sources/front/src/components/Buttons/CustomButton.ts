@@ -1,25 +1,25 @@
 interface CustomButtonOptions {
-  backgroundColor?: string; // ex: "bg-orange-500"
-  width?: string; // ex: "200px"
-  height?: string; // ex: "150px"
-  textColor?: string; // ex: "text-black"
-  borderColor?: string; // ex: "border-black"
-  borderWidth?: string; // ex: "border-2"
-  borderRadius?: string; // ex: "rounded-[20px]"
-  redirectUrl?: string; // ex: "/next-page"
-  position?: string; // ex: "absolute bottom-10 left-1/2 transform -translate-x-1/2"
-  text?: string; // texte à afficher (si pas d'image)
-  imageUrl?: string; // url de l'image à afficher dans le bouton
-  fontStyle?: string; // ex: "font-serif italic font-bold"
+  backgroundColor?: string;
+  width?: string;
+  height?: string;
+  textColor?: string;
+  borderColor?: string;
+  borderWidth?: string;
+  borderRadius?: string;
+  position?: string;
+  text?: string;
+  imageUrl?: string;
+  fontStyle?: string;
   fontSizeClass?: string;
+  onClick?: () => void; // Nouvelle option : fonction à appeler lors du clic
 }
+
 
 export function createCustomButton(
   options: CustomButtonOptions
 ): HTMLButtonElement {
   const button = document.createElement("button");
 
-  // Construire les classes CSS (utilise Tailwind ou classes custom)
   const classes = [
     options.position || "",
     options.backgroundColor || "bg-orange-500",
@@ -27,7 +27,7 @@ export function createCustomButton(
     options.borderWidth || "border-2",
     options.borderColor || "border-black",
     options.borderRadius || "rounded-[20px]",
-    options.fontStyle || "", // ajout de la classe fontStyle
+    options.fontStyle || "font-jaro font-semibold",
     options.fontSizeClass || "text-lg",
     "font-bold",
     "flex",
@@ -39,11 +39,9 @@ export function createCustomButton(
 
   button.className = classes;
 
-  // Taille par style inline (taille fixe)
   if (options.width) button.style.width = options.width;
   if (options.height) button.style.height = options.height;
 
-  // Contenu : image ou texte
   if (options.imageUrl) {
     const img = document.createElement("img");
     img.src = options.imageUrl;
@@ -55,16 +53,27 @@ export function createCustomButton(
     button.textContent = options.text || "Cliquer";
   }
 
-  // Clic : redirection si défini
-  if (options.redirectUrl) {
-    button.addEventListener("click", () => {
-      window.location.href = options.redirectUrl!;
-    });
+  // Remplace la redirection par une fonction callback
+  if (typeof options.onClick === "function") {
+    button.addEventListener("click", options.onClick);
   }
 
   if (options.fontStyle?.includes("font-jaro")) {
     button.style.fontFamily = '"Jaro", sans-serif';
   }
 
+    function addHoverEffect(button: HTMLButtonElement) {
+    button.addEventListener("mouseenter", () => {
+      button.classList.add("shadow-lg", "brightness-110");
+    });
+    button.addEventListener("mouseleave", () => {
+      button.classList.remove("shadow-lg", "brightness-110");
+    });
+  }
+
+  addHoverEffect(button);
+
   return button;
 }
+
+
