@@ -15,12 +15,16 @@
 		"@fastify/jwt": "^9.1.0",
 		"@fastify/websocket": "^11.0.2",
 		"@prisma/client": "^6.8.2",
+		"@types/lodash": "^4.17.17",
+		"axios": "^1.9.0",
 		"dotenv": "^16.5.0",
 		"envalid": "^8.0.0",
 		"fastify": "^5.3.3",
+		"lodash": "^4.17.21",
 		"prisma": "^6.8.2",
 		"tsx": "^4.19.4",
-		"typescript": "^5.8.3"
+		"typescript": "^5.8.3",
+		"typescript-language-server": "^4.3.4"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.21"
