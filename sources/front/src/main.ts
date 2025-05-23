@@ -5,6 +5,6 @@ import { renderHome } from './pages/Home/Home.ts'; // importe la fonction depuis
 import { renderSign } from './pages/Sign/Sign.ts';
 import * as authStorage from './utils/authStorage';
 
-//renderHome(); // exécute la fonction qui affiche la page d'accueil
-authStorage.clearAuth()
-renderSign();
+renderHome(); // exécute la fonction qui affiche la page d'accueil
+//authStorage.clearAuth()
+//renderSign();
