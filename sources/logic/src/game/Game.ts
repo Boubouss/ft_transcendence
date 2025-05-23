@@ -5,23 +5,21 @@ import { GameState } from "../type/Enum";
 import { Paddle } from "./Paddle";
 import { Player } from "./Player";
 import { PlayerInput } from "../type/Type";
+import * as other from "./other";
 
 export class Game {
-  // meta data
   private gameId: string;
   private players: Map<string, Player> = new Map();
 
-  // game objects
   private gameField: GameField;
   private paddleL: Paddle;
   private paddleR: Paddle;
   private ball: Ball;
 
-  // ingame data
   private gameState: GameState = GameState.Init;
   private playersQueue: Array<string>;
-  private playerL: string;
-  private playerR: string;
+  private playerL: string | null;
+  private playerR: string | null;
 
   constructor(config: CreateGameRequestBody) {
     this.gameId = config.gameId;
@@ -30,7 +28,6 @@ export class Game {
     });
 
     this.playersQueue = Array(...this.players.keys());
-    // might need to check the len of playersQueue or the return values
     this.playerL = this.playersQueue.shift() as string;
     this.playerR = this.playersQueue.shift() as string;
 
@@ -42,6 +39,20 @@ export class Game {
     this.ball = new Ball(w / 2, h / 2);
   }
 
+  private resetRound() {
+    this.playersQueue = [];
+    this.playerL = null;
+    this.playerR = null;
+    this.playersQueue = Array(...this.players.keys());
+    other.shuffle(this.playersQueue);
+    const h: number = this.gameField.getHeight();
+    const w: number = this.gameField.getWidth();
+    this.paddleL.setPosition(20, h / 2);
+    this.paddleR.setPosition(w - 20, h / 2);
+    this.ball.setPosition(w / 2, h / 2);
+    this.ball.setVelocity(0, 0);
+  }
+
   public getPlayersId() {
     return new Set(this.players.keys());
   }
@@ -51,9 +62,6 @@ export class Game {
         .filter(([_, player]) => player.isConnected())
         .map(([id, _]) => id),
     );
-  }
-  private setGameState(state: GameState) {
-    this.gameState = state;
   }
   public setPlayerConnection(playerId: string, socket: WebSocket | null) {
     this.players.get(playerId)?.setConnected(socket);
@@ -74,8 +82,7 @@ export class Game {
   }
 
   public broadcast(message: string) {
-    //define the game state
-    this.players.forEach((player, id) => {
+    this.players.forEach((player, _) => {
       if (player.isConnected()) player.getSocket()?.send(message);
     });
   }
@@ -93,20 +100,34 @@ export class Game {
     }
     if (this.gameState != GameState.Running) return;
 
-    //retard way of handling players inputs
-    for (const [playerId, paddle] of [
+    //todo: replace with better values
+    if (this.ball.isStatic())
+      this.ball.setVelocity(Math.random(), Math.random());
+
+    const pairPlayerPaddle = [
       [this.playerL, this.paddleL],
       [this.playerR, this.paddleR],
-    ] as [string, Paddle][]) {
-      const player = this.players.get(playerId);
-      if (!player) continue;
-      const input = player.getInput();
-      if (!input) continue;
+    ] as [string, Paddle][];
+
+    for (const [playerId, paddle] of pairPlayerPaddle) {
+      let player, input;
+      if (!(player = this.players.get(playerId))) continue;
+      if (!(input = player.getInput())) continue;
       paddle.move(input);
       player.setInput(null);
     }
 
-    //checks
-    //...
+    this.ball.move();
+
+    if (this.ball.top <= 0 || this.ball.bottom >= this.gameField.getHeight())
+      this.ball.bounce("horizontal");
+
+    if (this.ball.left <= 0 || this.ball.right >= this.gameField.getWidth()) {
+      if (this.ball.left <= 0)
+        this.players.get(this.playerR as string)?.addPoint();
+      if (this.ball.right >= this.gameField.getWidth())
+        this.players.get(this.playerL as string)?.addPoint();
+      this.resetRound();
+    }
   }
 }
