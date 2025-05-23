@@ -24,8 +24,8 @@ export class Ball {
     return this.dx === 0 && this.dy === 0;
   }
   public move() {
-    this.x + this.dx;
-    this.y + this.dy;
+    this.x += this.dx;
+    this.y += this.dy;
   }
   public bounce(axis: "horizontal" | "vertical") {
     if (axis === "horizontal") this.dx *= -1;
@@ -35,7 +35,7 @@ export class Ball {
     return this.y - this.r;
   }
   public get right() {
-    return this.y + this.r;
+    return this.x + this.r;
   }
   public get bottom() {
     return this.y + this.r;
