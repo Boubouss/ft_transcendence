@@ -23,6 +23,18 @@ export class Paddle {
     if (input === "up") this.y -= this.step;
     if (input === "down") this.y += this.step;
   }
+  public get top() {
+    return this.y - this.h / 2;
+  }
+  public get right() {
+    return this.y + this.w / 2;
+  }
+  public get bottom() {
+    return this.y + this.h / 2;
+  }
+  public get left() {
+    return this.x - this.w / 2;
+  }
   public toJson() {
     return { x: this.x, y: this.y, h: this.h, w: this.w };
   }

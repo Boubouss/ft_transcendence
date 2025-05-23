@@ -4,9 +4,9 @@ import { CreateGameRequestBody } from "./type/Interface";
 import { Game } from "./game/Game";
 import { schemaWebsocket, schemaCreateGame } from "./type/Schema";
 
-// tmp
-const PORT: number = 3000; // should not be hardcoded
-const WSCODE = 4000; // placeholder
+//todo: remove the placeholders and constants
+const PORT: number = 3000;
+const WSCODE = 4000;
 
 let games = new Map<string, Game>();
 const app = fastify();
@@ -41,7 +41,7 @@ app.register(() => {
           return;
         }
 
-        // send an error message as JSON?
+        //todo: send an error message as JSON?
         if (typeof data !== "object") return;
         if (!data.input) return;
         if (typeof data.input !== "string") return;
@@ -81,7 +81,6 @@ app.listen({ port: PORT }, (err) => {
 setInterval(() => {
   games.forEach((game) => {
     game.update();
-    // broadcast only when running ?
     game.broadcast(JSON.stringify(game.toJson()));
   });
 }, 1000 / 60);
