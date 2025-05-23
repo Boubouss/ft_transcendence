@@ -29,13 +29,17 @@ export type User = {
 };
 
 export enum LobbyAction {
-	CREATE = "CREATE",
-	DELETE = "DELETE",
 	JOIN = "JOIN",
 	LEAVE = "LEAVE",
+	READY = "READY",
+	UNREADY = "UNREADY",
 }
+
+export type LobbyOption = {};
 
 export type SocketMessage = {
 	id: number;
+	target: number;
 	action: LobbyAction;
+	option?: LobbyOption;
 };

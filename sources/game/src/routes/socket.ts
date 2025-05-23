@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { SocketList, Player, Lobby, User } from "../types/types";
+import { SocketList, SocketMessage, Player, Lobby, User } from "../types/types";
 import axios from "axios";
 
 const socket: FastifyPluginAsync = async (fastify, opts) => {
@@ -21,7 +21,27 @@ const socket: FastifyPluginAsync = async (fastify, opts) => {
 		players.push(player);
 		socket.send(JSON.stringify(lobbies));
 
-		socket.on("message", async (message: string) => {});
+		socket.on("message", async (message: string) => {
+			const data: SocketMessage = JSON.parse(message);
+			const lobby: Lobby | undefined = lobbies.find(
+				(elem) => elem.owner === data.target
+			);
+			switch (data.action) {
+				case "JOIN":
+					if (!lobby) {
+						const newLobby: Lobby = { owner: data.id };
+					}
+					break;
+				case "LEAVE":
+					break;
+				case "READY":
+					break;
+				case "UNREADY":
+					break;
+				default:
+					socket.send("404");
+			}
+		});
 
 		socket.on("close", async () => {});
 
