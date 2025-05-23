@@ -20,6 +20,29 @@ export class Ball {
     this.dx = dx;
     this.dy = dy;
   }
+  public isStatic(): boolean {
+    return this.dx === 0 && this.dy === 0;
+  }
+  public move() {
+    this.x + this.dx;
+    this.y + this.dy;
+  }
+  public bounce(axis: "horizontal" | "vertical") {
+    if (axis === "horizontal") this.dx *= -1;
+    if (axis === "vertical") this.dy *= -1;
+  }
+  public get top() {
+    return this.y - this.r;
+  }
+  public get right() {
+    return this.y + this.r;
+  }
+  public get bottom() {
+    return this.y + this.r;
+  }
+  public get left() {
+    return this.x - this.r;
+  }
   public toJson() {
     return {
       x: this.x,
