@@ -28,6 +28,7 @@ export class Game {
     });
 
     this.playersQueue = Array(...this.players.keys());
+    other.shuffle(this.playersQueue);
     this.playerL = this.playersQueue.shift() as string;
     this.playerR = this.playersQueue.shift() as string;
 
@@ -38,12 +39,7 @@ export class Game {
     this.paddleR = new Paddle(w - 20, h / 2);
     this.ball = new Ball(w / 2, h / 2);
   }
-
-  private resetRound() {
-    this.playersQueue = [];
-    this.playerL = null;
-    this.playerR = null;
-    this.playersQueue = Array(...this.players.keys());
+  private resetObjects() {
     other.shuffle(this.playersQueue);
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
@@ -51,6 +47,12 @@ export class Game {
     this.paddleR.setPosition(w - 20, h / 2);
     this.ball.setPosition(w / 2, h / 2);
     this.ball.setVelocity(0, 0);
+  }
+  private resetQueue() {
+    this.playersQueue = Array(...this.players.keys());
+    other.shuffle(this.playersQueue);
+    this.playerL = this.playersQueue.shift() as string;
+    this.playerR = this.playersQueue.shift() as string;
   }
 
   public getPlayersId() {
@@ -71,6 +73,9 @@ export class Game {
       gameId: this.gameId,
       state: GameState[this.gameState],
       players: [[...this.players.values()].map((player) => player.toJson())],
+      queue: this.playersQueue,
+      playerL: this.playerL,
+      playerR: this.playerR,
       paddleR: this.paddleR.toJson(),
       paddleL: this.paddleL.toJson(),
       ball: this.ball.toJson(),
@@ -101,8 +106,13 @@ export class Game {
     if (this.gameState != GameState.Running) return;
 
     //todo: replace with better values
-    if (this.ball.isStatic())
-      this.ball.setVelocity(Math.random(), Math.random());
+    if (this.ball.isStatic()) {
+      let dx = Math.ceil(Math.random() * 10);
+      let dy = Math.ceil(Math.random() * 10);
+      if (Math.random() % 2) dx *= -1;
+      if (Math.random() % 2) dy *= -1;
+      this.ball.setVelocity(dx, dy);
+    }
 
     const pairPlayerPaddle = [
       [this.playerL, this.paddleL],
@@ -113,21 +123,28 @@ export class Game {
       let player, input;
       if (!(player = this.players.get(playerId))) continue;
       if (!(input = player.getInput())) continue;
-      paddle.move(input);
+      paddle.move(input); //todo: improve the bounce
       player.setInput(null);
     }
 
     this.ball.move();
 
     if (this.ball.top <= 0 || this.ball.bottom >= this.gameField.getHeight())
-      this.ball.bounce("horizontal");
+      this.ball.bounce("vertical");
+
+    //todo: paddle collision
 
     if (this.ball.left <= 0 || this.ball.right >= this.gameField.getWidth()) {
-      if (this.ball.left <= 0)
+      if (this.ball.left <= 0) {
         this.players.get(this.playerR as string)?.addPoint();
-      if (this.ball.right >= this.gameField.getWidth())
+        this.playerL = this.playersQueue.shift() || null;
+      }
+      if (this.ball.right >= this.gameField.getWidth()) {
         this.players.get(this.playerL as string)?.addPoint();
-      this.resetRound();
+        this.playerR = this.playersQueue.shift() || null;
+      }
+      if (!this.playerL || !this.playerR) this.resetQueue();
+      this.resetObjects();
     }
   }
 }
