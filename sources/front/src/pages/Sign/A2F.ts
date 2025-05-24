@@ -56,7 +56,7 @@ function show2FAModal(user: any) {
 
     //alert("2FA validé avec succès !");
     document.body.removeChild(modal);
-
+    navigateTo("home");
   });
 
   closeBtn.addEventListener("click", () => {

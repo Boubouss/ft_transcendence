@@ -50,7 +50,6 @@ export function createSignUpForm(onSuccess: (user: any) => void): HTMLFormElemen
         id: Math.floor(Math.random() * 10000),
         username,
         email,
-        avatar: "https://example.com/avatar.png",
         token: "fake-jwt-token-" + Date.now(),
       };
 

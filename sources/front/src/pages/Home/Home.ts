@@ -45,7 +45,7 @@ export function renderHome() {
       width: "220px",
       height: "80px",
       position: "absolute top-10 right-10",
-      onClick: () => navigateTo("sign"),
+      onClick: () => navigateTo("account"),
     });
   }
   app.appendChild(signButton);

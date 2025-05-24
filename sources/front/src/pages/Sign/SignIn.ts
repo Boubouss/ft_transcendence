@@ -46,7 +46,6 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
           id: 123,
           username,
           email: username + "@exemple.com",
-          avatar: "https://example.com/avatar.png",
           token: "fake-jwt-token-" + Date.now(),
         };
         console.log("Connexion sans 2FA, user:", user);
@@ -58,7 +57,6 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
           id: 123,
           username,
           email: username + "@exemple.com",
-          avatar: "https://example.com/avatar.png",
           // pas de token ici
         };
         console.log("Connexion avec 2FA, user:", user);

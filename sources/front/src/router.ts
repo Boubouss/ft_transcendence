@@ -1,11 +1,12 @@
 import { renderHome } from './pages/Home/Home.ts';
 import { renderSign } from './pages/Sign/Sign.ts';
+import { renderAccount } from './pages/Account/AccountModalSystem.ts';
 
 export function navigateTo(page: string) {
   const appRoot = document.getElementById("app-root");
   if (!appRoot) return;
 
-  appRoot.innerHTML = ""; // vide le contenu à chaque navigation
+  appRoot.innerHTML = "";
 
   switch (page) {
     case "home":
@@ -14,7 +15,11 @@ export function navigateTo(page: string) {
     case "sign":
       renderSign();
       break;
+    case "account":
+      renderAccount(); // ← ouvre la modal des paramètres
+      break;
     default:
       appRoot.innerHTML = "<p class='text-center text-red-600 mt-10'>404 - Page Not Found</p>";
   }
 }
+

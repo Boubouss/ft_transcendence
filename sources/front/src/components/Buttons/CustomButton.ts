@@ -9,11 +9,12 @@ interface CustomButtonOptions {
   position?: string;
   text?: string;
   imageUrl?: string;
+  imageWidth?: string;  // ← Nouvelle option
+  imageHeight?: string; // ← Nouvelle option
   fontStyle?: string;
   fontSizeClass?: string;
-  onClick?: () => void; // Nouvelle option : fonction à appeler lors du clic
+  onClick?: () => void;
 }
-
 
 export function createCustomButton(
   options: CustomButtonOptions
@@ -27,7 +28,7 @@ export function createCustomButton(
     options.borderWidth || "border-2",
     options.borderColor || "border-black",
     options.borderRadius || "rounded-[20px]",
-    options.fontStyle || "font-jaro font-semibold",
+    options.fontStyle || "font-jaro",
     options.fontSizeClass || "text-lg",
     "font-bold",
     "flex",
@@ -46,23 +47,38 @@ export function createCustomButton(
     const img = document.createElement("img");
     img.src = options.imageUrl;
     img.alt = options.text || "button image";
-    img.style.maxWidth = "100%";
-    img.style.maxHeight = "100%";
+
+    if (options.imageWidth) {
+      img.style.width = options.imageWidth;
+    } else {
+      img.style.maxWidth = "100%";
+    }
+
+    if (options.imageHeight) {
+      img.style.height = options.imageHeight;
+    } else {
+      img.style.maxHeight = "100%";
+    }
+
+    img.style.objectFit = "contain";
+
     button.appendChild(img);
   } else {
     button.textContent = options.text || "Cliquer";
   }
 
-  // Remplace la redirection par une fonction callback
+  // Applique la fonction de clic si définie
   if (typeof options.onClick === "function") {
     button.addEventListener("click", options.onClick);
   }
 
+  // Applique la police Jaro si spécifiée
   if (options.fontStyle?.includes("font-jaro")) {
     button.style.fontFamily = '"Jaro", sans-serif';
   }
 
-    function addHoverEffect(button: HTMLButtonElement) {
+  // Effet hover
+  function addHoverEffect(button: HTMLButtonElement) {
     button.addEventListener("mouseenter", () => {
       button.classList.add("shadow-lg", "brightness-110");
     });
@@ -75,5 +91,3 @@ export function createCustomButton(
 
   return button;
 }
-
-
