@@ -22,7 +22,7 @@ function drawState(state) {
     );
     ctx.strokeStyle = "white";
     ctx.fillStyle = "white";
-    ctx.fill();
+  ctx.fill();
     ctx.stroke();
   }
 

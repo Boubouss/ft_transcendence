@@ -74,6 +74,7 @@ export class Game {
       state: GameState[this.gameState],
       players: [[...this.players.values()].map((player) => player.toJson())],
       queue: this.playersQueue,
+      field: this.gameField.toJson(),
       playerL: this.playerL,
       playerR: this.playerR,
       paddleR: this.paddleR.toJson(),

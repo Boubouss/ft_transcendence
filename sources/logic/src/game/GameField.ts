@@ -12,4 +12,7 @@ export class GameField {
   public getWidth() {
     return this.w;
   }
+  public toJson() {
+    return { h: this.h, w: this.w };
+  }
 }
