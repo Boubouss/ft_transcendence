@@ -35,8 +35,9 @@ export class Game {
     this.gameField = new GameField();
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
-    this.paddleL = new Paddle(20, h / 2);
-    this.paddleR = new Paddle(w - 20, h / 2);
+    //todo: remove the overridden height
+    this.paddleL = new Paddle(20, h / 2, 400);
+    this.paddleR = new Paddle(w - 20, h / 2, 400);
     this.ball = new Ball(w / 2, h / 2);
   }
   private resetObjects() {
@@ -110,8 +111,8 @@ export class Game {
     if (this.ball.isStatic()) {
       let dx = Math.ceil(Math.random() * 10);
       let dy = Math.ceil(Math.random() * 10);
-      if (Math.random() % 2) dx *= -1;
-      if (Math.random() % 2) dy *= -1;
+      if (Math.floor(Math.random() * 2) % 2) dx *= -1;
+      if (Math.floor(Math.random() * 2) % 2) dy *= -1;
       this.ball.setVelocity(dx, dy);
     }
 
@@ -133,7 +134,20 @@ export class Game {
     if (this.ball.top <= 0 || this.ball.bottom >= this.gameField.getHeight())
       this.ball.bounce("vertical");
 
-    //todo: paddle collision
+    if (
+      this.paddleL.left <= this.ball.center.x &&
+      this.ball.center.x <= this.paddleL.right &&
+      this.paddleL.top <= this.ball.center.y &&
+      this.ball.center.y <= this.paddleL.bottom
+    )
+      this.ball.bounce("horizontal");
+    if (
+      this.paddleR.left <= this.ball.center.x &&
+      this.ball.center.x <= this.paddleR.right &&
+      this.paddleR.top <= this.ball.center.y &&
+      this.ball.center.y <= this.paddleR.bottom
+    )
+      this.ball.bounce("horizontal");
 
     if (this.ball.left <= 0 || this.ball.right >= this.gameField.getWidth()) {
       if (this.ball.left <= 0) {
