@@ -1,4 +1,5 @@
 import { createCustomButton } from "../Buttons/CustomButton.ts";
+import { getToken } from "../../utils/authStorage.ts";
 
 export function renderNavBar() {
   const app = document.createElement("div");
@@ -40,8 +41,10 @@ export function renderNavBar() {
     ...commonButtonOptions,
     text: "Multiplayer",
   });
+
   addHoverEffect(multiplayer_button);
-  multiplayer_button.style.filter = "brightness(0.6)";
+  if (!getToken())
+    multiplayer_button.style.filter = "brightness(0.6)";
 
   const quit_button = createCustomButton({
     ...commonButtonOptions,
