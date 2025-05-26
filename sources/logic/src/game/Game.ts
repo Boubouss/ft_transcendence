@@ -149,15 +149,13 @@ export class Game {
     )
       this.ball.bounce("horizontal");
 
-    if (this.ball.left <= 0 || this.ball.right >= this.gameField.getWidth()) {
-      if (this.ball.left <= 0) {
-        this.players.get(this.playerR as string)?.addPoint();
-        this.playerL = this.playersQueue.shift() || null;
-      }
-      if (this.ball.right >= this.gameField.getWidth()) {
-        this.players.get(this.playerL as string)?.addPoint();
-        this.playerR = this.playersQueue.shift() || null;
-      }
+    const width = this.gameField.getWidth();
+    if (this.ball.left <= 0 || this.ball.right >= width) {
+      const nextPlayer = this.playersQueue.shift() || null;
+      if (this.ball.left <= 0) this.playerL = nextPlayer;
+      if (this.ball.right >= width) this.playerR = nextPlayer;
+      if (!this.playerL) this.players.get(this.playerR as string)?.addPoint();
+      if (!this.playerR) this.players.get(this.playerL as string)?.addPoint();
       if (!this.playerL || !this.playerR) this.resetQueue();
       this.resetObjects();
     }
