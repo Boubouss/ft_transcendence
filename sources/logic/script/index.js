@@ -57,6 +57,8 @@ function connect() {
 
   window.addEventListener("keydown", (event) => {
     if (socket.readyState !== WebSocket.OPEN) return;
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
     if (event.key === "ArrowUp") {
       socket.send(JSON.stringify({ input: "up" }));
     } else if (event.key === "ArrowDown") {

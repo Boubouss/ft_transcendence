@@ -7,7 +7,7 @@ export class Paddle {
   private w: number;
   private step: number;
 
-  constructor(x: number, y: number, h: number = 80, w: number = 10, step = 5) {
+  constructor(x: number, y: number, h: number = 80, w: number = 10, step = 10) {
     this.x = x;
     this.y = y;
     this.h = h;
@@ -27,7 +27,7 @@ export class Paddle {
     return this.y - this.h / 2;
   }
   public get right() {
-    return this.y + this.w / 2;
+    return this.x + this.w / 2;
   }
   public get bottom() {
     return this.y + this.h / 2;

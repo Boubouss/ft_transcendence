@@ -31,6 +31,9 @@ export class Ball {
     if (axis === "horizontal") this.dx *= -1;
     if (axis === "vertical") this.dy *= -1;
   }
+  public get center() {
+    return { x: this.x, y: this.y };
+  }
   public get top() {
     return this.y - this.r;
   }
