@@ -42,7 +42,7 @@ export function createAccountModal(): HTMLDivElement {
         </div>
         <div class="bg-[#FFFFFF99] rounded-[20px] border-2 border-black px-6 py-3 flex items-center justify-between relative">
           <label for="password" class="text-black text-2xl font-jaro select-none">Mot de passe :</label>
-          <input id="password" type="password" readonly value="*******" class="bg-transparent text-black text-2xl font-jaro w-[200px] focus:outline-none" />
+          <input id="password" type="password" readonly value="******" class="bg-transparent text-black text-2xl font-jaro w-[200px] focus:outline-none" />
           <img id="toggle-password" src="/assets/icons/open_eye.png" alt="Afficher" class="absolute right-6 cursor-pointer w-8 h-8" />
         </div>
       </div>

@@ -36,7 +36,7 @@ export function renderAccount() {
     toggle.addEventListener('click', () => {
       const isHidden = passwordInput.type === 'password';
       passwordInput.type = isHidden ? 'text' : 'password';
-      passwordInput.value = isHidden ? 'coucou' : '*******';
+      passwordInput.value = isHidden ? 'coucou' : '******';
       toggle.src = isHidden ? '/assets/icons/close_eye.png' : '/assets/icons/open_eye.png';
     });
   }
@@ -60,8 +60,7 @@ export function renderAccount() {
     borderRadius: "rounded-[20px]",
     text: "Valider",
     onClick: () => {
-      toggleEditMode();
-      alert("Modifications validées !");
+      valideModif();
     },
   });
 
@@ -78,11 +77,19 @@ export function renderAccount() {
   });
 
   buttonContainer.appendChild(modifyButton);
+  const emailInput = modal.querySelector<HTMLInputElement>('#email')!;
+  const usernameInput = modal.querySelector<HTMLInputElement>('#username')!;
+
+
+  function valideModif() {
+      toggleEditMode();
+      authStorage.setUserValue("email", emailInput);
+      authStorage.setUserValue("username", usernameInput);
+      alert("Modifications validées !");
+  }
 
   function toggleEditMode() {
     isEditing = !isEditing;
-    const emailInput = modal.querySelector<HTMLInputElement>('#email')!;
-    const usernameInput = modal.querySelector<HTMLInputElement>('#username')!;
     const passwordInput = modal.querySelector<HTMLInputElement>('#password')!;
     const toggleEye = modal.querySelector<HTMLImageElement>('#toggle-password')!;
 

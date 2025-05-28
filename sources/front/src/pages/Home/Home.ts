@@ -42,8 +42,9 @@ export function renderHome() {
       borderColor: "border-black",
       fontStyle: "font-jaro font-semibold",
       fontSizeClass: "text-3xl",
-      width: "220px",
+      width: "",
       height: "80px",
+      padding: "p-[10px]",
       position: "absolute top-10 right-10",
       onClick: () => navigateTo("account"),
     });

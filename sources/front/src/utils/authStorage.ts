@@ -22,6 +22,14 @@ export function getUserValue<T = any>(key: string): T | null {
   return user && key in user ? user[key] as T : null;
 }
 
+export function setUserValue<T = any>(key: string, value: T): void {
+  const user = getUser();
+  if (user) {
+    user[key] = value;
+    saveUser(user);
+  }
+}
+
 // Sauvegarde le token
 export function saveToken(token: string): void {
   localStorage.setItem(TOKEN_KEY, token);

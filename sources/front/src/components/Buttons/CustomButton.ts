@@ -10,8 +10,10 @@ interface CustomButtonOptions {
   text?: string;
   imageUrl?: string;
   imageWidth?: string;  // ← Nouvelle option
+  minWidth?: string;
   imageHeight?: string; // ← Nouvelle option
   fontStyle?: string;
+  padding?: string;
   fontSizeClass?: string;
   onClick?: () => void;
 }
@@ -30,6 +32,8 @@ export function createCustomButton(
     options.borderRadius || "rounded-[20px]",
     options.fontStyle || "font-jaro",
     options.fontSizeClass || "text-lg",
+    options.minWidth || "min-w-[100px]",
+    options.padding || "",
     "font-bold",
     "flex",
     "items-center",
