@@ -10,47 +10,41 @@ const wsCode = 4000; // placeholder
 let games = new Map<string, Game>();
 const app = fastify();
 app.register(websocketPlugin);
+app.register(require("fastify-qs"));
 
 app.register(() => {
   app.get(
-    "/ws/:gameId/:playerId",
+    "/ws",
     { schema: schemaWebsocket, websocket: true },
     (connection, request) => {
-      const params = request.params as { gameId: string; playerId: string };
-      const gameId = params.gameId;
-      const playerId = params.playerId;
-      const game = games.get(gameId);
+      const query = request.query as { gameId: string; playerId: string };
+
+      const game = games.get(query.gameId);
 
       if (!game) {
-        return connection.close(wsCode, `No game with gameId: ${gameId}`);
+        connection.close(wsCode, `No game with gameId: ${query.gameId}`);
+        return;
       }
-      if (!game.getPlayersId().has(playerId)) {
-        return connection.close(wsCode, `The player is not expected`);
+      if (!game.getPlayersExpected().has(query.playerId)) {
+        connection.close(wsCode, `The player is not expected to this game`);
+        return;
       }
-      if (game.getPlayersConnected().has(playerId)) {
-        return connection.close(wsCode, `The player is already connected`);
+      if (game.getPlayersConnected().has(query.playerId)) {
+        connection.close(wsCode, `The player is already connected to the game`);
+        return;
       }
-      game.setPlayerConnection(playerId, connection);
 
-      connection.on("message", (message: string) => {
-        let data;
-        try {
-          data = JSON.parse(message) as { input?: string };
-        } catch (e) {
-          return;
-        }
+      // check if the player is already connected in a game?
 
-        // send an error message as JSON?
-        if (typeof data !== "object") return;
-        if (!data.input) return;
-        if (typeof data.input !== "string") return;
-        if (data.input !== "up" && data.input !== "down") return;
+      game.addPlayer(query.playerId);
 
-        game.setPlayerInput(playerId, data.input);
+      connection.on("message", (message) => {
+        console.log(`${message}`);
       });
 
       connection.on("close", () => {
-        games.get(gameId)?.setPlayerConnection(playerId, null);
+        games.get(query.gameId)?.delPlayer(query.playerId);
+        console.log("websocket deconnected");
       });
     },
   );
@@ -63,8 +57,10 @@ app.post(
     const body = request.body as CreateGameRequestBody;
     if (games.has(body.gameId)) {
       response.code(403).send();
+      console.log("the game already exist");
       return;
     }
+    // check if the player is already expected in a game?
     games.set(String(body.gameId), new Game(body));
   },
 );
@@ -74,12 +70,15 @@ app.listen({ port: port }, (err) => {
     console.error(err);
     process.exit(1);
   }
+  console.log(`Server listening on port: ${port}`); // debug
 });
 
 setInterval(() => {
   games.forEach((game) => {
     game.update();
-    // broadcast only when running ?
-    game.broadcast(JSON.stringify(game.toJSON()));
   });
 }, 1000 / 60);
+
+setInterval(() => {
+  console.log(games);
+}, 5000);

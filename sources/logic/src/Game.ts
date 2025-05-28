@@ -1,43 +1,12 @@
 export interface CreateGameRequestBody {
   gameId: string;
-  playersId: string[];
+  playersId: { [key: number]: string };
 }
 
 export enum GameState {
   Init,
   Paused,
   Running,
-}
-
-class Player {
-  private playerId: string;
-  private score: number;
-  private socket: WebSocket | null;
-  private input: "up" | "down" | null;
-  constructor(playerId: string) {
-    this.playerId = playerId;
-    this.score = 0;
-    this.socket = null;
-    this.input = null;
-  }
-  public isConnected() {
-    return this.socket !== null;
-  }
-  public getId() {
-    return this.playerId;
-  }
-  public setConnected(socket: WebSocket | null) {
-    this.socket = socket;
-  }
-  public getSocket() {
-    return this.socket;
-  }
-  public setInput(input: "up" | "down" | null) {
-    this.input = input;
-  }
-  public toJSON() {
-    return { playerId: this.playerId, score: this.score, input: this.input };
-  }
 }
 
 class GameField {
@@ -48,10 +17,10 @@ class GameField {
     this.h = h;
     this.w = w;
   }
-  public getHeight() {
+  getHeight() {
     return this.h;
   }
-  public getWidth() {
+  getWidth() {
     return this.w;
   }
 }
@@ -72,13 +41,6 @@ class Paddle {
     this.dx = 0;
     this.dy = 0;
   }
-  public setPosition(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
-  public toJSON() {
-    return { x: this.x, y: this.y, h: this.h, w: this.w };
-  }
 }
 
 class Ball {
@@ -95,114 +57,59 @@ class Ball {
     this.dx = 0;
     this.dy = 0;
   }
-  public setPosition(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
-  public setVelocity(dx: number, dy: number) {
-    this.dx = dx;
-    this.dy = dy;
-  }
-  public toJSON() {
-    return {
-      x: this.x,
-      y: this.y,
-      r: this.r,
-      dx: this.dx,
-      dy: this.dy,
-    };
-  }
 }
 
 export class Game {
-  // meta data
+  private gameState: GameState = GameState.Init;
+  private playersExpected: Set<string>;
+  private playersConnected: Set<string> = new Set();
   private gameId: string;
-  private players: Map<string, Player> = new Map();
 
-  // game objects
   private gameField: GameField;
   private paddleL: Paddle;
   private paddleR: Paddle;
   private ball: Ball;
 
-  // ingame data
-  private gameState: GameState = GameState.Init;
-  private playersQueue: Array<string>;
-  private playerL: string;
-  private playerR: string;
-
   constructor(config: CreateGameRequestBody) {
     this.gameId = config.gameId;
-    config.playersId.forEach((playerId: string) => {
-      this.players.set(playerId, new Player(playerId));
-    });
-
-    this.playersQueue = Array(...this.players.keys());
-    // might need to check the len of playersQueue or the return values
-    this.playerL = this.playersQueue.shift() as string;
-    this.playerR = this.playersQueue.shift() as string;
+    this.playersExpected = new Set(Object.values(config.playersId));
 
     this.gameField = new GameField();
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
     this.paddleL = new Paddle(20, h / 2);
-    this.paddleR = new Paddle(w - 20, h / 2);
+    this.paddleR = new Paddle(h - 20, h / 2);
     this.ball = new Ball(w / 2, h / 2);
   }
-
-  public getPlayersId() {
-    return new Set(this.players.keys());
+  getPlayersExpected() {
+    return this.playersExpected;
   }
-  public getPlayersConnected() {
-    return new Set(
-      [...this.players.entries()]
-        .filter(([_, player]) => player.isConnected())
-        .map(([id, _]) => id),
-    );
+  getPlayersConnected() {
+    return this.playersConnected;
   }
-  private setGameState(state: GameState) {
+  setGameState(state: GameState) {
     this.gameState = state;
   }
-  public setPlayerConnection(playerId: string, socket: WebSocket | null) {
-    this.players.get(playerId)?.setConnected(socket);
+  addPlayer(player: string) {
+    this.playersConnected.add(player);
   }
-  private handleGameState() {
-    const full = [...this.players.values()].every((player) =>
-      player.isConnected(),
-    );
+  delPlayer(player: string) {
+    this.playersConnected.delete(player);
+  }
+  update() {
+    const full =
+      this.playersConnected.size === this.playersExpected.size &&
+      [...this.playersConnected].every((id) => this.playersExpected.has(id));
 
     if (this.gameState == GameState.Init && full) {
+      console.log(`Game: ${this.gameId} starting`);
       this.gameState = GameState.Running;
     } else if (this.gameState == GameState.Running && !full) {
+      console.log(`Game: ${this.gameId} paused`);
       this.gameState = GameState.Paused;
     } else if (this.gameState == GameState.Paused && full) {
+      console.log(`Game: ${this.gameId} resuming`);
       this.gameState = GameState.Running;
     }
-  }
-
-  public toJSON() {
-    return {
-      gameId: this.gameId,
-      state: GameState[this.gameState],
-      players: [[...this.players.values()].map((player) => player.toJSON())],
-      paddleR: this.paddleR.toJSON(),
-      paddleL: this.paddleL.toJSON(),
-      ball: this.ball.toJSON(),
-    };
-  }
-
-  public setPlayerInput(playerId: string, input: "up" | "down" | null) {
-    this.players.get(playerId)?.setInput(input);
-  }
-
-  public broadcast(message: string) {
-    //define the game state
-    this.players.forEach((player, id) => {
-      if (player.isConnected()) player.getSocket()?.send(message);
-    });
-  }
-  public update() {
-    this.handleGameState();
-    if (this.gameState != GameState.Running) return;
   }
 }

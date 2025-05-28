@@ -5,21 +5,16 @@ export const schemaCreateGame = {
     properties: {
       gameId: { type: "string" },
       playersId: {
-        type: "array",
-        items: { type: "string" },
-        minItems: 2,
+        type: "object",
+        minProperties: 2,
+        additionalProperties: { type: "string" },
       },
     },
   },
 };
 
 export const schemaWebsocket = {
-  params: {
-    type: "object",
-    required: ["gameId", "playerId"],
-    properties: {
-      gameId: { type: "string" },
-      playerId: { type: "string" },
-    },
+  querystring: {
+    properties: { gameId: { type: "string" }, playerId: { type: "string" } },
   },
 };
