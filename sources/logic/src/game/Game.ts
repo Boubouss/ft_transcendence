@@ -36,8 +36,9 @@ export class Game {
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
     //todo: remove the overridden height
-    this.paddleL = new Paddle(20, h / 2, 400);
-    this.paddleR = new Paddle(w - 20, h / 2, 400);
+    const paddleW = 200;
+    this.paddleL = new Paddle(20 + paddleW / 2, h / 2, 400, paddleW);
+    this.paddleR = new Paddle(w - 20 - paddleW / 2, h / 2, 400, paddleW);
     this.ball = new Ball(w / 2, h / 2);
   }
   private resetObjects() {
@@ -94,6 +95,14 @@ export class Game {
     });
   }
 
+  private overlap(ball: Ball, paddle: Paddle): boolean {
+    const center = ball.center;
+    const pX = Math.max(paddle.left, Math.min(center.x, paddle.right));
+    const pY = Math.max(paddle.top, Math.min(center.y, paddle.bottom));
+    const dist = Math.sqrt((center.x - pX) ** 2 + (center.y - pY) ** 2);
+    return dist <= ball.radius;
+  }
+
   public update() {
     //todo: websocket could set to false onclose and we recheck only if false
     const full = ![...this.players.values()].some((p) => !p.isConnected());
@@ -134,20 +143,16 @@ export class Game {
     if (this.ball.top <= 0 || this.ball.bottom >= this.gameField.getHeight())
       this.ball.bounce("vertical");
 
-    if (
-      this.paddleL.left <= this.ball.center.x &&
-      this.ball.center.x <= this.paddleL.right &&
-      this.paddleL.top <= this.ball.center.y &&
-      this.ball.center.y <= this.paddleL.bottom
-    )
-      this.ball.bounce("horizontal");
-    if (
-      this.paddleR.left <= this.ball.center.x &&
-      this.ball.center.x <= this.paddleR.right &&
-      this.paddleR.top <= this.ball.center.y &&
-      this.ball.center.y <= this.paddleR.bottom
-    )
-      this.ball.bounce("horizontal");
+    for (const [_, paddle] of pairPlayerPaddle) {
+      if (!this.overlap(this.ball, paddle)) continue;
+      if (
+        this.ball.center.y <= paddle.top ||
+        paddle.bottom <= this.ball.center.y
+      )
+        this.ball.bounce("vertical");
+      else this.ball.bounce("horizontal");
+      this.ball.move();
+    }
 
     const width = this.gameField.getWidth();
     if (this.ball.left <= 0 || this.ball.right >= width) {

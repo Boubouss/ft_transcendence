@@ -7,7 +7,7 @@ export class Paddle {
   private w: number;
   private step: number;
 
-  constructor(x: number, y: number, h: number = 80, w: number = 10, step = 10) {
+  constructor(x: number, y: number, h: number = 80, w: number = 40, step = 10) {
     this.x = x;
     this.y = y;
     this.h = h;
