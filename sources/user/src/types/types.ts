@@ -11,14 +11,14 @@ export type ConfigAuth = Configuration & {
 
 export type User = {
 	id: number;
-	username: string;
+	name: string;
 	email: string;
 	avatar: string;
 	configuration?: Configuration;
 };
 
 export type UserCreate = {
-	username: string;
+	name: string;
 	email: string;
 	avatar: string;
 	password: string;
@@ -26,7 +26,7 @@ export type UserCreate = {
 
 export type UserUpdate = {
 	id: number;
-	username?: string;
+	name?: string;
 	email?: string;
 	avatar?: string;
 	password?: string;
@@ -41,18 +41,18 @@ export type UserAuth = {
 };
 
 export type Credential = {
-	username: string;
+	name: string;
 	password: string;
 };
 
 export type Credential2FA = {
-	username: string;
+	name: string;
 	code: string;
 };
 
 export type Friend = {
 	id: number;
-	username: string;
+	name: string;
 	avatar: string;
 };
 

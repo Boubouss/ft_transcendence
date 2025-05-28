@@ -16,15 +16,15 @@ checkEnv();
 
 const app = fastify({
 	https: {
-		key: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_KEY)),
-		cert: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_CERT)),
+		key: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_KEY as string)),
+		cert: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_CERT as string)),
 	},
 });
 
 app.register(fastifyWebsocket);
 
 app.register(fastifyJwt, {
-	secret: process.env.JWT_KEY,
+	secret: process.env.JWT_KEY as string,
 });
 
 app.register(crud, { prefix: "/crud" });

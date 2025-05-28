@@ -9,7 +9,7 @@ export async function getUserFriends(id: number) {
 			friends: {
 				select: {
 					id: true,
-					username: true,
+					name: true,
 					avatar: true,
 				},
 			},
@@ -24,7 +24,7 @@ export async function getUserFriendRequests(id: number) {
 			receiver: {
 				select: {
 					id: true,
-					username: true,
+					name: true,
 					avatar: true,
 				},
 			},
@@ -43,7 +43,7 @@ export async function createFriendRequest(sender: number, receiver: number) {
 			},
 			select: {
 				id: true,
-				username: true,
+				name: true,
 				avatar: true,
 			},
 		});
@@ -77,7 +77,7 @@ export async function acceptFriendRequest(sender: number, receiver: number) {
 			},
 			select: {
 				id: true,
-				username: true,
+				name: true,
 				avatar: true,
 			},
 		});
@@ -111,7 +111,7 @@ export async function declineFriendRequest(sender: number, receiver: number) {
 			},
 			select: {
 				id: true,
-				username: true,
+				name: true,
 				avatar: true,
 			},
 		});

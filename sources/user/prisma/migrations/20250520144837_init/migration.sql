@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "username" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "avatar" TEXT NOT NULL DEFAULT '',
     "password" TEXT NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE "_Friendship" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+CREATE UNIQUE INDEX "User_name_key" ON "User"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
