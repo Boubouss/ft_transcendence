@@ -118,11 +118,11 @@ export class Game {
 
     //todo: replace with better values
     if (this.ball.isStatic()) {
-      let dx = Math.ceil(Math.random() * 10);
-      let dy = Math.ceil(Math.random() * 10);
-      if (Math.floor(Math.random() * 2) % 2) dx *= -1;
-      if (Math.floor(Math.random() * 2) % 2) dy *= -1;
-      this.ball.setVelocity(dx, dy);
+      // let dx = Math.ceil(Math.random() * 10);
+      // let dy = Math.ceil(Math.random() * 10);
+      // if (Math.floor(Math.random() * 2) % 2) dx *= -1;
+      // if (Math.floor(Math.random() * 2) % 2) dy *= -1;
+      this.ball.setVelocity(4, 3);
     }
 
     const pairPlayerPaddle = [
@@ -145,6 +145,7 @@ export class Game {
 
     for (const [_, paddle] of pairPlayerPaddle) {
       if (!this.overlap(this.ball, paddle)) continue;
+      //todo: improve the ball collision at the angles
       if (
         this.ball.center.y <= paddle.top ||
         paddle.bottom <= this.ball.center.y
