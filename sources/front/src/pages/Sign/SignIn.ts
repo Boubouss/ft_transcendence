@@ -1,5 +1,6 @@
 import { createCustomButton } from "../../components/Buttons/CustomButton.ts";
 import { handlePostLogin } from "./A2F.ts";
+import * as authStorage from "../../utils/authStorage.ts"
 
 export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElement {
   const form = document.createElement("form");
@@ -38,7 +39,7 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
       // Simule l'appel API avec deux cas : 2FA actif ou pas (ici aléatoire)
       await new Promise(r => setTimeout(r, 800)); // latence simulée
 
-      const twoFAActive = Math.random() < 0.5; // 50% de chances
+      const twoFAActive = authStorage.getA2F() ?? false;
 
       if (!twoFAActive) {
         // 2FA inactif : réponse complète avec token
@@ -49,7 +50,7 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
           token: "fake-jwt-token-" + Date.now(),
         };
         console.log("Connexion sans 2FA, user:", user);
-        handlePostLogin(user, false);
+        handlePostLogin(user, twoFAActive);
 		onSuccess(user);
       } else {
         // 2FA actif : réponse sans token
@@ -60,7 +61,7 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
           // pas de token ici
         };
         console.log("Connexion avec 2FA, user:", user);
-        handlePostLogin(user, true);
+        handlePostLogin(user, twoFAActive);
       	onSuccess(user);
       }
     } catch (error) {

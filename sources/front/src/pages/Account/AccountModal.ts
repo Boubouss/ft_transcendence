@@ -22,7 +22,7 @@ export function createAccountModal(): HTMLDivElement {
   });
 
   modal.innerHTML = `
-    <div class="relative bg-[#d5971b] text-black rounded-2xl p-6 h-[800px] w-[700px] border-2 border-black shadow-2xl">
+    <div style="font-family: 'Jaro', sans-serif" class="relative bg-[#d5971b] text-black rounded-2xl p-6 h-[800px] w-[700px] border-2 border-black shadow-2xl">
       <h2 style="font-family: 'Jaro', sans-serif" class="text-7xl absolute top-3 left-6">Paramètres</h2>
       <div class="absolute left-0 right-0 top-[100px] h-[3px] bg-black"></div>
       <div class="absolute top-[140px] left-[235px] transform -translate-x-1/2 w-[430px] h-[80px] bg-[#FFFFFF99] rounded-[20px] border-2 border-black flex items-center justify-center">

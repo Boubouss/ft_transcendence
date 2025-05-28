@@ -1,10 +1,13 @@
 import { createCustomButton } from "../../components/Buttons/CustomButton.ts";
-import * as authStorage from '../../utils/authStorage';
+import * as authStorage from "../../utils/authStorage";
 import { navigateTo } from "../../router.ts";
 
-export function createSignUpForm(onSuccess: (user: any) => void): HTMLFormElement {
+export function createSignUpForm(
+  onSuccess: (user: any) => void
+): HTMLFormElement {
   const form = document.createElement("form");
-  form.className = "absolute top-0 left-0 w-full transition-transform duration-500 ease-in-out";
+  form.className =
+    "absolute top-0 left-0 w-full transition-transform duration-500 ease-in-out";
   form.style.transform = "translateX(100%)";
 
   form.innerHTML = `
@@ -33,7 +36,7 @@ export function createSignUpForm(onSuccess: (user: any) => void): HTMLFormElemen
   submitBtn.type = "submit";
   form.appendChild(submitBtn);
 
-  form.addEventListener("submit", async e => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
@@ -43,7 +46,7 @@ export function createSignUpForm(onSuccess: (user: any) => void): HTMLFormElemen
 
     try {
       // Simuler un délai réseau
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Simuler une réponse utilisateur de l'API
       const mockUser = {
@@ -53,16 +56,13 @@ export function createSignUpForm(onSuccess: (user: any) => void): HTMLFormElemen
         token: "fake-jwt-token-" + Date.now(),
       };
 
-      console.log("✅ Utilisateur simulé reçu :", mockUser);
 
       // Stockage dans localStorage
-		authStorage.saveToken(mockUser.token);
-		authStorage.saveUser(mockUser);
+      authStorage.saveUser(mockUser);
 
-
-      console.log("📦 Stockage local effectué :");
-      console.log("🔑 Token :", authStorage.getToken());
-      console.log("👤 User :", authStorage.getUser());
+      const token = authStorage.getUserValue("token");
+      if (token)
+          authStorage.saveToken(token);
 
       // Callback succès
       onSuccess(mockUser);
@@ -75,28 +75,28 @@ export function createSignUpForm(onSuccess: (user: any) => void): HTMLFormElemen
   return form;
 }
 
-		//try {
-		//  const response = await fetch("https://TON_DOMAINE_API/auth/register", {
-		//    method: "POST",
-		//    headers: {
-		//      "Content-Type": "application/json",
-		//    },
-		//    body: JSON.stringify({ username, email, password }),
-		//  });
+//try {
+//  const response = await fetch("https://TON_DOMAINE_API/auth/register", {
+//    method: "POST",
+//    headers: {
+//      "Content-Type": "application/json",
+//    },
+//    body: JSON.stringify({ username, email, password }),
+//  });
 
-		//  if (!response.ok) {
-		//    const err = await response.json();
-		//    alert("Erreur à l'inscription : " + (err.message || "Vérifie les champs"));
-		//    return;
-		//  }
+//  if (!response.ok) {
+//    const err = await response.json();
+//    alert("Erreur à l'inscription : " + (err.message || "Vérifie les champs"));
+//    return;
+//  }
 
-		//  const user = await response.json();
+//  const user = await response.json();
 
-		//  localStorage.setItem("token", user.token);
-		//  localStorage.setItem("user", JSON.stringify(user));
+//  localStorage.setItem("token", user.token);
+//  localStorage.setItem("user", JSON.stringify(user));
 
-		//  onSuccess(user);
-		//} catch (error) {
-		//  console.error("Erreur réseau ou serveur :", error);
-		//  alert("Une erreur est survenue. Veuillez réessayer.");
-		//}
+//  onSuccess(user);
+//} catch (error) {
+//  console.error("Erreur réseau ou serveur :", error);
+//  alert("Une erreur est survenue. Veuillez réessayer.");
+//}

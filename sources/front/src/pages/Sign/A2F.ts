@@ -1,18 +1,26 @@
-import { navigateTo } from '../../router';
-import * as authStorage from '../../utils/authStorage';
+import { navigateTo } from "../../router";
+import * as authStorage from "../../utils/authStorage.ts";
 
 export function handlePostLogin(user: any, needs2FA: boolean) {
   if (!needs2FA) {
     // Stocke le token & user dans localStorage puis redirige
-	authStorage.saveToken(user.token);
-	authStorage.saveUser(user);
+    authStorage.saveToken(user.token);
+    authStorage.saveUser(user);
   } else {
     // Affiche le modal 2FA
     show2FAModal(user);
   }
 }
 
-function show2FAModal(user: any) {
+export async function EnableDisableA2F() {
+  const user = authStorage.getUser();
+  const modal = create2FAModal();
+  document.body.appendChild(modal);
+  await handle2FActivation(user, modal);
+  navigateTo("account");
+}
+
+function create2FAModal(): HTMLDivElement {
   const modal = document.createElement("div");
   modal.style.position = "fixed";
   modal.style.top = "0";
@@ -35,8 +43,46 @@ function show2FAModal(user: any) {
     </div>
   `;
 
-  document.body.appendChild(modal);
+  return modal;
+}
 
+function handle2FActivation(user: any, modal: HTMLDivElement): Promise<void> {
+  return new Promise((resolve) => {
+    const submitBtn = modal.querySelector("#submit-2fa")!;
+    const closeBtn = modal.querySelector("#close-2fa")!;
+    const input = modal.querySelector<HTMLInputElement>("#twofa-code")!;
+
+    submitBtn.addEventListener("click", () => {
+      const code = input.value.trim();
+
+      if (code !== "000000") {
+        alert("Code 2FA incorrect, veuillez réessayer.");
+        return;
+      }
+
+      const A2FStatus = authStorage.getA2F();
+
+      if (A2FStatus) {
+        authStorage.setA2F(false);
+      } else {
+        authStorage.setA2F(true);
+      }
+
+      document.body.removeChild(modal);
+      resolve(); // Résout la promesse lorsque le code est correct
+    });
+
+    closeBtn.addEventListener("click", () => {
+      document.body.removeChild(modal);
+      resolve(); // Résout également la promesse si l'utilisateur annule
+    });
+  });
+}
+
+
+
+
+function handle2FAValidation(user: any, modal: HTMLDivElement) {
   const submitBtn = modal.querySelector("#submit-2fa")!;
   const closeBtn = modal.querySelector("#close-2fa")!;
   const input = modal.querySelector<HTMLInputElement>("#twofa-code")!;
@@ -49,12 +95,19 @@ function show2FAModal(user: any) {
       return;
     }
 
-    // Code correct, simule la réception du token
-    const token = "fake-jwt-token-" + Date.now();
-	authStorage.saveToken(token);
-	authStorage.saveUser(user);
+    if (user) {
+      authStorage.saveUser(user);
+    }
 
-    //alert("2FA validé avec succès !");
+    // Code correct, simule la réception du token
+    const token = authStorage.getUserValue<string>("token");
+    if (token) {
+      authStorage.saveToken(token);
+    } else {
+      console.error("Token is null, cannot save.");
+      return;
+    }
+
     document.body.removeChild(modal);
     navigateTo("home");
   });
@@ -62,4 +115,10 @@ function show2FAModal(user: any) {
   closeBtn.addEventListener("click", () => {
     document.body.removeChild(modal);
   });
+}
+
+function show2FAModal(user: any = null) {
+  const modal = create2FAModal();
+  document.body.appendChild(modal);
+  handle2FAValidation(user, modal);
 }
