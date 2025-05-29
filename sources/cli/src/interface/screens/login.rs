@@ -23,7 +23,7 @@ pub fn load_login(terminal_size: &Size) -> Vec<Elements> {
 
     position.align(alignments, terminal_size);
 
-    let title_content = include_str!("assets/title.txt").to_string();
+    let title_content = include_str!("assets/login.txt").to_string();
     let title = Text::new(position.move_bottom(12).clone(), title_content);
 
     alignments = Alignments {

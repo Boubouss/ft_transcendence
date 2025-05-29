@@ -1,7 +1,8 @@
 use crate::{size::Size, BACKGROUND_COLOR};
 use elements::{button::Action, Elements};
+use lobby::Lobby;
 use reqwest::Client;
-use screens::{home::load_home, login::load_login, Screen};
+use screens::{home::load_home, login::load_login, multiplayer::load_multiplayer, Screen};
 use session::Session;
 
 use std::{
@@ -19,6 +20,7 @@ use termion::{
 };
 
 mod elements;
+mod lobby;
 mod screens;
 mod session;
 
@@ -32,6 +34,7 @@ pub struct Interface {
     stdout: RawTerminal<Stdout>,
     client: Client,
     session: Session,
+    lobby: Option<Lobby>,
     elements: Vec<Elements>,
     active_index: usize,
     status: Status,
@@ -46,6 +49,7 @@ impl Interface {
                 .build()
                 .unwrap(),
             session: Session::new(),
+            lobby: None,
             elements: Vec::new(),
             active_index: 0,
             status: Status::Run,
@@ -94,8 +98,11 @@ impl Interface {
         };
 
         match screen {
-            Screen::Home => self.elements = load_home(&terminal_size, self.session.get_session()),
+            Screen::Home => self.elements = load_home(&terminal_size, self.session.get_data()),
             Screen::Login => self.elements = load_login(&terminal_size),
+            Screen::Multiplayer => {
+                self.elements = load_multiplayer(&terminal_size, self.session.get_data())
+            }
         };
 
         self.auto_active();

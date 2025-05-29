@@ -20,7 +20,7 @@ impl Session {
         Self { data: None }
     }
 
-    pub fn get_session(&self) -> &Option<SessionData> {
+    pub fn get_data(&self) -> &Option<SessionData> {
         &self.data
     }
 
