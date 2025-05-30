@@ -8,7 +8,7 @@ export async function getUsers() {
 	return await prisma.user.findMany({
 		select: {
 			id: true,
-			username: true,
+			name: true,
 			email: true,
 			avatar: true,
 			configuration: {
@@ -26,7 +26,7 @@ export async function getUserById(id: number) {
 		where: { id },
 		select: {
 			id: true,
-			username: true,
+			name: true,
 			email: true,
 			avatar: true,
 			configuration: {
@@ -44,7 +44,7 @@ export async function getUserByEmail(email: string) {
 		where: { email },
 		select: {
 			id: true,
-			username: true,
+			name: true,
 			email: true,
 			avatar: true,
 			configuration: {
@@ -68,7 +68,7 @@ export async function createUser(userData: UserCreate) {
 			data: userData,
 			select: {
 				id: true,
-				username: true,
+				name: true,
 				email: true,
 				avatar: true,
 			},
@@ -105,7 +105,7 @@ export async function updateUser(id: number, data: UserUpdate) {
 			data: userData,
 			select: {
 				id: true,
-				username: true,
+				name: true,
 				email: true,
 				avatar: true,
 			},
@@ -140,7 +140,7 @@ export async function deleteUser(id: number) {
 			where: { id },
 			select: {
 				id: true,
-				username: true,
+				name: true,
 				email: true,
 				avatar: true,
 			},

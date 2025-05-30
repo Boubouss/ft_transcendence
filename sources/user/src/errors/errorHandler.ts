@@ -13,10 +13,18 @@ export function errorHandler(
 			validationErrors: error.validation,
 		});
 	} else if (error.code == "P2002") {
+		let field = "{Unknown}";
+
+		if (error.message.includes("email")) {
+			field = "Email"
+		} else if (error.message.includes("name")) {
+			field = "Name"
+		}
+
 		reply.status(400).send({
 			statusCode: 400,
 			error: "Bad Request",
-			message: "Email already exist",
+			message: `${field} already exist.`,
 			validationErrors: error.validation,
 		});
 	} else if (error.code == "P2025") {
@@ -27,9 +35,9 @@ export function errorHandler(
 			validationErrors: error.validation,
 		});
 	} else if (error.message == "Invalid password") {
-		reply.status(400).send({
-			statusCode: 400,
-			error: "Bad Request",
+		reply.status(401).send({
+			statusCode: 401,
+			error: "Unauthorized",
 			message: "Invalid password",
 			validationErrors: error.validation,
 		});

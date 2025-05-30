@@ -13,9 +13,9 @@ const transporter = nodemailer.createTransport({
 	},
 });
 
-export async function getUserAuth(username: string) {
+export async function getUserAuth(name: string) {
 	return await prisma.user.findUnique({
-		where: { username },
+		where: { name },
 		select: {
 			id: true,
 			email: true,
