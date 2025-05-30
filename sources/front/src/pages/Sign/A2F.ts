@@ -1,27 +1,10 @@
 import { navigateTo } from "../../router";
 import * as authStorage from "../../utils/authStorage.ts";
+import { createCustomButton } from "../../components/Buttons/CustomButton"; // adapte le chemin si besoin
 
-export function handlePostLogin(user: any, needs2FA: boolean) {
-  if (!needs2FA) {
-    // Stocke le token & user dans localStorage puis redirige
-    authStorage.saveToken(user.token);
-    authStorage.saveUser(user);
-  } else {
-    // Affiche le modal 2FA
-    show2FAModal(user);
-  }
-}
-
-export async function EnableDisableA2F() {
-  const user = authStorage.getUser();
-  const modal = create2FAModal();
-  document.body.appendChild(modal);
-  await handle2FActivation(user, modal);
-  navigateTo("account");
-}
-
-function create2FAModal(): HTMLDivElement {
+function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
   const modal = document.createElement("div");
+  modal.id = "twofa-modal";
   modal.style.position = "fixed";
   modal.style.top = "0";
   modal.style.left = "0";
@@ -33,92 +16,110 @@ function create2FAModal(): HTMLDivElement {
   modal.style.alignItems = "center";
   modal.style.zIndex = "1000";
 
-  modal.innerHTML = `
-    <div style="background: white; padding: 20px; border-radius: 8px; max-width: 320px; width: 90%; text-align: center;">
-      <h3>Code 2FA requis</h3>
-      <input id="twofa-code" type="text" maxlength="6" placeholder="Entrez le code 2FA"
-        style="width: 100%; margin: 15px 0; padding: 10px; font-size: 16px; text-align: center; letter-spacing: 0.3em;" />
-      <button id="submit-2fa" style="padding: 10px 15px; background-color: #3b82f6; color: white; border: none; border-radius: 5px; width: 100%; font-size: 16px;">Valider</button>
-      <button id="close-2fa" style="margin-top: 10px; padding: 10px 15px; background-color: #ef4444; color: white; border: none; border-radius: 5px; width: 100%; font-size: 16px;">Annuler</button>
-    </div>
-  `;
+  const modalContent = document.createElement("div");
+  modalContent.style.background = "white";
+  modalContent.style.padding = "20px";
+  modalContent.style.borderRadius = "8px";
+  modalContent.style.maxWidth = "320px";
+  modalContent.style.width = "90%";
+  modalContent.style.textAlign = "center";
 
-  return modal;
-}
+  const title = document.createElement("h3");
+  title.textContent = "Code 2FA requis";
 
-function handle2FActivation(user: any, modal: HTMLDivElement): Promise<void> {
-  return new Promise((resolve) => {
-    const submitBtn = modal.querySelector("#submit-2fa")!;
-    const closeBtn = modal.querySelector("#close-2fa")!;
-    const input = modal.querySelector<HTMLInputElement>("#twofa-code")!;
+  const input = document.createElement("input");
+  input.id = "twofa-code";
+  input.type = "text";
+  input.maxLength = 6;
+  input.placeholder = "Entrez le code 2FA";
+  input.style.width = "100%";
+  input.style.margin = "15px 0";
+  input.style.padding = "10px";
+  input.style.fontSize = "16px";
+  input.style.textAlign = "center";
+  input.style.letterSpacing = "0.3em";
 
-    submitBtn.addEventListener("click", () => {
+  const buttonsContainer = document.createElement("div");
+  buttonsContainer.style.display = "flex";
+  buttonsContainer.style.flexDirection = "column";
+  buttonsContainer.style.alignItems = "center";
+  buttonsContainer.style.gap = "10px";
+
+  const submitBtn = createCustomButton({
+    text: "Valider",
+    backgroundColor: "bg-blue-500",
+    textColor: "text-white",
+    width: "75%",
+    fontSizeClass: "text-base",
+    onClick: () => {
       const code = input.value.trim();
-
       if (code !== "000000") {
         alert("Code 2FA incorrect, veuillez réessayer.");
         return;
       }
 
-      const A2FStatus = authStorage.getA2F();
-
-      if (A2FStatus) {
-        authStorage.setA2F(false);
+      if (validOrActivate) {
+        // Activation / désactivation 2FA
+        const A2FStatus = authStorage.getA2F();
+        authStorage.setA2F(!A2FStatus);
+        document.body.removeChild(modal);
+        navigateTo("account");
       } else {
-        authStorage.setA2F(true);
+        // Validation post-login
+        if (user) {
+          authStorage.saveUser(user);
+          authStorage.setUserValue("token", "fake-jwt-token-" + Date.now())
+        }
+
+        const token = authStorage.getUserValue<string>("token");
+        if (token)
+          authStorage.saveToken(token);
+          document.body.removeChild(modal);
+          navigateTo("home");
       }
-
-      document.body.removeChild(modal);
-      resolve(); // Résout la promesse lorsque le code est correct
-    });
-
-    closeBtn.addEventListener("click", () => {
-      document.body.removeChild(modal);
-      resolve(); // Résout également la promesse si l'utilisateur annule
-    });
+    },
   });
+
+  const closeBtn = createCustomButton({
+    text: "Annuler",
+    backgroundColor: "bg-red-500",
+    textColor: "text-white",
+    width: "75%",
+    fontSizeClass: "text-base",
+    onClick: () => {
+      const modal = document.querySelector("#twofa-modal");
+      if (modal) document.body.removeChild(modal);
+      authStorage.clearAuth();
+    },
+  });
+
+  buttonsContainer.appendChild(submitBtn);
+  buttonsContainer.appendChild(closeBtn);
+
+  modalContent.appendChild(title);
+  modalContent.appendChild(input);
+  modalContent.appendChild(buttonsContainer);
+  modal.appendChild(modalContent);
+
+  return modal;
 }
 
-
-
-
-function handle2FAValidation(user: any, modal: HTMLDivElement) {
-  const submitBtn = modal.querySelector("#submit-2fa")!;
-  const closeBtn = modal.querySelector("#close-2fa")!;
-  const input = modal.querySelector<HTMLInputElement>("#twofa-code")!;
-
-  submitBtn.addEventListener("click", () => {
-    const code = input.value.trim();
-
-    if (code !== "000000") {
-      alert("Code 2FA incorrect, veuillez réessayer.");
-      return;
-    }
-
-    if (user) {
-      authStorage.saveUser(user);
-    }
-
-    // Code correct, simule la réception du token
-    const token = authStorage.getUserValue<string>("token");
-    if (token) {
-      authStorage.saveToken(token);
-    } else {
-      console.error("Token is null, cannot save.");
-      return;
-    }
-
-    document.body.removeChild(modal);
-    navigateTo("home");
-  });
-
-  closeBtn.addEventListener("click", () => {
-    document.body.removeChild(modal);
-  });
-}
-
-function show2FAModal(user: any = null) {
-  const modal = create2FAModal();
+function show2FAModal(validOrActivate: boolean, user: any = null) {
+  const modal = create2FAModal(validOrActivate, user);
   document.body.appendChild(modal);
-  handle2FAValidation(user, modal);
+}
+
+export function handlePostLogin(user: any, needs2FA: boolean) {
+  if (!needs2FA) {
+    authStorage.saveToken(user.token);
+    authStorage.saveUser(user);
+    navigateTo("home");
+  } else {
+    show2FAModal(false, user); // validation mode
+  }
+}
+
+export function EnableDisableA2F() {
+  const user = authStorage.getUser();
+  show2FAModal(true, user); // activation mode
 }

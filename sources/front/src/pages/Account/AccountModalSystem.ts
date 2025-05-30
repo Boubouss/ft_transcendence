@@ -144,5 +144,22 @@ export function renderAccount() {
     modalContainer.appendChild(A2FButtonDisable);
   }
 
+    const LogoutButton = createCustomButton({
+    text: "Déconnexion",
+    height: "60px",
+    fontSizeClass: "text-2xl",
+    fontStyle: "font-jaro",
+    backgroundColor: "bg-red-500",
+    position: "absolute top-127 right-10",
+    padding: "p-[10px]",
+    onClick: () => {
+      authStorage.clearAuth(),
+      navigateTo("home"),
+      modal.remove()
+    },
+  });
+
+    modalContainer.appendChild(LogoutButton);
+
   navigateTo("home");
 }

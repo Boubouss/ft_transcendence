@@ -51,7 +51,7 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
         };
         console.log("Connexion sans 2FA, user:", user);
         handlePostLogin(user, twoFAActive);
-		onSuccess(user);
+		    onSuccess(user);
       } else {
         // 2FA actif : réponse sans token
         const user = {

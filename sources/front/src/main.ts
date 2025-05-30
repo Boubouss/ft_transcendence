@@ -6,8 +6,6 @@ import { renderHome } from './pages/Home/Home.ts'; // importe la fonction depuis
 import * as authStorage from './utils/authStorage';
 import { renderAccount } from './pages/Account/AccountModalSystem.ts';
 
-authStorage.clearAuth()
-authStorage.setA2F(false);
 renderHome(); // exécute la fonction qui affiche la page d'accueil
 //renderSign();
 //renderAccount();
