@@ -1,5 +1,5 @@
 import { renderHome } from './pages/Home/Home.ts';
-import { renderSign } from './pages/Sign/Sign.ts';
+import { renderSignModal } from './pages/Sign/Sign.ts';
 import { renderAccount } from './pages/Account/AccountModalSystem.ts';
 
 export function navigateTo(page: string) {
@@ -13,7 +13,7 @@ export function navigateTo(page: string) {
       renderHome();
       break;
     case "sign":
-      renderSign();
+      renderSignModal();
       break;
     case "account":
       renderAccount(); // ← ouvre la modal des paramètres
