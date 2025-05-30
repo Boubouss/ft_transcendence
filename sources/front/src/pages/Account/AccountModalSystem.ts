@@ -6,15 +6,18 @@ import { navigateTo } from "../../router";
 import { EnableDisableA2F } from "../Sign/A2F";
 
 export function renderAccount() {
+  // Supprimer modal existant si besoin
   const existing = document.getElementById("account-modal");
   if (existing) existing.remove();
 
+  // Créer nouveau modal
   const modal = createAccountModal();
   document.body.appendChild(modal);
 
   const modalContainer = modal.querySelector(".relative")!;
   modalContainer.addEventListener("click", (e) => e.stopPropagation());
 
+  // Bouton fermer
   const closeButton = createCustomButton({
     width: "60px",
     height: "60px",
@@ -27,29 +30,28 @@ export function renderAccount() {
   });
   modalContainer.appendChild(closeButton);
 
+  // Clic en dehors ferme modal
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
 
-  const toggle = modal.querySelector<HTMLImageElement>("#toggle-password");
-  const passwordInput = modal.querySelector<HTMLInputElement>("#password");
-  if (toggle && passwordInput) {
-    toggle.addEventListener("click", () => {
-      const isHidden = passwordInput.type === "password";
-      passwordInput.type = isHidden ? "text" : "password";
-      passwordInput.value = isHidden ? "coucou" : "******";
-      toggle.src = isHidden
-        ? "/assets/icons/close_eye.png"
-        : "/assets/icons/open_eye.png";
-    });
-  }
+  // Références aux inputs
+  const emailInput = modal.querySelector<HTMLInputElement>("#email")!;
+  const usernameInput = modal.querySelector<HTMLInputElement>("#username")!;
+  const oldPasswordInput = modal.querySelector<HTMLInputElement>("#password")!;
+  const newPasswordContainer = modal.querySelector<HTMLDivElement>("#new-password-container")!;
+  const newPasswordInput = modal.querySelector<HTMLInputElement>("#new-password")!;
 
+  // Bouton container
+  const buttonContainer = modal.querySelector<HTMLDivElement>("#button-container")!;
+
+  // Valeurs initiales
   const emailInit = authStorage.getUserValue("email");
   const usernameInit = authStorage.getUserValue("username");
-  const buttonContainer =
-    modal.querySelector<HTMLDivElement>("#button-container")!;
 
   let isEditing = false;
+
+  // Boutons
   const modifyButton = createCustomButton({
     height: "50px",
     borderRadius: "rounded-[20px]",
@@ -64,9 +66,7 @@ export function renderAccount() {
     height: "50px",
     borderRadius: "rounded-[20px]",
     text: "Valider",
-    onClick: () => {
-      valideModif();
-    },
+    onClick: () => valideModif(),
   });
 
   const cancelButton = createCustomButton({
@@ -75,48 +75,79 @@ export function renderAccount() {
     borderRadius: "rounded-[20px]",
     text: "Annuler",
     onClick: () => {
-      modal.querySelector<HTMLInputElement>("#email")!.value = emailInit;
-      modal.querySelector<HTMLInputElement>("#username")!.value = usernameInit;
+      emailInput.value = emailInit;
+      usernameInput.value = usernameInit;
+      oldPasswordInput.value = "";
+      newPasswordInput.value = "";
       toggleEditMode();
     },
   });
 
+  // Initial : bouton modifier
   buttonContainer.appendChild(modifyButton);
-
-  function valideModif() {
-    const emailInput = modal.querySelector<HTMLInputElement>("#email")!;
-    const usernameInput = modal.querySelector<HTMLInputElement>("#username")!;
-    authStorage.setUserValue("email", emailInput.value);
-    authStorage.setUserValue("username", usernameInput.value);
-    toggleEditMode();
-    navigateTo("home");
-  }
 
   function toggleEditMode() {
     isEditing = !isEditing;
-    const emailInput = modal.querySelector<HTMLInputElement>("#email")!;
-    const usernameInput = modal.querySelector<HTMLInputElement>("#username")!;
-    const passwordInput = modal.querySelector<HTMLInputElement>("#password")!;
-    const toggleEye =
-      modal.querySelector<HTMLImageElement>("#toggle-password")!;
 
     emailInput.readOnly = !isEditing;
     usernameInput.readOnly = !isEditing;
-    toggleEye.style.display = isEditing ? "none" : "block";
 
-    passwordInput.type = "password";
-    passwordInput.value = "*******";
-
-    buttonContainer.innerHTML = "";
     if (isEditing) {
+      // Mode édition
+      oldPasswordInput.readOnly = false;
+      oldPasswordInput.value = "";
+      oldPasswordInput.placeholder = "Ancien MDP";
+
+      newPasswordContainer.style.display = "flex";
+      newPasswordInput.value = "";
+      newPasswordInput.placeholder = "Nouveau MDP";
+
+
+      // Remplace les boutons
+      buttonContainer.innerHTML = "";
+      buttonContainer.style.display = "flex";
+      buttonContainer.style.flexDirection = "row";
+      buttonContainer.style.justifyContent = "center";
+      buttonContainer.style.gap = "10px";
+
       buttonContainer.appendChild(validateButton);
       buttonContainer.appendChild(cancelButton);
     } else {
+      // Mode lecture seule
+      oldPasswordInput.readOnly = true;
+      oldPasswordInput.value = "******";
+      oldPasswordInput.placeholder = "Mot de passe";
+
+      newPasswordContainer.style.display = "none";
+      newPasswordInput.value = "";
+
+      buttonContainer.innerHTML = "";
+      buttonContainer.style.display = "flex";
+      buttonContainer.style.flexDirection = "column";
       buttonContainer.appendChild(modifyButton);
     }
   }
 
-  const A2FButtonAEnable = createCustomButton({
+  function valideModif() {
+    const oldPass = oldPasswordInput.value.trim();
+    const newPass = newPasswordInput.value.trim();
+
+    if (oldPass.length === 0 || newPass.length === 0) {
+      alert("Veuillez renseigner l'ancien et le nouveau mot de passe.");
+      return;
+    }
+
+
+    // On sauve les nouvelles valeurs
+    authStorage.setUserValue("email", emailInput.value);
+    authStorage.setUserValue("username", usernameInput.value);
+
+    toggleEditMode();
+    navigateTo("home");
+  }
+
+  // Boutons A2F (2FA)
+  const A2FButtonEnable = createCustomButton({
     text: "Activer A2F",
     height: "60px",
     fontSizeClass: "text-2xl",
@@ -128,7 +159,7 @@ export function renderAccount() {
   });
 
   const A2FButtonDisable = createCustomButton({
-    text: "Desactiver A2F",
+    text: "Désactiver A2F",
     height: "60px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
@@ -139,12 +170,13 @@ export function renderAccount() {
   });
 
   if (!authStorage.getA2F()) {
-    modalContainer.appendChild(A2FButtonAEnable);
+    modalContainer.appendChild(A2FButtonEnable);
   } else {
     modalContainer.appendChild(A2FButtonDisable);
   }
 
-    const LogoutButton = createCustomButton({
+  // Bouton déconnexion
+  const logoutButton = createCustomButton({
     text: "Déconnexion",
     height: "60px",
     fontSizeClass: "text-2xl",
@@ -153,13 +185,14 @@ export function renderAccount() {
     position: "absolute top-127 right-10",
     padding: "p-[10px]",
     onClick: () => {
-      authStorage.clearAuth(),
-      navigateTo("home"),
-      modal.remove()
+      authStorage.clearAuth();
+      navigateTo("home");
+      modal.remove();
     },
   });
 
-    modalContainer.appendChild(LogoutButton);
+  modalContainer.appendChild(logoutButton);
 
+  // Affiche la page "home" au chargement du modal
   navigateTo("home");
 }

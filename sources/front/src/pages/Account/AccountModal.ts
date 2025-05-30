@@ -1,4 +1,4 @@
-// AccountModal.ts
+// AccountModal.ts (modifié)
 import * as authStorage from '../../utils/authStorage';
 
 export function createAccountModal(): HTMLDivElement {
@@ -40,10 +40,15 @@ export function createAccountModal(): HTMLDivElement {
           <label for="username" class="text-black text-2xl font-jaro select-none">Pseudo :</label>
           <input id="username" type="text" readonly value="${username}" class="bg-transparent text-black text-2xl font-jaro w-[250px] focus:outline-none" />
         </div>
-        <div class="bg-[#FFFFFF99] rounded-[20px] border-2 border-black px-6 py-3 flex items-center justify-between relative">
-          <label for="password" class="text-black text-2xl font-jaro select-none">Mot de passe :</label>
-          <input id="password" type="password" readonly value="******" class="bg-transparent text-black text-2xl font-jaro w-[200px] focus:outline-none" />
-          <img id="toggle-password" src="/assets/icons/open_eye.png" alt="Afficher" class="absolute right-6 cursor-pointer w-8 h-8" />
+        <div class="bg-[#FFFFFF99] rounded-[20px] border-2 border-black px-6 py-3 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <label for="password" class="text-black text-2xl font-jaro select-none">Ancien MDP :</label>
+            <input id="password" type="password" readonly value="******" class="bg-transparent text-black text-2xl font-jaro w-[200px] focus:outline-none" />
+          </div>
+          <div class="flex items-center justify-between" style="display:none;" id="new-password-container">
+            <label for="new-password" class="text-black text-2xl font-jaro select-none">Nouveau MDP :</label>
+            <input id="new-password" type="password" value="" class="bg-transparent text-black text-2xl font-jaro w-[200px] focus:outline-none" />
+          </div>
         </div>
       </div>
       <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2">
