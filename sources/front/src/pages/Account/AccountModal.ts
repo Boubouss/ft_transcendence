@@ -28,8 +28,10 @@ export function createAccountModal(): HTMLDivElement {
       <div class="absolute top-[140px] left-[235px] transform -translate-x-1/2 w-[430px] h-[80px] bg-[#FFFFFF99] rounded-[20px] border-2 border-black flex items-center justify-center">
         <p style="font-family: 'Jaro', sans-serif" class="text-black text-4xl m-0">Informations du compte</p>
       </div>
-      <div class="absolute top-[120px] left-[500px] w-[160px] h-[160px] rounded-full border-2 border-black overflow-hidden">
+      <div class="bg-[url('../../assets/images/main-menu_background.jpg')] absolute top-[120px] left-[500px] w-[160px] h-[160px] rounded-full border-2 border-black overflow-hidden">
         <img src="${avatarUrl}" alt="Avatar" class="w-full h-full object-cover" style="transform: scale(1.2);" />
+
+
       </div>
       <div style="font-family: 'Jaro', sans-serif" class="absolute top-[340px] left-[235px] transform -translate-x-1/2 w-[430px] space-y-6">
         <div class="bg-[#FFFFFF99] rounded-[20px] border-2 border-black px-6 py-3 flex items-center justify-between">
@@ -42,7 +44,7 @@ export function createAccountModal(): HTMLDivElement {
         </div>
         <div class="bg-[#FFFFFF99] rounded-[20px] border-2 border-black px-6 py-3 flex flex-col gap-3">
           <div class="flex items-center justify-between">
-            <label for="password" class="text-black text-2xl font-jaro select-none">Ancien MDP :</label>
+            <label for="password" class="text-black text-2xl font-jaro select-none">Ancien mot de passe :</label>
             <input id="password" type="password" readonly value="******" class="bg-transparent text-black text-2xl font-jaro w-[200px] focus:outline-none" />
           </div>
           <div class="flex items-center justify-between" style="display:none;" id="new-password-container">

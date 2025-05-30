@@ -141,6 +141,7 @@ export function renderAccount() {
     // On sauve les nouvelles valeurs
     authStorage.setUserValue("email", emailInput.value);
     authStorage.setUserValue("username", usernameInput.value);
+    //authStorage.setUserValue("password", newPass);
 
     toggleEditMode();
     navigateTo("home");
