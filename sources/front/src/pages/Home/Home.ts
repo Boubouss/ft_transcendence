@@ -15,7 +15,7 @@ export function renderHome() {
 
   // Fond d'écran
   const background = document.createElement('div');
-  background.className = "bg-[url('/assets/images/main-menu_background.jpg')] h-full w-full bg-cover bg-center";
+  background.className = "bg-[url('../../assets/images/main-menu_background.jpg')] h-full w-full bg-cover bg-center";
   background.style.backgroundSize = "110% 160%";
   app.appendChild(background);
 
