@@ -1,6 +1,8 @@
 import { createSignInForm } from "./SignIn.ts";
 import { createSignUpForm } from "./SignUp.ts";
-import { navigateTo } from "../../router.ts";
+import { navigateTo } from "@/router.ts";
+import { t } from "@utils/i18n.ts";
+import { createCustomButton } from "@components/Buttons/CustomButton.ts"; // adapte le chemin si besoin
 
 export function renderSignModal() {
   // Création du modal overlay
@@ -30,25 +32,43 @@ export function renderSignModal() {
   const toggleContainer = document.createElement("div");
   toggleContainer.className = "flex justify-center mb-6 space-x-6";
 
-  function createToggleButton(text: string, active: boolean) {
-    const btn = document.createElement("button");
-    btn.textContent = text;
-    btn.type = "button";
-    btn.className = `
-      font-semibold text-lg w-28 h-10 border-2 rounded transition-all duration-300
-      ${
-        active
-          ? "bg-blue-600 text-white border-blue-700"
-          : "bg-gray-300 text-gray-700 border-gray-300"
-      }
-    `;
-    return btn;
+  // Création boutons toggle via custom button
+  function createToggleButton(
+    text: string,
+    active: boolean,
+    onClick: () => void
+  ) 
+  {
+    return createCustomButton({
+      text,
+      width: "112px", // 28*4px
+      height: "40px",
+      borderRadius: "rounded-[15px]",
+
+      fontSizeClass: "text-lg",
+      //fontStyle: "font-jaro",
+
+      backgroundColor: active ? "bg-blue-600" : "bg-gray-300",
+      textColor: active ? "text-white" : "text-gray-700",
+      borderColor: active ? "border-blue-700" : "border-gray-300",
+    });
   }
 
   let activeForm: "signIn" | "signUp" = "signIn";
 
-  const btnSignIn = createToggleButton("Connexion", true);
-  const btnSignUp = createToggleButton("Inscription", false);
+  const btnSignIn = createToggleButton(t("signin"), true, () => {
+    if (activeForm !== "signIn") {
+      activeForm = "signIn";
+      updateToggle();
+    }
+  });
+  const btnSignUp = createToggleButton(t("signup"), false, () => {
+    if (activeForm !== "signUp") {
+      activeForm = "signUp";
+      updateToggle();
+    }
+  });
+
   toggleContainer.appendChild(btnSignIn);
   toggleContainer.appendChild(btnSignUp);
   card.appendChild(toggleContainer);
@@ -87,15 +107,22 @@ export function renderSignModal() {
   formsContainer.appendChild(formSignUp);
   card.appendChild(formsContainer);
 
-  // Bouton de retour
-  const backButton = document.createElement("button");
-  backButton.textContent = "Retour";
-  backButton.className =
-    "mt-6 w-24 h-10 border border-gray-400 text-gray-800 font-semibold rounded";
-  backButton.addEventListener("click", () => {
-    document.body.removeChild(modal);
-    navigateTo("home");
+  // Bouton de retour (custom)
+  const backButton = createCustomButton({
+    text: t("back"),
+    height: "40px",
+    borderRadius: "rounded-[15px]",
+    borderWidth: "border-0",
+    textColor: "text-gray-800",
+    //fontStyle: "font-jaro",
+    fontSizeClass: "text-lg",
+
+    onClick: () => {
+      document.body.removeChild(modal);
+      navigateTo("home");
+    },
   });
+
   card.appendChild(backButton);
 
   modal.appendChild(card);
@@ -162,10 +189,9 @@ export function renderSignModal() {
     }
   });
 
-  // Juste après avoir créé le modal, avant de l'ajouter au DOM
+  // Click fond modal ferme
   modal.addEventListener("click", (event) => {
     if (event.target === modal) {
-      // Click sur le fond (pas dans la card)
       document.body.removeChild(modal);
       navigateTo("home");
     }

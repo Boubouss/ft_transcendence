@@ -1,6 +1,7 @@
-import { navigateTo } from "../../router";
-import * as authStorage from "../../utils/authStorage.ts";
-import { createCustomButton } from "../../components/Buttons/CustomButton"; // adapte le chemin si besoin
+import { navigateTo } from "@/router";
+import * as authStorage from "@utils/authStorage.ts";
+import { createCustomButton } from "@components/Buttons/CustomButton"; // adapte le chemin si besoin
+import { t } from "@utils/i18n";
 
 function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
   const modal = document.createElement("div");
@@ -25,13 +26,13 @@ function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
   modalContent.style.textAlign = "center";
 
   const title = document.createElement("h3");
-  title.textContent = "Code 2FA requis";
+  title.textContent = t("requireda2f");
 
   const input = document.createElement("input");
   input.id = "twofa-code";
   input.type = "text";
   input.maxLength = 6;
-  input.placeholder = "Entrez le code 2FA";
+  input.placeholder = t("entera2f");
   input.style.width = "100%";
   input.style.margin = "15px 0";
   input.style.padding = "10px";
@@ -46,7 +47,7 @@ function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
   buttonsContainer.style.gap = "10px";
 
   const submitBtn = createCustomButton({
-    text: "Valider",
+    text: t("valid"),
     backgroundColor: "bg-blue-500",
     textColor: "text-white",
     width: "75%",
@@ -54,7 +55,7 @@ function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
     onClick: () => {
       const code = input.value.trim();
       if (code !== "000000") {
-        alert("Code 2FA incorrect, veuillez réessayer.");
+        alert(t("alerta2f"));
         return;
       }
 

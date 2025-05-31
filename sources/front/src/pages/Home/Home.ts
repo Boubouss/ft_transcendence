@@ -1,8 +1,8 @@
 // src/home.ts
-import { renderNavBar } from '../../components/Nav_bar/Nav_bar.ts';
-import { createCustomButton } from "../../components/Buttons/CustomButton.ts";
-import * as authStorage from '../../utils/authStorage';
-import { navigateTo } from '../../router.ts';
+import { renderNavBar } from '@components/Nav_bar/Nav_bar.ts';
+import { createCustomButton } from "@components/Buttons/CustomButton.ts";
+import * as authStorage from '@utils/authStorage';
+import { navigateTo } from '@/router.ts';
 
 export function renderHome() {
   const appRoot = document.getElementById("app-root");

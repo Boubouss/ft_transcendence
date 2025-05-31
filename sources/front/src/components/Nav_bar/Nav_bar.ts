@@ -1,5 +1,6 @@
-import { createCustomButton } from "../Buttons/CustomButton.ts";
-import { getToken } from "../../utils/authStorage.ts";
+import { createCustomButton } from "@components/Buttons/CustomButton.ts";
+import { getToken } from "@utils/authStorage.ts";
+import { t } from "@utils/i18n.ts";
 
 export function renderNavBar() {
   const app = document.createElement("div");
@@ -33,13 +34,13 @@ export function renderNavBar() {
 
   const local_button = createCustomButton({
     ...commonButtonOptions,
-    text: "Local",
+    text: t("local"),
   });
   addHoverEffect(local_button);
 
   const multiplayer_button = createCustomButton({
     ...commonButtonOptions,
-    text: "Multiplayer",
+    text: t("multiplayer"),
   });
 
   addHoverEffect(multiplayer_button);
@@ -48,7 +49,7 @@ export function renderNavBar() {
 
   const quit_button = createCustomButton({
     ...commonButtonOptions,
-    text: "Carriere",
+    text: t("career"),
   });
   addHoverEffect(quit_button);
 

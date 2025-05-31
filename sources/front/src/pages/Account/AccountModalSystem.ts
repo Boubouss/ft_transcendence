@@ -1,9 +1,10 @@
 // AccountModalSystem.ts
 import { createAccountModal } from "./AccountModal";
-import * as authStorage from "../../utils/authStorage";
-import { createCustomButton } from "../../components/Buttons/CustomButton";
-import { navigateTo } from "../../router";
-import { EnableDisableA2F } from "../Sign/A2F";
+import * as authStorage from "@utils/authStorage";
+import { createCustomButton } from "@/components/Buttons/CustomButton";
+import { navigateTo } from "@/router";
+import { EnableDisableA2F } from "@pages/Sign/A2F";
+import { t } from "@utils/i18n";
 
 export function renderAccount() {
   // Supprimer modal existant si besoin
@@ -55,7 +56,7 @@ export function renderAccount() {
   const modifyButton = createCustomButton({
     height: "50px",
     borderRadius: "rounded-[20px]",
-    text: "Modifier les informations",
+    text: t("editinfo"),
     fontSizeClass: "text-2xl",
     padding: "p-[10px]",
     onClick: () => toggleEditMode(),
@@ -65,7 +66,7 @@ export function renderAccount() {
     width: "120px",
     height: "50px",
     borderRadius: "rounded-[20px]",
-    text: "Valider",
+    text: t("valid"),
     onClick: () => valideModif(),
   });
 
@@ -73,7 +74,7 @@ export function renderAccount() {
     width: "120px",
     height: "50px",
     borderRadius: "rounded-[20px]",
-    text: "Annuler",
+    text: t("cancel"),
     onClick: () => {
       emailInput.value = emailInit;
       usernameInput.value = usernameInit;
@@ -96,11 +97,11 @@ export function renderAccount() {
       // Mode édition
       oldPasswordInput.readOnly = false;
       oldPasswordInput.value = "";
-      oldPasswordInput.placeholder = "Ancien MDP";
+      oldPasswordInput.placeholder = t("oldpw");
 
       newPasswordContainer.style.display = "flex";
       newPasswordInput.value = "";
-      newPasswordInput.placeholder = "Nouveau MDP";
+      newPasswordInput.placeholder = t("newpw");
 
 
       // Remplace les boutons
@@ -116,7 +117,7 @@ export function renderAccount() {
       // Mode lecture seule
       oldPasswordInput.readOnly = true;
       oldPasswordInput.value = "******";
-      oldPasswordInput.placeholder = "Mot de passe";
+      oldPasswordInput.placeholder = t("password");
 
       newPasswordContainer.style.display = "none";
       newPasswordInput.value = "";
@@ -133,7 +134,7 @@ export function renderAccount() {
     const newPass = newPasswordInput.value.trim();
 
     if (oldPass.length === 0 || newPass.length === 0) {
-      alert("Veuillez renseigner l'ancien et le nouveau mot de passe.");
+      alert(t("alertoldnew"));
       return;
     }
 
@@ -149,7 +150,7 @@ export function renderAccount() {
 
   // Boutons A2F (2FA)
   const A2FButtonEnable = createCustomButton({
-    text: "Activer A2F",
+    text: t("ona2f"),
     height: "60px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
@@ -160,7 +161,7 @@ export function renderAccount() {
   });
 
   const A2FButtonDisable = createCustomButton({
-    text: "Désactiver A2F",
+    text: t("offa2f"),
     height: "60px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
@@ -178,7 +179,7 @@ export function renderAccount() {
 
   // Bouton déconnexion
   const logoutButton = createCustomButton({
-    text: "Déconnexion",
+    text: t("disco"),
     height: "60px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
