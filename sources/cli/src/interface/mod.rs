@@ -34,7 +34,7 @@ pub struct Interface {
     stdout: RawTerminal<Stdout>,
     client: Client,
     session: Session,
-    lobby: Option<Lobby>,
+    // lobby: Lobby,
     elements: Vec<Elements>,
     active_index: usize,
     status: Status,
@@ -49,7 +49,7 @@ impl Interface {
                 .build()
                 .unwrap(),
             session: Session::new(),
-            lobby: None,
+            // lobby: Lobby::new(),
             elements: Vec::new(),
             active_index: 0,
             status: Status::Run,

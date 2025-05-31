@@ -2,6 +2,7 @@ use crate::{
     interface::{
         elements::{
             button::{Action, Button},
+            error::Error,
             text::Text,
             Element, Elements,
         },
@@ -35,28 +36,25 @@ pub fn load_multiplayer(terminal_size: &Size, data_option: &Option<SessionData>)
             format!("Welcome {} !", data.name),
         );
 
-        let mut multiplayer_button =
-            Button::new(position.move_bottom(2).clone(), "Multiplayer\n".to_string());
-        multiplayer_button.set_action(Action::Exit);
-
         let mut logout_button =
             Button::new(position.move_bottom(2).clone(), "Logout\n".to_string());
         logout_button.set_action(Action::Logout);
 
         elements.push(Elements::Text(greeting));
-        elements.push(Elements::Button(multiplayer_button));
         elements.push(Elements::Button(logout_button));
     } else {
-        let mut login_button = Button::new(position.move_bottom(20).clone(), "Login\n".to_string());
-        login_button.set_action(Action::Render(Screen::Login));
+        let auth_error = Error::new(
+            position.move_bottom(20).clone(),
+            "Seems like you aren't logged in.".to_string(),
+        );
 
-        elements.push(Elements::Button(login_button));
+        elements.push(Elements::Error(auth_error));
     }
 
-    let mut exit_button = Button::new(position.move_bottom(2).clone(), "Exit\n".to_string());
-    exit_button.set_action(Action::Exit);
+    let mut back_button = Button::new(position.move_bottom(2).clone(), "Go back\n".to_string());
+    back_button.set_action(Action::Render(Screen::Home));
 
-    elements.push(Elements::Button(exit_button));
+    elements.push(Elements::Button(back_button));
 
     elements
 }
