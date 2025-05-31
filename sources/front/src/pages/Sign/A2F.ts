@@ -82,7 +82,7 @@ function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
   });
 
   const closeBtn = createCustomButton({
-    text: "Annuler",
+    text: t("cancel"),
     backgroundColor: "bg-red-500",
     textColor: "text-white",
     width: "75%",
