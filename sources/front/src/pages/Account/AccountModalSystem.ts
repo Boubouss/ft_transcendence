@@ -155,7 +155,7 @@ export function renderAccount() {
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
     backgroundColor: "bg-green-500",
-    position: "absolute top-106 right-10",
+    position: "absolute top-87 right-10",
     padding: "p-[10px]",
     onClick: () => EnableDisableA2F(),
   });
@@ -184,7 +184,7 @@ export function renderAccount() {
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
     backgroundColor: "bg-red-500",
-    position: "absolute top-127 right-10",
+    position: "absolute top-110 right-10",
     padding: "p-[10px]",
     onClick: () => {
       authStorage.clearAuth();

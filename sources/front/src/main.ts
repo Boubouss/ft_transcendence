@@ -8,10 +8,10 @@ import { initI18n } from "./utils/i18n";
 import * as langStorage from "./utils/langStorage.ts";
 
 async function main() {
-  authStorage.clearAuth();
+  //authStorage.clearAuth();
 
   if (!langStorage.getLang()) {
-    langStorage.saveLang("fr");
+    langStorage.saveLang("en");
   }
 
   await initI18n(); // <-- initialise la langue et les traductions

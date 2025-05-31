@@ -40,7 +40,7 @@ export function createAccountModal(): HTMLDivElement {
 
 
       </div>
-      <div style="font-family: 'Jaro', sans-serif" class="absolute top-[340px] left-[235px] transform -translate-x-1/2 w-[430px] space-y-6">
+      <div style="font-family: 'Jaro', sans-serif" class="absolute top-[310px] left-[235px] transform -translate-x-1/2 w-[430px] space-y-6">
         <div class="bg-[#FFFFFF99] rounded-[20px] border-2 border-black px-6 py-3 flex items-center justify-between">
           <label for="email" class="text-black text-2xl font-jaro select-none">Email :</label>
           <input id="email" type="text" readonly value="${email}" class="bg-transparent text-black text-2xl font-jaro w-[250px] focus:outline-none" />
