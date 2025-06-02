@@ -7,7 +7,7 @@ export class Paddle {
   private w: number;
   private step: number;
 
-  constructor(x: number, y: number, h: number = 80, w: number = 40, step = 10) {
+  constructor(x: number, y: number, h: number = 80, w: number = 20, step = 10) {
     this.x = x;
     this.y = y;
     this.h = h;
@@ -18,10 +18,14 @@ export class Paddle {
     this.x = x;
     this.y = y;
   }
-  public move(input: PlayerInput) {
+  public move(input: PlayerInput, min: number, max: number) {
     if (input === null) return;
-    if (input === "up") this.y -= this.step;
-    if (input === "down") this.y += this.step;
+    let step = 0;
+    if (input === "up")
+      step = Math.min(Math.abs(min - this.top), this.step) * -1;
+    if (input === "down")
+      step = Math.min(Math.abs(max - this.bottom), this.step);
+    this.y += step;
   }
   public get top() {
     return this.y - this.h / 2;

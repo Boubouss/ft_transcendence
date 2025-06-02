@@ -36,9 +36,8 @@ export class Game {
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
     //todo: remove the overridden height
-    const paddleW = 200;
-    this.paddleL = new Paddle(20 + paddleW / 2, h / 2, 400, paddleW);
-    this.paddleR = new Paddle(w - 20 - paddleW / 2, h / 2, 400, paddleW);
+    this.paddleL = new Paddle(20 / 2, h / 2);
+    this.paddleR = new Paddle(w - 20 / 2, h / 2);
     this.ball = new Ball(w / 2, h / 2);
   }
   private resetObjects() {
@@ -118,11 +117,11 @@ export class Game {
 
     //todo: replace with better values
     if (this.ball.isStatic()) {
-      // let dx = Math.ceil(Math.random() * 10);
-      // let dy = Math.ceil(Math.random() * 10);
-      // if (Math.floor(Math.random() * 2) % 2) dx *= -1;
-      // if (Math.floor(Math.random() * 2) % 2) dy *= -1;
-      this.ball.setVelocity(4, 3);
+      let dx = Math.ceil(Math.random() * 10);
+      let dy = Math.ceil(Math.random() * 10);
+      if (Math.floor(Math.random() * 2) % 2) dx *= -1;
+      if (Math.floor(Math.random() * 2) % 2) dy *= -1;
+      this.ball.setVelocity(dx, dy);
     }
 
     const pairPlayerPaddle = [
@@ -134,7 +133,7 @@ export class Game {
       let player, input;
       if (!(player = this.players.get(playerId))) continue;
       if (!(input = player.getInput())) continue;
-      paddle.move(input); //todo: improve the bounce
+      paddle.move(input, 0, this.gameField.getHeight()); //todo: improve the bounce
       player.setInput(null);
     }
 
@@ -145,14 +144,12 @@ export class Game {
 
     for (const [_, paddle] of pairPlayerPaddle) {
       if (!this.overlap(this.ball, paddle)) continue;
-      //todo: improve the ball collision at the angles
-      if (
-        this.ball.center.y <= paddle.top ||
-        paddle.bottom <= this.ball.center.y
-      )
-        this.ball.bounce("vertical");
-      else this.ball.bounce("horizontal");
-      this.ball.move();
+      const radius = this.ball.radius;
+      if (paddle === this.paddleL)
+        this.ball.setPosition(this.paddleL.right + radius, this.ball.center.y);
+      if (paddle === this.paddleR)
+        this.ball.setPosition(this.paddleR.left - radius, this.ball.center.y);
+      this.ball.bounce("horizontal");
     }
 
     const width = this.gameField.getWidth();
