@@ -7,6 +7,7 @@ import { schemaWebsocket, schemaCreateGame } from "./type/Schema";
 //todo: remove the placeholders and constants
 const PORT: number = 3000;
 const WSCODE = 4000;
+const FPS = 60;
 
 let games = new Map<string, Game>();
 const app = fastify();
@@ -66,7 +67,7 @@ app.post(
       response.code(403).send();
       return;
     }
-    games.set(String(body.gameId), new Game(body));
+    games.set(String(body.gameId), new Game(body, FPS));
   },
 );
 

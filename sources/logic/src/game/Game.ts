@@ -21,7 +21,13 @@ export class Game {
   private playerL: string | null;
   private playerR: string | null;
 
-  constructor(config: CreateGameRequestBody) {
+  private sleep: number;
+  private fps: 30 | 60;
+
+  constructor(config: CreateGameRequestBody, fps: 30 | 60) {
+    this.fps = fps;
+    this.sleep = 0;
+
     this.gameId = config.gameId;
     config.playersId.forEach((playerId: string) => {
       this.players.set(playerId, new Player(playerId));
@@ -35,9 +41,8 @@ export class Game {
     this.gameField = new GameField();
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
-    //todo: remove the overridden height
-    this.paddleL = new Paddle(20 / 2, h / 2);
-    this.paddleR = new Paddle(w - 20 / 2, h / 2);
+    this.paddleL = new Paddle(20, h / 2);
+    this.paddleR = new Paddle(w - 20, h / 2);
     this.ball = new Ball(w / 2, h / 2);
   }
   private resetObjects() {
@@ -107,13 +112,16 @@ export class Game {
     const full = ![...this.players.values()].some((p) => !p.isConnected());
 
     if (this.gameState == GameState.Init && full) {
+      this.sleep = 1 * this.fps;
       this.gameState = GameState.Running;
     } else if (this.gameState == GameState.Running && !full) {
       this.gameState = GameState.Paused;
     } else if (this.gameState == GameState.Paused && full) {
+      this.sleep = 1 * this.fps;
       this.gameState = GameState.Running;
     }
     if (this.gameState != GameState.Running) return;
+    if (this.sleep > 0) return this.sleep--;
 
     //todo: replace with better values
     if (this.ball.isStatic()) {
@@ -143,6 +151,7 @@ export class Game {
       this.ball.bounce("vertical");
 
     for (const [_, paddle] of pairPlayerPaddle) {
+      //todo:make the ball collision more robust
       if (!this.overlap(this.ball, paddle)) continue;
       const radius = this.ball.radius;
       if (paddle === this.paddleL)
@@ -161,6 +170,7 @@ export class Game {
       if (!this.playerR) this.players.get(this.playerL as string)?.addPoint();
       if (!this.playerL || !this.playerR) this.resetQueue();
       this.resetObjects();
+      this.sleep = 1 * this.fps;
     }
   }
 }
