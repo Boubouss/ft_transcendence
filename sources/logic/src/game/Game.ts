@@ -142,7 +142,6 @@ export class Game {
       if (!(player = this.players.get(playerId))) continue;
       if (!(input = player.getInput())) continue;
       paddle.move(input, 0, this.gameField.getHeight()); //todo: improve the bounce
-      player.setInput(null);
     }
 
     this.ball.move();
@@ -158,6 +157,7 @@ export class Game {
         this.ball.setPosition(this.paddleL.right + radius, this.ball.center.y);
       if (paddle === this.paddleR)
         this.ball.setPosition(this.paddleR.left - radius, this.ball.center.y);
+      this.ball.accelarate(1.1, 1);
       this.ball.bounce("horizontal");
     }
 
@@ -168,6 +168,9 @@ export class Game {
       if (this.ball.right >= width) this.playerR = nextPlayer;
       if (!this.playerL) this.players.get(this.playerR as string)?.addPoint();
       if (!this.playerR) this.players.get(this.playerL as string)?.addPoint();
+      this.players.forEach((player) => {
+        player.setInput(null);
+      });
       if (!this.playerL || !this.playerR) this.resetQueue();
       this.resetObjects();
       this.sleep = 1 * this.fps;

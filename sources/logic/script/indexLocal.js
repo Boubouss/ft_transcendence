@@ -61,14 +61,10 @@ function connect() {
   window.addEventListener("keydown", (event) => {
     if (socket_0.readyState !== WebSocket.OPEN) return;
     if (socket_1.readyState !== WebSocket.OPEN) return;
-    if (
-      event.key !== "ArrowUp" &&
-      event.key !== "ArrowDown" &&
-      event.key !== "w" &&
-      event.key !== "s"
-    )
-      return;
+
+    if (!["ArrowUp", "ArrowDown", "w", "s"].includes(event.key)) return;
     event.preventDefault();
+
     if (event.key === "ArrowUp") {
       socket_0.send(JSON.stringify({ input: "up" }));
     }
@@ -80,6 +76,26 @@ function connect() {
     }
     if (event.key === "s") {
       socket_1.send(JSON.stringify({ input: "down" }));
+    }
+  });
+  window.addEventListener("keyup", (event) => {
+    if (socket_0.readyState !== WebSocket.OPEN) return;
+    if (socket_1.readyState !== WebSocket.OPEN) return;
+
+    if (!["ArrowUp", "ArrowDown", "w", "s"].includes(event.key)) return;
+    event.preventDefault();
+
+    if (event.key === "ArrowUp") {
+      socket_0.send(JSON.stringify({ input: null }));
+    }
+    if (event.key === "ArrowDown") {
+      socket_0.send(JSON.stringify({ input: null }));
+    }
+    if (event.key === "w") {
+      socket_1.send(JSON.stringify({ input: null }));
+    }
+    if (event.key === "s") {
+      socket_1.send(JSON.stringify({ input: null }));
     }
   });
 }

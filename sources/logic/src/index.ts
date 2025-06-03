@@ -44,9 +44,9 @@ app.register(() => {
 
         //todo: send an error message as JSON?
         if (typeof data !== "object") return;
-        if (!data.input) return;
-        if (typeof data.input !== "string") return;
-        if (data.input !== "up" && data.input !== "down") return;
+        if (data.input !== "up" && data.input !== "down" && data.input !== null)
+          return;
+        console.log(data);
 
         game.setPlayerInput(playerId, data.input);
       });

@@ -31,6 +31,10 @@ export class Ball {
     if (axis === "horizontal") this.dx *= -1;
     if (axis === "vertical") this.dy *= -1;
   }
+  public accelarate(mul_x: number, mul_y: number) {
+    this.dx *= mul_x;
+    this.dy *= mul_y;
+  }
   public get radius() {
     return this.r;
   }
