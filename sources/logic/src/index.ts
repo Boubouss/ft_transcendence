@@ -46,7 +46,6 @@ app.register(() => {
         if (typeof data !== "object") return;
         if (data.input !== "up" && data.input !== "down" && data.input !== null)
           return;
-        console.log(data);
 
         game.setPlayerInput(playerId, data.input);
       });

@@ -54,7 +54,7 @@ function connect() {
     } catch (e) {
       console.log(e);
       textField.innerHTML = `${e}<br>${event.data}`;
-      socket.close();
+      socket_0.close();
     }
   });
 
