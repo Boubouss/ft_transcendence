@@ -40,6 +40,7 @@ function connect() {
   const socket_1 = new WebSocket(
     `ws://localhost:${portInput.value}/ws/${gameIdInput.value}/1`,
   );
+  let pressedKeys = new Set();
 
   socket_0.addEventListener("close", (event) => {
     textField.innerHTML = `${event.code}<br>${event.reason}`;
@@ -65,16 +66,17 @@ function connect() {
     if (!["ArrowUp", "ArrowDown", "w", "s"].includes(event.key)) return;
     event.preventDefault();
 
-    if (event.key === "ArrowUp") {
-      socket_0.send(JSON.stringify({ input: "up" }));
-    }
-    if (event.key === "ArrowDown") {
-      socket_0.send(JSON.stringify({ input: "down" }));
-    }
     if (event.key === "w") {
+      pressedKeys.add(event.key);
+      socket_0.send(JSON.stringify({ input: "up" }));
+    } else if (event.key === "s") {
+      pressedKeys.add(event.key);
+      socket_0.send(JSON.stringify({ input: "down" }));
+    } else if (event.key === "ArrowUp") {
+      pressedKeys.add(event.key);
       socket_1.send(JSON.stringify({ input: "up" }));
-    }
-    if (event.key === "s") {
+    } else if (event.key === "ArrowDown") {
+      pressedKeys.add(event.key);
       socket_1.send(JSON.stringify({ input: "down" }));
     }
   });
@@ -85,17 +87,22 @@ function connect() {
     if (!["ArrowUp", "ArrowDown", "w", "s"].includes(event.key)) return;
     event.preventDefault();
 
-    if (event.key === "ArrowUp") {
-      socket_0.send(JSON.stringify({ input: null }));
-    }
-    if (event.key === "ArrowDown") {
-      socket_0.send(JSON.stringify({ input: null }));
-    }
-    if (event.key === "w") {
-      socket_1.send(JSON.stringify({ input: null }));
-    }
-    if (event.key === "s") {
-      socket_1.send(JSON.stringify({ input: null }));
+    if (event.key === "w" || event.key === "s") {
+      pressedKeys.delete(event.key);
+      if (pressedKeys.has("w") && !pressedKeys.has("s"))
+        socket_0.send(JSON.stringify({ input: "up" }));
+      else if (!pressedKeys.has("w") && pressedKeys.has("s"))
+        socket_0.send(JSON.stringify({ input: "down" }));
+      else if (!pressedKeys.has("w") && !pressedKeys.has("s"))
+        socket_0.send(JSON.stringify({ input: null }));
+    } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      pressedKeys.delete(event.key);
+      if (pressedKeys.has("ArrowUp") && !pressedKeys.has("ArrowDown"))
+        socket_1.send(JSON.stringify({ input: "up" }));
+      else if (!pressedKeys.has("ArrowUp") && pressedKeys.has("ArrowDown"))
+        socket_1.send(JSON.stringify({ input: "down" }));
+      else if (!pressedKeys.has("ArrowUp") && !pressedKeys.has("ArrowDown"))
+        socket_1.send(JSON.stringify({ input: null }));
     }
   });
 }

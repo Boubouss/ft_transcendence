@@ -34,8 +34,7 @@ export class Game {
     });
 
     this.playersQueue = Array(...this.players.keys());
-    //todo: consider not shuffling if there is only two player
-    other.shuffle(this.playersQueue);
+    if (this.players.size !== 2) other.shuffle(this.playersQueue);
     this.playerL = this.playersQueue.shift() as string;
     this.playerR = this.playersQueue.shift() as string;
 
@@ -47,8 +46,7 @@ export class Game {
     this.ball = new Ball(w / 2, h / 2);
   }
   private resetObjects() {
-    //todo: consider not shuffling if there is only two player
-    other.shuffle(this.playersQueue);
+    if (this.players.size !== 2) other.shuffle(this.playersQueue);
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
     this.paddleL.setPosition(20, h / 2);
@@ -58,8 +56,7 @@ export class Game {
   }
   private resetQueue() {
     this.playersQueue = Array(...this.players.keys());
-    //todo: consider not shuffling if there is only two player
-    other.shuffle(this.playersQueue);
+    if (this.players.size !== 2) other.shuffle(this.playersQueue);
     this.playerL = this.playersQueue.shift() as string;
     this.playerR = this.playersQueue.shift() as string;
   }
