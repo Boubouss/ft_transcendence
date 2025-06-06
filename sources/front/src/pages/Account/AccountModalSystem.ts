@@ -1,299 +1,143 @@
-import { createAccountModal } from "./AccountModal";
+// renderAccount.ts
+import { createAccountModalInner } from "./AccountModal";
 import { createAccountMobilePage } from "./AccountMobilePage";
 import * as authStorage from "@utils/authStorage";
-import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { navigateTo } from "@/router";
-import { EnableDisableA2F } from "@pages/Sign/A2F";
-import { t } from "@utils/i18n";
-import * as accmobile from "@pages/Account/AccountMobilePage"
+import * as accbutton from "@components/Buttons/AccountButtons"
+import { EnableDisableA2F } from "../Sign/A2F";
+
 
 export function renderAccount() {
   const isMobile = window.innerWidth < 640;
-  isMobile ? accmobile.renderMobileAccountPage() : renderDesktopAccountModal();
+  if (isMobile) {
+    renderAccountMobile();
+  } else {
+    renderAccountDesktop();
+  }
 }
 
-// ----- DESKTOP -----
-export function renderDesktopAccountModal() {
+function renderAccountMobile() {
+  const menuModal = document.getElementById("menu-modal");
+  if (menuModal) {
+    menuModal.style.transform = "translateX(100%)";
+    setTimeout(() => menuModal.remove(), 300);
+  }
+
+  const container = document.getElementById("app-root")!;
+  container.innerHTML = "";
+  const mobilePage = createAccountMobilePage();
+  container.appendChild(mobilePage);
+}
+
+function renderAccountDesktop() {
   const existing = document.getElementById("account-modal");
   if (existing) existing.remove();
 
-  const modal = createAccountModal();
+  const modal = document.createElement("div");
+  modal.id = "account-modal";
+  Object.assign(modal.style, {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: "1000"
+  });
+
+  const modalInner = createAccountModalInner();
+  modal.appendChild(modalInner);
   document.body.appendChild(modal);
-  const modalContainer = modal.querySelector(".relative") as HTMLElement;
 
-  modalContainer.addEventListener("click", (e) => e.stopPropagation());
-
-  addCloseButton(modal, modalContainer);
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
 
-  const emailInput = modal.querySelector<HTMLInputElement>("#email")!;
-  const usernameInput = modal.querySelector<HTMLInputElement>("#username")!;
-  const oldPasswordInput = modal.querySelector<HTMLInputElement>("#password")!;
-  const newPasswordInput = modal.querySelector<HTMLInputElement>("#new-password")!;
-  const newPasswordContainer = modal.querySelector<HTMLDivElement>("#new-password-container")!;
-  const buttonContainer = modal.querySelector<HTMLDivElement>("#button-container")!;
+  setupModalContent(modalInner, modal);
+}
+
+function setupModalContent(container: HTMLElement, modal: HTMLElement) {
+  const emailInput = container.querySelector<HTMLInputElement>("#email")!;
+  const usernameInput = container.querySelector<HTMLInputElement>("#username")!;
+  const oldPasswordInput = container.querySelector<HTMLInputElement>("#password")!;
+  const newPasswordContainer = container.querySelector<HTMLDivElement>("#new-password-container")!;
+  const newPasswordInput = container.querySelector<HTMLInputElement>("#new-password")!;
+  const buttonContainer = container.querySelector<HTMLDivElement>("#button-container")!;
 
   const emailInit = authStorage.getUserValue("email");
   const usernameInit = authStorage.getUserValue("username");
-
   let isEditing = false;
 
-  const modifyButton = createModifyButton(() => {
-    isEditing = toggleEditMode(
-      isEditing,
-      emailInput,
-      usernameInput,
-      oldPasswordInput,
-      newPasswordInput,
-      newPasswordContainer,
-      buttonContainer,
-      modifyButton,
-      validateButton,
-      cancelButton
-    );
-  });
+ const toggleEditMode = () => {
+  isEditing = !isEditing;
+  emailInput.readOnly = !isEditing;
+  usernameInput.readOnly = !isEditing;
 
-  const validateButton = createValidateButton(() => {
-    validateAccountEdit(emailInput, usernameInput);
-    isEditing = toggleEditMode(
-      isEditing,
-      emailInput,
-      usernameInput,
-      oldPasswordInput,
-      newPasswordInput,
-      newPasswordContainer,
-      buttonContainer,
-      modifyButton,
-      validateButton,
-      cancelButton
-    );
-  });
-
-  const cancelButton = createCancelButton(() => {
-    emailInput.value = emailInit;
-    usernameInput.value = usernameInit;
-    oldPasswordInput.value = "";
-    newPasswordInput.value = "";
-    isEditing = toggleEditMode(
-      isEditing,
-      emailInput,
-      usernameInput,
-      oldPasswordInput,
-      newPasswordInput,
-      newPasswordContainer,
-      buttonContainer,
-      modifyButton,
-      validateButton,
-      cancelButton
-    );
-  });
-
-  buttonContainer.appendChild(modifyButton);
-
-  modalContainer.appendChild(createA2FButton());
-  modalContainer.appendChild(createLogoutButton(modal));
-  modalContainer.appendChild(createAvatarButton(modalContainer));
-
-  navigateTo("home");
-}
-
-export function toggleEditMode(
-  isEditing: boolean,
-  emailInput: HTMLInputElement,
-  usernameInput: HTMLInputElement,
-  oldPasswordInput: HTMLInputElement,
-  newPasswordInput: HTMLInputElement,
-  newPasswordContainer: HTMLDivElement,
-  buttonContainer: HTMLDivElement,
-  modifyButton: HTMLElement,
-  validateButton: HTMLElement,
-  cancelButton: HTMLElement
-): boolean {
   if (isEditing) {
-    // Désactiver l'édition
-    emailInput.readOnly = true;
-    usernameInput.readOnly = true;
+    oldPasswordInput.readOnly = false;
+    oldPasswordInput.value = "";
+    oldPasswordInput.placeholder = "Ancien mot de passe";
+    newPasswordContainer.style.display = "flex";
+    newPasswordInput.value = "";
+
+    buttonContainer.innerHTML = "";
+
+    // On met le conteneur en flex row
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.gap = "12px"; // espace entre boutons
+    buttonContainer.style.justifyContent = "center"; // centrer horizontalement
+
+    buttonContainer.appendChild(
+      accbutton.createValidateEditButton(() => {
+        authStorage.setUserValue("email", emailInput.value);
+        authStorage.setUserValue("username", usernameInput.value);
+        toggleEditMode();
+        navigateTo("home");
+      })
+    );
+    buttonContainer.appendChild(
+      accbutton.createCancelEditButton(() => {
+        emailInput.value = emailInit;
+        usernameInput.value = usernameInit;
+        oldPasswordInput.value = "";
+        newPasswordInput.value = "";
+        toggleEditMode();
+      })
+    );
+  } else {
     oldPasswordInput.readOnly = true;
     oldPasswordInput.value = "******";
-    oldPasswordInput.placeholder = t("password");
-    newPasswordInput.value = "";
     newPasswordContainer.style.display = "none";
 
     buttonContainer.innerHTML = "";
-    buttonContainer.style.display = "flex";
-    buttonContainer.style.flexDirection = "column";
-    buttonContainer.appendChild(modifyButton);
 
-    return false;
-  } else {
-    // Activer l'édition
-    emailInput.readOnly = false;
-    usernameInput.readOnly = false;
-    oldPasswordInput.readOnly = false;
-    oldPasswordInput.value = "";
-    oldPasswordInput.placeholder = t("oldpw");
-    newPasswordInput.value = "";
-    newPasswordInput.placeholder = t("newpw");
-    newPasswordContainer.style.display = "flex";
+    // Quand on repasse en mode non édition, on peut remettre display block (ou vide)
+    buttonContainer.style.display = "";
+    buttonContainer.style.gap = "";
+    buttonContainer.style.justifyContent = "";
 
-    buttonContainer.innerHTML = "";
-    Object.assign(buttonContainer.style, {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      gap: "10px",
-    });
-    buttonContainer.appendChild(validateButton);
-    buttonContainer.appendChild(cancelButton);
-
-
-    return true;
+    buttonContainer.appendChild(accbutton.createEditInfoButton(toggleEditMode));
   }
-}
-
-export function validateAccountEdit(
-  emailInput: HTMLInputElement,
-  usernameInput: HTMLInputElement
-) {
-  authStorage.setUserValue("email", emailInput.value);
-  authStorage.setUserValue("username", usernameInput.value);
-  navigateTo("home");
-}
+};
 
 
-// ----- BOUTONS -----
-export function addCloseButton(modal: HTMLElement, container: HTMLElement) {
-  const closeButton = createCustomButton({
-    width: "60px",
-    height: "60px",
-    borderRadius: "rounded-[20px]",
-    position: "absolute top-5 right-5",
-    imageUrl: "/assets/icons/close_icon.png",
-    imageWidth: "38px",
-    imageHeight: "38px",
-    onClick: () => modal.remove(),
-  });
-  container.appendChild(closeButton);
-}
+  buttonContainer.appendChild(accbutton.createEditInfoButton(toggleEditMode));
 
-export function createModifyButton(onClick: () => void) {
-  return createCustomButton({
-    height: "50px",
-    borderRadius: "rounded-[20px]",
-    text: t("editinfo"),
-    fontSizeClass: "text-2xl",
-    padding: "p-[10px]",
-    onClick,
-  });
-}
-
-export function createValidateButton(onClick: () => void) {
-  return createCustomButton({
-    width: "120px",
-    height: "50px",
-    borderRadius: "rounded-[20px]",
-    text: t("valid"),
-    onClick,
-  });
-}
-
-export function createCancelButton(onClick: () => void) {
-  return createCustomButton({
-    width: "120px",
-    height: "50px",
-    borderRadius: "rounded-[20px]",
-    text: t("cancel"),
-    onClick: () => {},
-  });
-}
-
-export function createA2FButton() {
-  const isMobile = innerWidth <= 640;
-  return createCustomButton({
-    text: authStorage.getA2F() ? t("offa2f") : t("ona2f"),
-    height: "60px",
-    fontSizeClass: "text-2xl",
-    fontStyle: "font-jaro",
-    backgroundColor: authStorage.getA2F() ? "bg-red-500" : "bg-green-500",
-    padding: "p-[10px]",
-    position: "absolute top-[230px] right-10 sm:top-[340px]", // ✅ position via Tailwind
-    onClick: () => EnableDisableA2F(),
-  });
-}
-
-
-export function createLogoutButton(modal: HTMLElement) {
-  return createCustomButton({
-    text: t("disco"),
-    height: "60px",
-    fontSizeClass: "text-2xl",
-    fontStyle: "font-jaro",
-    backgroundColor: "bg-red-500",
-    position: "absolute top-110 right-10",
-    padding: "p-[10px]",
-    onClick: () => {
+  container.appendChild(accbutton.createCloseModalButton(() => modal.remove()));
+  container.appendChild(accbutton.createA2FButton(EnableDisableA2F));
+  container.appendChild(
+    accbutton.createLogoutButton(() => {
       authStorage.clearAuth();
       navigateTo("home");
       modal.remove();
-    },
-  });
-}
+    })
+  );
+  container.appendChild(accbutton.createAvatarButton());
 
-export function createAvatarButton(container: HTMLElement) {
-  const AvatarButton = createCustomButton({
-    height: "160px",
-    width: "160px",
-    fontSizeClass: "text-2xl",
-    fontStyle: "font-jaro",
-    borderRadius: "rounded-full",
-    backgroundColor: "bg-transparent",
-    position: "absolute sm:top-[120px] sm:left-[500px] top-[190px] left-[80px]",
-    padding: "p-[10px]",
-    onClick: () => fileInput.click(),
-    onHover: () => (hoverImage.style.display = "block"),
-    onLeave: () => (hoverImage.style.display = "none"),
-  });
 
-  const hoverImage = document.createElement("img");
-  hoverImage.src = "/assets/icons/modif_avatar_white.png";
-  hoverImage.alt = "Modifier l’avatar";
-  Object.assign(hoverImage.style, {
-    width: "85px",
-    height: "85px",
-    objectFit: "contain",
-    display: "none",
-  });
-  AvatarButton.appendChild(hoverImage);
 
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileInput.style.display = "none";
-  container.appendChild(fileInput);
-
-  fileInput.addEventListener("change", (event) => {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageUrl = e.target?.result as string;
-      AvatarButton.innerHTML = "";
-      const avatarImg = document.createElement("img");
-      Object.assign(avatarImg.style, {
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-      });
-      avatarImg.src = imageUrl;
-      AvatarButton.appendChild(avatarImg);
-      AvatarButton.appendChild(hoverImage);
-      authStorage.setUserValue("avatar", imageUrl);
-    };
-    reader.readAsDataURL(file);
-  });
-
-  return AvatarButton;
+  navigateTo("home");
 }

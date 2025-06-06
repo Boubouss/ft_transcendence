@@ -4,7 +4,6 @@ type User = Record<string, any>;
 
 const USER_KEY = "user";
 const TOKEN_KEY = "token";
-const A2F_KEY = "a2f"; // Clé pour le stockage de l'état de l'authentification à deux facteurs
 
 // Sauvegarde l'objet utilisateur complet
 export function saveUser(user: User): void {

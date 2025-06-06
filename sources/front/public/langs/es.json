@@ -23,5 +23,6 @@
   "entera2f": "Introducir código 2FA",
   "requireda2f": "Código 2FA requerido",
   "alerta2f": "Código 2FA incorrecto, inténtelo de nuevo.",
-  "alertsignup": "Ocurrió un error, por favor intente nuevamente."
+  "alertsignup": "Ocurrió un error, por favor intente nuevamente.",
+  "avatar": "Cambiar avatar"
 }

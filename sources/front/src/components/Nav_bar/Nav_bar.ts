@@ -1,4 +1,4 @@
-import { createCustomButton } from "@components/Buttons/CustomButton.ts";
+import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { getToken } from "@utils/authStorage.ts";
 import { t } from "@utils/i18n.ts";
 

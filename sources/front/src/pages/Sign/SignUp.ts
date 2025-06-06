@@ -1,4 +1,4 @@
-import { createCustomButton } from "@components/Buttons/CustomButton.ts";
+import { createCustomButton } from "@/components/Buttons/CustomButton";
 import * as authStorage from "@utils/authStorage.ts";
 import { t } from "@utils/i18n";
 import * as db_utils from "@utils/db_utils";
@@ -6,7 +6,7 @@ import * as db_utils from "@utils/db_utils";
 export function createSignUpForm(
   onSuccess: (user: any) => void
 ): HTMLFormElement {
-  const username_tag = t("username");
+  const name_tag = t("username");
   const pw = t("pw");
   const signup = t("signup");
 
@@ -17,15 +17,34 @@ export function createSignUpForm(
 
   form.innerHTML = `
     <h2 class="text-2xl font-bold text-center text-green-600 mb-6">${signup}</h2>
-    <input type="text" name="username" placeholder="${username_tag}" required minlength="3" maxlength="20"
-      style="width: calc(100% - 5px);"
-      class="invalid:border-red-500 invalid:text-red-500 mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
+   <input
+  type="text"
+  name="name"
+  placeholder="${name_tag}"
+  required
+  minlength="3"
+  maxlength="20"
+  pattern="^[a-zA-Z0-9_]+$"
+  title="Le nom d'utilisateur doit contenir uniquement des lettres, chiffres ou underscores, entre 3 et 20 caractères."
+  class="invalid:border-red-500 invalid:text-red-500 mb-4 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+/>
+
     <input type="email" name="email" placeholder="Email" required
       style="width: calc(100% - 5px);"
       class="invalid:border-red-500 invalid:text-red-500 mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
-    <input type="password" name="password" placeholder="${pw}" required minlength="8"
-      style="width: calc(100% - 5px);"
-      class="invalid:border-red-500 invalid:text-red-500 mb-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
+<input
+  type="password"import fs from 'fs';
+
+  name="password"
+  placeholder="${pw}"
+  required
+  minlength="8"
+  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"
+  title="Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un caractère spécial."
+  style="width: calc(100% - 5px);"
+  class="invalid:border-red-500 invalid:text-red-500 mb-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+/>
+
   `;
 
   const submitBtn = createCustomButton({
@@ -44,15 +63,14 @@ export function createSignUpForm(
     e.preventDefault();
 
     const formData = new FormData(form);
-    const username = formData.get("username") as string;
+    const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      await db_utils.addUser(email, username, password);
-
+      await db_utils.addUser(email, name, password);
       onSuccess(authStorage.getUser());
     } catch (error) {
       console.error("❌ Erreur simulée :", error);

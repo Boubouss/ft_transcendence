@@ -2,7 +2,7 @@ import { createSignInForm } from "./SignIn.ts";
 import { createSignUpForm } from "./SignUp.ts";
 import { navigateTo } from "@/router.ts";
 import { t } from "@utils/i18n.ts";
-import { createCustomButton } from "@components/Buttons/CustomButton.ts"; // adapte le chemin si besoin
+import { createCustomButton } from "@/components/Buttons/CustomButton.ts"; // adapte le chemin si besoin
 
 export function renderSignModal() {
   // Création du modal overlay

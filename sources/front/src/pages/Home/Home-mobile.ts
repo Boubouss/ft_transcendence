@@ -1,4 +1,4 @@
-import { createCustomButton } from "@components/Buttons/CustomButton.ts";
+import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { getSignButtonOptions} from "@/components/Buttons/LoginButton";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { t } from "@/utils/i18n";

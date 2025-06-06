@@ -1,6 +1,6 @@
 import { navigateTo } from "@/router";
 import * as authStorage from "@utils/authStorage.ts";
-import { createCustomButton } from "@components/Buttons/CustomButton"; // adapte le chemin si besoin
+import { createCustomButton } from "@/components/Buttons/CustomButton"; // adapte le chemin si besoin
 import { t } from "@utils/i18n";
 
 function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {

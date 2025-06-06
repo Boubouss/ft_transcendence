@@ -1,5 +1,5 @@
 import { navigateTo } from "@/router";
-import type { CustomButtonOptions,} from "@components/Buttons/CustomButton";
+import type { CustomButtonOptions,} from "@/components/Buttons/CustomButton";
 import { t } from "@utils/i18n";
 import * as authStorage from "@utils/authStorage";
 

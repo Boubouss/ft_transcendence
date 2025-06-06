@@ -1,45 +1,36 @@
 import * as authStorage from "@utils/authStorage";
 
-export async function addUser(
-  email: string,
-  username: string,
-  password: string
-) {
+import axios from "axios";
+
+export async function addUser(email: string, name: string, password: string) {
   try {
-    const token = "fake-jwt-token-" + Date.now();
-    const a2f = false;
-
-    const userToCreate = {
+    const response = await axios.post("https://localhost:3000/auth/register", {
       email,
-      username,
+      name,
       password,
-      token,
-      a2f,
-    };
-
-    const response = await fetch("http://localhost:3000/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userToCreate),
     });
 
-    if (!response.ok)
-      throw new Error("Erreur lors de l'ajout de l'utilisateur");
+    const newUser = response.data;
 
-    const newUser = await response.json();
-
-    // Sauvegarde dans le localStorage si besoin
+    alert("Utilisateur créé !");
     authStorage.saveUser(newUser);
-    //authStorage.saveToken(newUser.token);
     authStorage.deleteUserValue("password");
 
     console.log("✅ Utilisateur créé :", newUser);
-  } catch (error) {
-    console.error("❌ Erreur addUser :", error);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data || error.message);
+      console.error("❌ Erreur addUser :", error.response?.data || error.message);
+    } else if (error instanceof Error) {
+      alert(error.message);
+      console.error("❌ Erreur addUser :", error.message);
+    } else {
+      alert(String(error));
+      console.error("❌ Erreur addUser :", error);
+    }
   }
 }
+
 
 export async function loginUser(username: string, password: string) {
   try {
