@@ -26,5 +26,7 @@
   "alertsignup": "Une erreur est survenue, veuillez réessayer.",
   "avatar": "Changer d'Avatar",
   "a2fenable": "A2F activé, veuillez confirmer pour actualiser !",
-  "a2fdisable": "A2F désactivé, veuillez confirmer pour actualiser !"
+  "a2fdisable": "A2F désactivé, veuillez confirmer pour actualiser !",
+  "lobbylist": "Liste des lobby"
+
 }

@@ -10,11 +10,11 @@ import dotenv from "dotenv";
 
 async function main() {
   if (!langStorage.getLang()) {
-    langStorage.saveLang("en");
+    langStorage.saveLang("fr");
   }
 
   await initI18n(); // <-- initialise la langue et les traductions
-  navigateTo("home");
+  navigateTo("multi");
   dotenv.config();
 }
 

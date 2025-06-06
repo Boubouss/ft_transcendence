@@ -1,7 +1,6 @@
 import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { getSignButtonOptions } from "@/components/Buttons/LoginButton";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
-import { createLogoutButton } from "@/components/Buttons/AccountButtons";
 import * as authStorage from "@/utils/authStorage";
 
 export const mobileMenuButton = createCustomButton({

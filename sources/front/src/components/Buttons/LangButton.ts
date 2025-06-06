@@ -17,7 +17,7 @@ export function createLangDropdown(): HTMLDivElement {
 
   const dropdown = document.createElement("div");
   dropdown.className =
-    "hidden absolute mt-4 w-[120px] bg-orange-500 rounded-[20px] shadow-md z-50 border-2";
+    "hidden absolute mt-4 w-[120px] bg-orange-400 rounded-[20px] shadow-md z-50 border-2";
   dropdown.style.top = "70px";
 
   const languages = ["fr", "en", "es"];

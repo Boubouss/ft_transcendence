@@ -30,7 +30,7 @@ export function createCustomButton(
   const classes = [
     "group",
     options.position || "",
-    options.backgroundColor || "bg-orange-500",
+    options.backgroundColor || "bg-orange-400",
     options.textColor || "text-black",
     options.borderWidth || "border-2",
     options.borderColor || "border-black",

@@ -35,7 +35,7 @@ export function getSignButtonOptions(): CustomButtonOptions {
           ),
         })
         disconnectBtn.className +=
-          "disconnect-btn mt-2 px-4 py-2 bg-orange-500 text-white shadow-lg transition duration-200";
+          "disconnect-btn mt-2 px-4 py-2 bg-orange-400 text-white shadow-lg transition duration-200";
 
         buttonElement.appendChild(disconnectBtn);
 

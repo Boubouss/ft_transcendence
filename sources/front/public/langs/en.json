@@ -26,5 +26,6 @@
   "alertsignup": "An error occured, please try again.",
   "avatar": "Change avatar",
   "a2fenable": "A2F enabled, confirm update!",
-  "a2fdisable": "A2F disabled, confirm update!"
+  "a2fdisable": "A2F disabled, confirm update!",
+  "lobbylist": "Lobby List"
 }

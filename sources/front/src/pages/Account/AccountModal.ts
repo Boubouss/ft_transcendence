@@ -15,7 +15,7 @@ export function createAccountPage(isModal = false): HTMLElement {
   const newpw = t("newpw");
 
   container.className =
-    "flex flex-col items-center px-4 py-6 gap-6 w-full min-h-screen bg-orange-500";
+    "flex flex-col items-center px-4 py-6 gap-6 w-full min-h-screen bg-orange-400";
   container.style.fontFamily = "'Jaro', sans-serif";
 
   if (isModal) {

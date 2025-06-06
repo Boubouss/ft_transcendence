@@ -5,12 +5,12 @@ import { navigateTo } from "@/router";
 
 export function createCloseModalButton(onClick: () => void) {
   return createCustomButton({
-    width: "50px",
-    height: "50px",
+    width: "60px",
+    height: "60px",
     borderRadius: "rounded-[20px]",
     imageUrl: "/assets/icons/close_icon.png",
-    imageWidth: "38px",
-    imageHeight: "38px",
+    imageWidth: "45px",
+    imageHeight: "45px",
     onClick,
   });
 }
