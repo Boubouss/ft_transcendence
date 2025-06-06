@@ -21,6 +21,7 @@ import {
 	updateConfig,
 	generate2FA,
 } from "../services/authService";
+import { MyError } from "../types/enums";
 
 const auth: FastifyPluginAsync = async (fastify) => {
 	fastify.post(
@@ -38,13 +39,13 @@ const auth: FastifyPluginAsync = async (fastify) => {
 	fastify.post("/login", { schema: authSchema }, async (request, reply) => {
 		const { name, password } = request.body as Credential;
 		const userAuth: UserAuth = (await getUserAuth(name)) as UserAuth;
-		if (!userAuth) throw Error("Pas trouve =(");
+		if (!userAuth) throw new Error(MyError.AUTH);
 
 		const check: boolean = await authUser(password, userAuth);
-		if (!check) throw new Error("Invalid password");
+		if (!check) throw new Error(MyError.AUTH);
 
 		const user = await getUserById(userAuth.id);
-		if (!user) throw new Error("Couldn't find user.");
+		if (!user) throw new Error(MyError.AUTH);
 
 		if (userAuth.configuration.is2FA) {
 			await generate2FA(userAuth);
@@ -65,8 +66,10 @@ const auth: FastifyPluginAsync = async (fastify) => {
 
 			const user = await getUserById(userAuth.id);
 
-			reply.send({ ...user, token: fastify.jwt.sign({ email: userAuth.email }) });
-			return;
+			return reply.send({
+				...user,
+				token: fastify.jwt.sign({ email: userAuth.email })
+			});
 		}
 
 		reply.status(403).send({ message: "Invalid 2FA code" });

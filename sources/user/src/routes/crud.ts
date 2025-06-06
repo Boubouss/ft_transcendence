@@ -1,7 +1,9 @@
 import { FastifyPluginAsync } from "fastify";
-import { UserCreate, UserUpdate } from "../types/types";
+import { User, UserCreate, UserUpdate } from "../types/types";
 import { createSchema, updateSchema } from "../validations/userSchema";
 import { authMiddleware } from "../middlewares/authMiddleware";
+import { MyError } from "../types/enums";
+import _ from "lodash";
 
 import {
 	getUsers,
@@ -15,32 +17,36 @@ const crud: FastifyPluginAsync = async (fastify) => {
 	fastify.addHook("preHandler", authMiddleware);
 
 	fastify.get("/users", async () => {
-		return getUsers();
+		return await getUsers();
 	});
 
 	fastify.get("/user/:id", async (request, reply) => {
 		const { id } = request.params as { id: string };
+		const user = await getUserById(parseInt(id));
+		if (_.isEmpty(user)) throw new Error(MyError.USER_NOT_FOUND);
 
-		reply.send(getUserById(parseInt(id)));
+		reply.send(user);
 	});
 
 	fastify.post("/user", { schema: createSchema }, async (request, reply) => {
-		const user: UserCreate = request.body as UserCreate;
+		const userData: UserCreate = request.body as UserCreate;
+		const user: User = await createUser(userData);
+		if (!user) throw new Error("Fail to register user");
 
-		reply.send(createUser(user));
+		reply.send(user);
 	});
 
 	fastify.put("/user/:id", { schema: updateSchema }, async (request, reply) => {
 		const { id } = request.params as { id: string };
 		const user: UserUpdate = request.body as UserUpdate;
 
-		reply.send(updateUser(parseInt(id), user));
+		reply.send(await updateUser(parseInt(id), user));
 	});
 
 	fastify.delete("/user/:id", async (request, reply) => {
 		const { id } = request.params as { id: string };
 
-		reply.send(deleteUser(parseInt(id)));
+		reply.send(await deleteUser(parseInt(id)));
 	});
 };
 

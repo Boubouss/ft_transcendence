@@ -53,11 +53,16 @@ export const authSchema = {
 		type: "object",
 		required: ["name", "password"],
 		properties: {
-			name: { type: "string" },
-			password: {	type: "string" },
+			name: { type: "string", minLength: 3, maxLength: 20 },
+			password: {
+				type: "string",
+				minLength: 8,
+				pattern:
+					"^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+			}
 		},
 		additionalProperties: false,
-	},
+	}
 };
 
 export const auth2FASchema = {
