@@ -13,7 +13,17 @@ export const schemaCreateGame = {
   },
 };
 
-export const schemaWebsocket = {
+export const schemaDeleteGame = {
+  body: {
+    type: "object",
+    required: ["gameId"],
+    properties: {
+      gameId: { type: "string" },
+    },
+  },
+};
+
+export const schemaWebSocket = {
   params: {
     type: "object",
     required: ["gameId", "playerId"],

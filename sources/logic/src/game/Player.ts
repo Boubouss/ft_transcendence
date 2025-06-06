@@ -33,7 +33,7 @@ export class Player {
     this.point++;
   }
   public getPoint() {
-    this.point++;
+    return this.point;
   }
   public toJson() {
     return { playerId: this.playerId, score: this.point, input: this.input };

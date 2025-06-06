@@ -1,12 +1,17 @@
 import fastify from "fastify";
 import websocketPlugin from "@fastify/websocket";
-import { CreateGameRequestBody } from "./type/Interface";
 import { Game } from "./game/Game";
-import { schemaWebsocket, schemaCreateGame } from "./type/Schema";
+import { PlayerInput } from "./type/Type";
+import { CreateGameRequestBody, DeleteGameRequestBody } from "./type/Interface";
+import { GameState, HttpCode, WebSocketCode } from "./type/Enum";
+import {
+  schemaWebSocket,
+  schemaCreateGame,
+  schemaDeleteGame,
+} from "./type/Schema";
 
 //todo: remove the placeholders and constants
 const PORT: number = 3000;
-const WSCODE = 4000;
 const FPS = 60;
 
 let games = new Map<string, Game>();
@@ -16,7 +21,7 @@ app.register(websocketPlugin);
 app.register(() => {
   app.get(
     "/ws/:gameId/:playerId",
-    { schema: schemaWebsocket, websocket: true },
+    { schema: schemaWebSocket, websocket: true },
     (connection, request) => {
       const params = request.params as { gameId: string; playerId: string };
       const gameId = params.gameId;
@@ -24,34 +29,53 @@ app.register(() => {
       const game = games.get(gameId);
 
       if (!game) {
-        return connection.close(WSCODE, `No game with gameId: ${gameId}`);
+        connection.close(WebSocketCode.UNDEFINED, `Game not found`);
+        return;
       }
       if (!game.getPlayersId().has(playerId)) {
-        return connection.close(WSCODE, `The player is not expected`);
+        connection.close(WebSocketCode.UNDEFINED, `Player not connected`);
+        return;
       }
       if (game.getPlayersConnected().has(playerId)) {
-        return connection.close(WSCODE, `The player is already connected`);
+        connection.close(WebSocketCode.UNDEFINED, `Player already connected`);
+        return;
       }
+
       game.setPlayerConnection(playerId, connection);
 
       connection.on("message", (message: string) => {
         let data;
         try {
-          data = JSON.parse(message) as { input?: string };
+          data = JSON.parse(message) as { input?: PlayerInput };
         } catch (e) {
+          connection.send(
+            JSON.stringify({
+              code: WebSocketCode.UNDEFINED,
+              message: "Invalid JSON",
+            }),
+          );
           return;
         }
 
-        //todo: send an error message as JSON?
-        if (typeof data !== "object") return;
-        if (data.input !== "up" && data.input !== "down" && data.input !== null)
+        if (!data.input || !["up", "down", null].includes(data.input)) {
+          connection.send(
+            JSON.stringify({
+              code: WebSocketCode.UNDEFINED,
+              message: "Invalid input",
+            }),
+          );
           return;
-
+        }
         game.setPlayerInput(playerId, data.input);
       });
 
       connection.on("close", () => {
-        games.get(gameId)?.setPlayerConnection(playerId, null);
+        const game = games.get(gameId);
+        if (!game) return;
+        game.setPlayerConnection(playerId, null);
+        //todo: improve the game deletion logic
+        if (game.isFull() && game.getGameState() !== GameState.Init)
+          games.delete(gameId);
       });
     },
   );
@@ -63,10 +87,23 @@ app.post(
   async (request, response) => {
     const body = request.body as CreateGameRequestBody;
     if (games.has(body.gameId)) {
-      response.code(403).send();
+      response.code(HttpCode.CONFLICT).send(); //todo: add a body?
       return;
     }
     games.set(String(body.gameId), new Game(body, FPS));
+  },
+);
+
+app.post(
+  "/delete_game",
+  { schema: schemaDeleteGame },
+  async (request, response) => {
+    const body = request.body as DeleteGameRequestBody;
+    if (!games.has(body.gameId)) {
+      response.code(HttpCode.CONFLICT).send(); //todo: add a body?
+      return;
+    }
+    games.delete(body.gameId);
   },
 );
 

@@ -7,6 +7,8 @@ import { Player } from "./Player";
 import { PlayerInput } from "../type/Type";
 import * as other from "./other";
 
+const PADDLE_OFFSET: number = 20;
+
 export class Game {
   private gameId: string;
   private players: Map<string, Player> = new Map();
@@ -35,22 +37,22 @@ export class Game {
 
     this.playersQueue = Array(...this.players.keys());
     if (this.players.size !== 2) other.shuffle(this.playersQueue);
-    this.playerL = this.playersQueue.shift() as string;
-    this.playerR = this.playersQueue.shift() as string;
+    this.playerL = this.playersQueue.shift() ?? null;
+    this.playerR = this.playersQueue.shift() ?? null;
 
     this.gameField = new GameField();
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
-    this.paddleL = new Paddle(20, h / 2);
-    this.paddleR = new Paddle(w - 20, h / 2);
+    this.paddleL = new Paddle(PADDLE_OFFSET, h / 2);
+    this.paddleR = new Paddle(w - PADDLE_OFFSET, h / 2);
     this.ball = new Ball(w / 2, h / 2);
   }
   private resetObjects() {
     if (this.players.size !== 2) other.shuffle(this.playersQueue);
     const h: number = this.gameField.getHeight();
     const w: number = this.gameField.getWidth();
-    this.paddleL.setPosition(20, h / 2);
-    this.paddleR.setPosition(w - 20, h / 2);
+    this.paddleL.setPosition(PADDLE_OFFSET, h / 2);
+    this.paddleR.setPosition(w - PADDLE_OFFSET, h / 2);
     this.ball.setPosition(w / 2, h / 2);
     this.ball.setVelocity(0, 0);
   }
@@ -70,6 +72,9 @@ export class Game {
         .filter(([_, player]) => player.isConnected())
         .map(([id, _]) => id),
     );
+  }
+  public getGameState() {
+    return this.gameState;
   }
   public setPlayerConnection(playerId: string, socket: WebSocket | null) {
     this.players.get(playerId)?.setConnected(socket);
@@ -93,6 +98,9 @@ export class Game {
     this.players.get(playerId)?.setInput(input);
   }
 
+  public isFull() {
+    return ![...this.players.values()].some((p) => !p.isConnected());
+  }
   public broadcast(message: string) {
     this.players.forEach((player, _) => {
       if (player.isConnected()) player.getSocket()?.send(message);
@@ -109,14 +117,12 @@ export class Game {
 
   public update() {
     //todo: websocket could set to false onclose and we recheck only if false
-    const full = ![...this.players.values()].some((p) => !p.isConnected());
-
-    if (this.gameState == GameState.Init && full) {
+    if (this.gameState == GameState.Init && this.isFull()) {
       this.sleep = 1 * this.fps;
       this.gameState = GameState.Running;
-    } else if (this.gameState == GameState.Running && !full) {
+    } else if (this.gameState == GameState.Running && !this.isFull()) {
       this.gameState = GameState.Paused;
-    } else if (this.gameState == GameState.Paused && full) {
+    } else if (this.gameState == GameState.Paused && this.isFull()) {
       this.sleep = 1 * this.fps;
       this.gameState = GameState.Running;
     }
@@ -150,13 +156,14 @@ export class Game {
       this.ball.bounce("vertical");
 
     for (const [_, paddle] of pairPlayerPaddle) {
-      //todo:make the ball collision more robust
+      //todo: make the ball collision more robust
       if (!this.overlap(this.ball, paddle)) continue;
       const radius = this.ball.radius;
       if (paddle === this.paddleL)
         this.ball.setPosition(this.paddleL.right + radius, this.ball.center.y);
       if (paddle === this.paddleR)
         this.ball.setPosition(this.paddleR.left - radius, this.ball.center.y);
+      //todo: cap the speed so the ball can't traverse the paddle
       this.ball.accelarate(1.1, 1);
       this.ball.bounce("horizontal");
     }
