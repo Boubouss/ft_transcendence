@@ -3,9 +3,10 @@ import { createAccountModalInner } from "./AccountModal";
 import { createAccountMobilePage } from "./AccountMobilePage";
 import * as authStorage from "@utils/authStorage";
 import { navigateTo } from "@/router";
-import * as accbutton from "@components/Buttons/AccountButtons"
+import * as accbutton from "@components/Buttons/AccountButtons";
 import { EnableDisableA2F } from "../Sign/A2F";
-
+import { createToggleEditMode } from "@pages/Account/utils";
+import { initializeAccountContent } from "@pages/Account/utils";
 
 export function renderAccount() {
   const isMobile = window.innerWidth < 640;
@@ -15,6 +16,12 @@ export function renderAccount() {
     renderAccountDesktop();
   }
 }
+
+/*__  __  ___  ___ ___ _    ___  __   _____ ___  ___ ___ ___  _  _
+ |  \/  |/ _ \| _ )_ _| |  | __| \ \ / / __| _ \/ __|_ _/ _ \| \| |
+ | |\/| | (_) | _ \| || |__| _|   \ V /| _||   /\__ \| | (_) | .` |
+ |_|  |_|\___/|___/___|____|___|   \_/ |___|_|_\|___/___\___/|_|\_|
+                                                                    */
 
 function renderAccountMobile() {
   const menuModal = document.getElementById("menu-modal");
@@ -27,7 +34,15 @@ function renderAccountMobile() {
   container.innerHTML = "";
   const mobilePage = createAccountMobilePage();
   container.appendChild(mobilePage);
+
+  setupContent(container, null);
 }
+
+/*___  ___ ___ _  _______ ___  ___  __   _____ ___  ___ ___ ___  _  _
+ |   \| __/ __| |/ /_   _/ _ \| _ \ \ \ / / __| _ \/ __|_ _/ _ \| \| |
+ | |) | _|\__ \ ' <  | || (_) |  _/  \ V /| _||   /\__ \| | (_) | .` |
+ |___/|___|___/_|\_\ |_| \___/|_|     \_/ |___|_|_\|___/___\___/|_|\_|
+                                                                       */
 
 function renderAccountDesktop() {
   const existing = document.getElementById("account-modal");
@@ -45,7 +60,7 @@ function renderAccountDesktop() {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: "1000"
+    zIndex: "1000",
   });
 
   const modalInner = createAccountModalInner();
@@ -56,88 +71,37 @@ function renderAccountDesktop() {
     if (e.target === modal) modal.remove();
   });
 
-  setupModalContent(modalInner, modal);
+  setupContent(modalInner, modal);
 }
 
-function setupModalContent(container: HTMLElement, modal: HTMLElement) {
-  const emailInput = container.querySelector<HTMLInputElement>("#email")!;
-  const usernameInput = container.querySelector<HTMLInputElement>("#username")!;
-  const oldPasswordInput = container.querySelector<HTMLInputElement>("#password")!;
-  const newPasswordContainer = container.querySelector<HTMLDivElement>("#new-password-container")!;
-  const newPasswordInput = container.querySelector<HTMLInputElement>("#new-password")!;
-  const buttonContainer = container.querySelector<HTMLDivElement>("#button-container")!;
+function setupContent(container: HTMLElement, modal: HTMLElement | null) {
+  const elements = initializeAccountContent(container);
 
-  const emailInit = authStorage.getUserValue("email");
-  const usernameInit = authStorage.getUserValue("username");
-  let isEditing = false;
+  // Création des boutons A2F et Logout
+  const a2fButton = accbutton.createA2FButton(EnableDisableA2F);
+  const avatarButton = accbutton.createAvatarButton();
 
- const toggleEditMode = () => {
-  isEditing = !isEditing;
-  emailInput.readOnly = !isEditing;
-  usernameInput.readOnly = !isEditing;
+  container.appendChild(a2fButton);
+  container.appendChild(avatarButton);
 
-  if (isEditing) {
-    oldPasswordInput.readOnly = false;
-    oldPasswordInput.value = "";
-    oldPasswordInput.placeholder = "Ancien mot de passe";
-    newPasswordContainer.style.display = "flex";
-    newPasswordInput.value = "";
+  const buttonColumn = document.createElement("div");
+  buttonColumn.className =
+    "flex flex-col gap-4 mt-6 sm:mt-0 sm:ml-auto sm:flex-row sm:items-center";
 
-    buttonContainer.innerHTML = "";
-
-    // On met le conteneur en flex row
-    buttonContainer.style.display = "flex";
-    buttonContainer.style.gap = "12px"; // espace entre boutons
-    buttonContainer.style.justifyContent = "center"; // centrer horizontalement
-
-    buttonContainer.appendChild(
-      accbutton.createValidateEditButton(() => {
-        authStorage.setUserValue("email", emailInput.value);
-        authStorage.setUserValue("username", usernameInput.value);
-        toggleEditMode();
-        navigateTo("home");
-      })
-    );
-    buttonContainer.appendChild(
-      accbutton.createCancelEditButton(() => {
-        emailInput.value = emailInit;
-        usernameInput.value = usernameInit;
-        oldPasswordInput.value = "";
-        newPasswordInput.value = "";
-        toggleEditMode();
-      })
-    );
-  } else {
-    oldPasswordInput.readOnly = true;
-    oldPasswordInput.value = "******";
-    newPasswordContainer.style.display = "none";
-
-    buttonContainer.innerHTML = "";
-
-    // Quand on repasse en mode non édition, on peut remettre display block (ou vide)
-    buttonContainer.style.display = "";
-    buttonContainer.style.gap = "";
-    buttonContainer.style.justifyContent = "";
-
-    buttonContainer.appendChild(accbutton.createEditInfoButton(toggleEditMode));
-  }
-};
-
-
-  buttonContainer.appendChild(accbutton.createEditInfoButton(toggleEditMode));
-
-  container.appendChild(accbutton.createCloseModalButton(() => modal.remove()));
-  container.appendChild(accbutton.createA2FButton(EnableDisableA2F));
-  container.appendChild(
-    accbutton.createLogoutButton(() => {
-      authStorage.clearAuth();
-      navigateTo("home");
-      modal.remove();
-    })
+  // On crée toggleEditMode en lui passant les boutons
+  const toggleEditMode = createToggleEditMode(
+    elements,
+    navigateTo,
+    a2fButton,
+    avatarButton
   );
-  container.appendChild(accbutton.createAvatarButton());
 
+  // Bouton modifier (éditer)
+  elements.buttonContainer.appendChild(
+    accbutton.createEditInfoButton(toggleEditMode)
+  );
 
-
-  navigateTo("home");
+  if (modal) {
+    navigateTo("home");
+  }
 }

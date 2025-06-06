@@ -54,7 +54,7 @@ export function createA2FButton(onClick: () => void) {
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
     backgroundColor: isEnabled ? "bg-red-500" : "bg-green-500",
-    position: "absolute top-87 right-10 sm:top-98",
+    position: "absolute top-175 left-[10%] sm:top-98 sm:right-10",
     padding: "p-[10px]",
     onClick,
   });
@@ -67,7 +67,7 @@ export function createLogoutButton(onClick: () => void) {
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
     backgroundColor: "bg-red-500",
-    position: "absolute top-110 right-10 sm:top-119",
+    position: "absolute bottom-[10%] right-[10%]",
     padding: "p-[10px]",
     onClick,
   });
@@ -79,8 +79,9 @@ export function createAvatarButton(onClick: () => void = () => {}) {
     height: "60px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
-    position: "absolute top-110 right-10 sm:top-78",
+    position: "absolute top-177 right-10 sm:top-78",
     padding: "p-[10px]",
+    visible: false,
     onClick,
   });
 }

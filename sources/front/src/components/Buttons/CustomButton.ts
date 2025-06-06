@@ -15,6 +15,7 @@ export interface CustomButtonOptions {
   fontStyle?: string;
   padding?: string;
   fontSizeClass?: string;
+  visible?: boolean;
   onClick?: () => void;
   onHover?: () => void;
   onLeave?: () => void;
@@ -66,6 +67,12 @@ export function createCustomButton(
 
   if (typeof options.onClick === "function") {
     button.addEventListener("click", options.onClick);
+  }
+
+  if (options.visible === false) {
+    button.style.display = "none";
+  } else {
+    button.style.display = ""; // visible par défaut (inline-block ou flex selon le contexte)
   }
 
   if (options.fontStyle?.includes("font-jaro")) {

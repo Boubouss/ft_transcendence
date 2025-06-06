@@ -1,9 +1,11 @@
 import { createCustomButton } from "@/components/Buttons/CustomButton";
-import { getSignButtonOptions} from "@/components/Buttons/LoginButton";
+import { getSignButtonOptions } from "@/components/Buttons/LoginButton";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { t } from "@/utils/i18n";
 import { createAccountMobilePage } from "../Account/AccountMobilePage";
-
+import { createLogoutButton } from "@/components/Buttons/AccountButtons";
+import { navigateTo } from "@/router";
+import * as authStorage from "@/utils/authStorage";
 
 export const mobileMenuButton = createCustomButton({
   width: "60px",
@@ -61,14 +63,24 @@ export function createModalMenuMobile(): HTMLDivElement {
     width: "70%",
     height: "75px",
     position: "absolute top-[15%] right-7",
-	padding: "p-[5px]",
+    padding: "p-[5px]",
   });
 
+  let logoutButton = null;
+
+  if (authStorage.getUser() !== null) {
+    logoutButton = createLogoutButton(() => {
+      authStorage.clearAuth();
+      modal.style.transform = "translateX(100%)";
+      setTimeout(() => modal.remove(), 300);
+    });
+  }
 
   const LangContainer = createLangDropdown();
   LangContainer.className = "absolute top-[30%] left-[25%]";
 
   modal.appendChild(closeButton);
+  if (logoutButton) modal.appendChild(logoutButton);
   modal.appendChild(LangContainer);
   modal.appendChild(SignButton);
 
