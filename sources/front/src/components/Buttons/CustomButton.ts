@@ -16,8 +16,8 @@ export interface CustomButtonOptions {
   padding?: string;
   fontSizeClass?: string;
   visible?: boolean;
-  onClick?: (() => void) | ((event: any) => void);
-  onHover?: (() => void) | ((buttonElement: any) => void);
+  onClick?: (() => void) | ((event: MouseEvent) => void);
+  onHover?: (() => void) | ((buttonElement: HTMLButtonElement) => void);
 
   onLeave?: () => void;
 }
@@ -30,7 +30,7 @@ export function createCustomButton(
   const classes = [
     "group",
     options.position || "",
-    options.backgroundColor || "bg-orange-500",
+    options.backgroundColor || "bg-orange-400",
     options.textColor || "text-black",
     options.borderWidth || "border-2",
     options.borderColor || "border-black",
@@ -71,7 +71,7 @@ export function createCustomButton(
       if (options.onClick!.length === 0) {
         (options.onClick as () => void)();
       } else {
-        (options.onClick as (event: any) => void)(event);
+        (options.onClick as (event: MouseEvent) => void)(event);
       }
     });
   }
@@ -92,7 +92,7 @@ export function createCustomButton(
       if (options.onHover!.length === 0) {
         (options.onHover as () => void)();
       } else {
-        (options.onHover as (buttonElement: any) => void)(button);
+        (options.onHover as (buttonElement: HTMLButtonElement) => void)(button);
       }
     });
   }

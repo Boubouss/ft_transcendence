@@ -2,43 +2,62 @@ import { navigateTo } from "@/router";
 import * as authStorage from "@utils/authStorage.ts";
 import { createCustomButton } from "@/components/Buttons/CustomButton"; // adapte le chemin si besoin
 import { t } from "@utils/i18n";
+import type { User_T } from "@utils/authStorage.ts";
 
-function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
+function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
   const modal = document.createElement("div");
   modal.id = "twofa-modal";
-  modal.style.position = "fixed";
-  modal.style.top = "0";
-  modal.style.left = "0";
-  modal.style.width = "100vw";
-  modal.style.height = "100vh";
   modal.style.backgroundColor = "rgba(0,0,0,0.5)";
-  modal.style.display = "flex";
-  modal.style.justifyContent = "center";
-  modal.style.alignItems = "center";
-  modal.style.zIndex = "1000";
+
+  modal.className = `
+  fixed
+  top-0
+  left-0
+  w-full
+  h-full
+  flex
+  justify-center
+  items-center
+  `;
+  modal.style.fontStyle = "font-jaro";
+
 
   const modalContent = document.createElement("div");
-  modalContent.style.background = "white";
-  modalContent.style.padding = "20px";
-  modalContent.style.borderRadius = "8px";
-  modalContent.style.maxWidth = "320px";
-  modalContent.style.width = "90%";
-  modalContent.style.textAlign = "center";
+  modalContent.className = `
+   bg-orange-400
+   p-[20px]
+   rounded-[20px]
+   max-w-[320px]
+   w-[90%]
+   text-center
+   border-2
+   border-black
+   `;
 
-  const title = document.createElement("h3");
-  title.textContent = t("requireda2f");
+
+  const title = document.createElement("p");
+  title.textContent = t("sentto") + authStorage.getUserValue("email");
+  title.className = `whitespace-pre-line font-jaro`;
+
 
   const input = document.createElement("input");
   input.id = "twofa-code";
   input.type = "text";
   input.maxLength = 6;
   input.placeholder = t("entera2f");
-  input.style.width = "100%";
   input.style.margin = "15px 0";
-  input.style.padding = "10px";
-  input.style.fontSize = "16px";
-  input.style.textAlign = "center";
   input.style.letterSpacing = "0.3em";
+
+  input.className = `
+  w-full
+  p-[10px]
+  text-[16px]
+  text-center
+  border-2
+  rounded-[15px]
+  bg-[#FFFFFF99]
+  focus:outline-none
+  `;
 
   const buttonsContainer = document.createElement("div");
   buttonsContainer.style.display = "flex";
@@ -48,11 +67,12 @@ function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
 
   const submitBtn = createCustomButton({
     text: t("valid"),
-    backgroundColor: "bg-blue-500",
+    backgroundColor: "bg-green-500",
     textColor: "text-white",
-    width: "75%",
+    width: "50%",
     borderRadius: "rounded-[10px]",
     fontSizeClass: "text-base",
+    fontStyle: "font-jaro",
     onClick: () => {
       const code = input.value.trim();
       if (code !== "000000") {
@@ -84,9 +104,10 @@ function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
     text: t("cancel"),
     backgroundColor: "bg-red-500",
     textColor: "text-white",
-    width: "75%",
+    width: "50%",
     borderRadius: "rounded-[10px]",
     fontSizeClass: "text-base",
+    fontStyle: "font-jaro",
     onClick: () => {
       const modal = document.querySelector("#twofa-modal");
       if (modal) document.body.removeChild(modal);
@@ -106,12 +127,12 @@ function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
   return modal;
 }
 
-function show2FAModal(validOrActivate: string, user: any = null) {
+function show2FAModal(validOrActivate: string, user: User_T) {
   const modal = create2FAModal(validOrActivate, user);
   document.body.appendChild(modal);
 }
 
-export function handlePostLogin(user: any, needs2FA: boolean) {
+export function handlePostLogin(user: User_T, needs2FA: boolean) {
   if (!needs2FA) {
     navigateTo("home");
   } else {
@@ -119,7 +140,14 @@ export function handlePostLogin(user: any, needs2FA: boolean) {
   }
 }
 
-export function EnableDisableA2F() {
-  const user = authStorage.getUser();
-  show2FAModal("EnableDisable", user); // activation mode
+export async function EnableDisableA2F(): Promise<void> {
+  const user: User_T | null = authStorage.getUser();
+  if (!user) {
+    alert("User Issue");
+    return;
+  }
+
+  // Après, si elle montre une modale, elle doit être attendue :
+  await show2FAModal("EnableDisable", user);
 }
+

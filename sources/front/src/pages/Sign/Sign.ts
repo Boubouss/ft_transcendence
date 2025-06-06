@@ -1,5 +1,5 @@
-import { createSignInForm } from "./SignIn.ts";
-import { createSignUpForm } from "./SignUp.ts";
+import { createSignInForm } from "./LoginIn.ts";
+import { createSignUpForm } from "./SignIn.ts";
 import { navigateTo } from "@/router.ts";
 import { t } from "@utils/i18n.ts";
 import { createCustomButton } from "@/components/Buttons/CustomButton.ts"; // adapte le chemin si besoin
@@ -8,25 +8,23 @@ export function renderSignModal() {
   // Création du modal overlay
   const modal = document.createElement("div");
   modal.id = "sign-modal";
-  Object.assign(modal.style, {
-    position: "fixed",
-    top: "0",
-    left: "0",
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: "1000",
-  });
+
+  modal.className = `
+  fixed
+  top-0
+  left-0
+  w-full
+  h-full
+  flex
+  items-center
+  justify-center`;
 
   navigateTo("home");
 
   // Card principale
   const card = document.createElement("div");
   card.className =
-    "bg-white rounded-3xl shadow-lg max-w-md w-full p-8 relative overflow-hidden flex flex-col items-center";
+    "bg-orange-400 rounded-3xl shadow-lg max-w-md w-full h-[60%] m-5 border-2 p-8 relative overflow-hidden flex flex-col items-center";
 
   // Toggle boutons (Connexion / Inscription)
   const toggleContainer = document.createElement("div");
@@ -40,30 +38,27 @@ export function renderSignModal() {
   ) {
     return createCustomButton({
       text,
-      width: "112px", // 28*4px
+      minWidth: "112px",
       height: "40px",
-      borderRadius: "rounded-[15px]",
-
+      borderRadius: "rounded-[20px]",
+      padding: "p-2",
       fontSizeClass: "text-lg",
-      //fontStyle: "font-jaro",
 
-      backgroundColor: active ? "bg-blue-600" : "bg-gray-300",
-      textColor: active ? "text-white" : "text-gray-700",
-      borderColor: active ? "border-blue-700" : "border-gray-300",
+
     });
   }
 
-  let activeForm: "signIn" | "signUp" = "signIn";
+  let activeForm: "signIn" | "signin" = "signIn";
 
-  const btnSignIn = createToggleButton(t("signin"), true, () => {
+  const btnSignIn = createToggleButton(t("loginin"), true, () => {
     if (activeForm !== "signIn") {
       activeForm = "signIn";
       updateToggle();
     }
   });
-  const btnSignUp = createToggleButton(t("signup"), false, () => {
-    if (activeForm !== "signUp") {
-      activeForm = "signUp";
+  const btnSignUp = createToggleButton(t("signin"), false, () => {
+    if (activeForm !== "signin") {
+      activeForm = "signin";
       updateToggle();
     }
   });
@@ -87,7 +82,7 @@ export function renderSignModal() {
     const menuModal = document.getElementById("menu-modal");
     if (menuModal) {
       // Anime la fermeture
-      menuModal.style.transform = "translateX(100%)";
+      menuModal.style.transform = "translateY(-100%)";
       setTimeout(() => menuModal.remove(), 300);
     }
 
@@ -95,25 +90,32 @@ export function renderSignModal() {
   };
 
   const formSignIn = createSignInForm(onAuthSuccess);
+
+  formSignIn.className = `
+  absolute
+  top-0
+  left-0
+  w-full
+  h-100
+  transition
+  duration-300
+  ease-in-out
+  flex flex-col items-center
+  `;
+
   const formSignUp = createSignUpForm(onAuthSuccess);
 
-  Object.assign(formSignIn.style, {
-    position: "absolute",
-    top: "0",
-    left: "0",
-    width: "100%",
-    height: "100%",
-    transition: "transform 0.3s ease",
-  });
-
-  Object.assign(formSignUp.style, {
-    position: "absolute",
-    top: "0",
-    left: "0",
-    width: "100%",
-    height: "100%",
-    transition: "transform 0.3s ease",
-  });
+  formSignUp.className = `
+  absolute
+  top-0
+  left-0
+  w-full
+  h-100
+  transition
+  duration-300
+  ease-in-out
+  flex flex-col items-center
+  `;
 
   formsContainer.appendChild(formSignIn);
   formsContainer.appendChild(formSignUp);
@@ -122,9 +124,10 @@ export function renderSignModal() {
   // Bouton de retour (custom)
   const backButton = createCustomButton({
     text: t("back"),
-    height: "40px",
-    borderRadius: "rounded-[15px]",
-    borderWidth: "border-0",
+    height: "50px",
+    borderRadius: "rounded-[20px]",
+    borderWidth: "border-2",
+    backgroundColor: "bg-[#FFFFFF99]",
     textColor: "text-gray-800",
     //fontStyle: "font-jaro",
     fontSizeClass: "text-lg",
@@ -143,7 +146,7 @@ export function renderSignModal() {
   // Mise à jour visuelle des boutons et position des formulaires
   function updateToggle() {
     if (activeForm === "signIn") {
-      btnSignIn.classList.add("bg-blue-600", "text-white", "border-blue-700");
+      btnSignIn.classList.add("text-white", "border-black");
       btnSignIn.classList.remove(
         "bg-gray-300",
         "text-gray-700",
@@ -164,7 +167,7 @@ export function renderSignModal() {
       formSignIn.style.transform = "translateX(0)";
       formSignUp.style.transform = "translateX(100%)";
     } else {
-      btnSignUp.classList.add("bg-blue-600", "text-white", "border-blue-700");
+      btnSignUp.classList.add("text-white", "border-blackz-700");
       btnSignUp.classList.remove(
         "bg-gray-300",
         "text-gray-700",
@@ -195,8 +198,8 @@ export function renderSignModal() {
   });
 
   btnSignUp.addEventListener("click", () => {
-    if (activeForm !== "signUp") {
-      activeForm = "signUp";
+    if (activeForm !== "signin") {
+      activeForm = "signin";
       updateToggle();
     }
   });

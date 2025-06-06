@@ -1,6 +1,8 @@
 import { createCustomButton } from "@/components/Buttons/CustomButton";
+import { navigateTo } from "@/router";
 import { getToken } from "@utils/authStorage.ts";
 import { t } from "@utils/i18n.ts";
+import * as authStorage from "@utils/authStorage"
 
 export function renderNavBar() {
   const app = document.createElement("div");
@@ -12,8 +14,7 @@ export function renderNavBar() {
   const buttonContainer = app.querySelector("#button-container")!;
 
   const commonButtonOptions = {
-    backgroundColor: "bg-[#D6A01A]",
-    width: "274px",
+    width: "280px",
     height: "93px",
     textColor: "text-black",
     borderWidth: "border-2",
@@ -30,19 +31,31 @@ export function renderNavBar() {
   const multiplayer_button = createCustomButton({
     ...commonButtonOptions,
     text: t("multiplayer"),
+    onClick: () => {
+      if (authStorage.getToken())
+        navigateTo("multi");
+    },
   });
 
-  if (!getToken())
-    multiplayer_button.style.filter = "brightness(0.6)";
 
-  const quit_button = createCustomButton({
+
+  const career_button = createCustomButton({
     ...commonButtonOptions,
     text: t("career"),
+    onClick: () => {
+      if (authStorage.getToken())
+          navigateTo("");
+    }
   });
 
-  buttonContainer.appendChild(local_button);
+    if (!getToken()) {
+    multiplayer_button.style.filter = "brightness(0.6)";
+    career_button.style.filter = "brightness(0.6)";
+
+  }
+    buttonContainer.appendChild(local_button);
   buttonContainer.appendChild(multiplayer_button);
-  buttonContainer.appendChild(quit_button);
+  buttonContainer.appendChild(career_button);
 
   return app;  // retourne l'élément, c’est important !
 }
