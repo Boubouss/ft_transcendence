@@ -48,24 +48,14 @@ app.register(() => {
         try {
           data = JSON.parse(message) as { input?: PlayerInput };
         } catch (e) {
-          connection.send(
-            JSON.stringify({
-              code: WebSocketCode.UNDEFINED,
-              message: "Invalid JSON",
-            }),
-          );
+          //todo: send error ?
           return;
         }
 
-        if (!data.input || !["up", "down", null].includes(data.input)) {
-          connection.send(
-            JSON.stringify({
-              code: WebSocketCode.UNDEFINED,
-              message: "Invalid input",
-            }),
-          );
-          return;
-        }
+        //todo: send error ?
+        if (data.input === undefined) return;
+        if (!["up", "down", null].includes(data.input)) return;
+
         game.setPlayerInput(playerId, data.input);
       });
 
@@ -73,9 +63,7 @@ app.register(() => {
         const game = games.get(gameId);
         if (!game) return;
         game.setPlayerConnection(playerId, null);
-        //todo: improve the game deletion logic
-        if (game.isFull() && game.getGameState() !== GameState.Init)
-          games.delete(gameId);
+        //todo: delete after delay and if no player remains
       });
     },
   );
