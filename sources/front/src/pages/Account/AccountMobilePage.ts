@@ -7,7 +7,7 @@ import * as AccModalSystem from "@pages/Account/AccountModalSystem";
 
 export function createAccountMobilePage(): HTMLElement {
   const container = document.createElement("div");
-  const username = authStorage.getUserValue("username");
+  const username = authStorage.getUserValue("name");
   const email = authStorage.getUserValue("email");
   const avatarUrl =
     authStorage.getUserValue("avatar") || "/assets/icons/default_avatar.png";
@@ -16,7 +16,6 @@ export function createAccountMobilePage(): HTMLElement {
   const accountinfo = t("accountinfo");
   const username_tag = t("username");
   const pw = t("pw");
-  const oldpw = t("oldpw");
   const newpw = t("newpw");
 
   container.className =

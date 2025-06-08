@@ -1,5 +1,6 @@
 import * as authStorage from "@utils/authStorage"
 import * as accbutton from "@components/Buttons/AccountButtons"
+import { t } from "@/utils/i18n";
 
 export function initializeAccountContent(container: HTMLElement) {
 
@@ -11,7 +12,7 @@ export function initializeAccountContent(container: HTMLElement) {
   const buttonContainer = container.querySelector<HTMLDivElement>("#button-container")!;
 
   const emailInit = authStorage.getUserValue("email");
-  const usernameInit = authStorage.getUserValue("username");
+  const usernameInit = authStorage.getUserValue("name");
 
   return {
     emailInput,
@@ -29,7 +30,9 @@ export function createToggleEditMode(
   elements: ReturnType<typeof initializeAccountContent>,
   navigateTo: (page: string) => void,
   a2fButton: HTMLElement,
-  avatarButton: HTMLElement
+  avatarButton: HTMLElement,
+  logoutButton: HTMLElement,
+  isModal: boolean
 ) {
   let isEditing = false;
 
@@ -52,13 +55,16 @@ export function createToggleEditMode(
 
     // Affiche ou cache les boutons A2F et Logout
     a2fButton.style.display = isEditing ? "none" : "flex";
+    if (isModal !== false)
+      logoutButton.style.display = isEditing ? "none" : "flex";
     avatarButton.style.display = isEditing ? "flex" : "none";
+
 
     if (isEditing) {
 
       oldPasswordInput.readOnly = false;
       oldPasswordInput.value = "";
-      oldPasswordInput.placeholder = "Ancien mot de passe";
+      oldPasswordInput.placeholder = t("oldpw");
       newPasswordContainer.style.display = "flex";
       newPasswordInput.value = "";
 

@@ -20,7 +20,10 @@ export async function addUser(email: string, name: string, password: string) {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       alert(error.response?.data || error.message);
-      console.error("❌ Erreur addUser :", error.response?.data || error.message);
+      console.error(
+        "❌ Erreur addUser :",
+        error.response?.data || error.message
+      );
     } else if (error instanceof Error) {
       alert(error.message);
       console.error("❌ Erreur addUser :", error.message);
@@ -31,30 +34,32 @@ export async function addUser(email: string, name: string, password: string) {
   }
 }
 
-
-export async function loginUser(username: string, password: string) {
+export async function loginUser(name: string, password: string) {
   try {
-    const response = await fetch(`http://localhost:3000/users?username=${encodeURIComponent(username)}`);
-    if (!response.ok) throw new Error("Erreur serveur");
+    const response = await axios.post("https://localhost:3000/auth/login", {
+      name,
+      password,
+    });
 
-    const users = await response.json();
-    if (users.length === 0) throw new Error("Utilisateur non trouvé");
+    const user = response.data;
 
-    const user = users[0];
-
-    if (user.password !== password) {
-      throw new Error("Mot de passe incorrect");
-    }
-
+    alert("Connexion réussie !");
     authStorage.saveUser(user);
-    authStorage.deleteUserValue("password");
 
-    console.log("✅ Connexion réussie :", user);
     return user;
-  } catch (error) {
-    console.error("❌ Erreur loginUser :", error);
-    throw error;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data || error.message);
+      console.error(
+        "❌ Erreur loginUser :",
+        error.response?.data || error.message
+      );
+    } else if (error instanceof Error) {
+      alert(error.message);
+      console.error("❌ Erreur loginUser :", error.message);
+    } else {
+      alert(String(error));
+      console.error("❌ Erreur loginUser :", error);
+    }
   }
 }
-
-

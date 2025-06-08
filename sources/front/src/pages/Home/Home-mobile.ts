@@ -69,11 +69,7 @@ export function createModalMenuMobile(): HTMLDivElement {
   let logoutButton = null;
 
   if (authStorage.getUser() !== null) {
-    logoutButton = createLogoutButton(() => {
-      authStorage.clearAuth();
-      modal.style.transform = "translateX(100%)";
-      setTimeout(() => modal.remove(), 300);
-    });
+    logoutButton = createLogoutButton(modal);
   }
 
   const LangContainer = createLangDropdown();

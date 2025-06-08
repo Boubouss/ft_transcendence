@@ -11,6 +11,11 @@ module.exports = {
       fontSize: {
         '4.5xl': '2.6rem',
       },
+      screens: {
+        "xs": '360px',         // nouveau breakpoint
+        "h-lg": { raw: "(min-height: 760px)" },
+        "h-sm": { raw: "(max-height: 500px)" },
+      },
     },
   },
   plugins: [],

@@ -6,7 +6,7 @@ import { loginUser } from "@/utils/db_utils.ts";
 
 export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElement {
   const signin = t("signin");
-  const username_tag = t("username");
+  const name_tag = t("username");
   const pw = t("pw");
 
   const form = document.createElement("form");
@@ -16,8 +16,8 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
     <h2 class="text-2xl font-bold text-center text-blue-600 mb-6">${signin}</h2>
     <input
   type="text"
-  name="username"
-  placeholder="${username_tag}"
+  name="name"
+  placeholder="${name_tag}"
   required
   minlength="3"
   maxlength="20"
@@ -57,12 +57,12 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
     e.preventDefault();
 
     const formData = new FormData(form);
-    const username = formData.get("username") as string;
+    const name = formData.get("name") as string;
     const password = formData.get("password") as string;
 
     try {
       // Appel à la fonction loginUser pour la connexion réelle
-      const user = await loginUser(username, password);
+      const user = await loginUser(name, password);
 
       // Vérifier si 2FA est activé dans le stockage
       const twoFAActive = authStorage.getA2F() ?? false;

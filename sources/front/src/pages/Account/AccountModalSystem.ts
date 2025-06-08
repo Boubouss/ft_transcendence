@@ -84,22 +84,35 @@ function setupContent(container: HTMLElement, modal: HTMLElement | null) {
   container.appendChild(a2fButton);
   container.appendChild(avatarButton);
 
-  const buttonColumn = document.createElement("div");
-  buttonColumn.className =
+  //const buttonColumn = document.createElement("div");
+  //buttonColumn.className =
     "flex flex-col gap-4 mt-6 sm:mt-0 sm:ml-auto sm:flex-row sm:items-center";
+
+  let isModal = true;
+
+  if (!modal)
+      isModal = false;
+
+  let logoutButton = accbutton.createLogoutButton(modal);
+  if (isModal == true)
+    container.appendChild(logoutButton);
 
   // On crée toggleEditMode en lui passant les boutons
   const toggleEditMode = createToggleEditMode(
     elements,
     navigateTo,
     a2fButton,
-    avatarButton
+    avatarButton,
+    logoutButton,
+    isModal
   );
 
   // Bouton modifier (éditer)
   elements.buttonContainer.appendChild(
     accbutton.createEditInfoButton(toggleEditMode)
   );
+
+
 
   if (modal) {
     navigateTo("home");

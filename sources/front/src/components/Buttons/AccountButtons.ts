@@ -1,6 +1,7 @@
 import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { t } from "@utils/i18n";
 import * as authStorage from "@utils/authStorage";
+import { navigateTo } from "@/router";
 
 export function createCloseModalButton(onClick: () => void) {
   return createCustomButton({
@@ -51,25 +52,33 @@ export function createA2FButton(onClick: () => void) {
   return createCustomButton({
     text: isEnabled ? t("offa2f") : t("ona2f"),
     height: "60px",
+    width: "80px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
     backgroundColor: isEnabled ? "bg-red-500" : "bg-green-500",
-    position: "absolute top-175 left-[10%] sm:top-98 sm:right-10",
+    position:
+      "absolute top-9/10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:top-8/10 sm:left-2/10",
+
     padding: "p-[10px]",
     onClick,
   });
 }
 
-export function createLogoutButton(onClick: () => void) {
+export function createLogoutButton(modal: any) {
   return createCustomButton({
     text: t("disco"),
     height: "60px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
     backgroundColor: "bg-red-500",
-    position: "absolute bottom-[10%] right-[10%]",
+    position:
+      "absolute top-9/10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:top-8/10 sm:left-8/10",
     padding: "p-[10px]",
-    onClick,
+    onClick: () => {
+      authStorage.clearAuth();
+      navigateTo("home");
+      if (modal !== null) modal.remove();
+    },
   });
 }
 
@@ -79,7 +88,7 @@ export function createAvatarButton(onClick: () => void = () => {}) {
     height: "60px",
     fontSizeClass: "text-2xl",
     fontStyle: "font-jaro",
-    position: "absolute top-177 right-10 sm:top-78",
+    position:  "absolute top-17/20 left-4/6 transform -translate-x-1/2 -translate-y-1/2 sm:top-8/10 sm:left-2/10",
     padding: "p-[10px]",
     visible: false,
     onClick,
