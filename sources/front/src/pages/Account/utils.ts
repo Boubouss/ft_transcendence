@@ -1,15 +1,19 @@
-import * as authStorage from "@utils/authStorage"
-import * as accbutton from "@components/Buttons/AccountButtons"
+import * as authStorage from "@utils/authStorage";
+import * as accbutton from "@components/Buttons/AccountButtons";
 import { t } from "@/utils/i18n";
 
 export function initializeAccountContent(container: HTMLElement) {
-
   const emailInput = container.querySelector<HTMLInputElement>("#email")!;
   const usernameInput = container.querySelector<HTMLInputElement>("#username")!;
-  const oldPasswordInput = container.querySelector<HTMLInputElement>("#password")!;
-  const newPasswordContainer = container.querySelector<HTMLDivElement>("#new-password-container")!;
-  const newPasswordInput = container.querySelector<HTMLInputElement>("#new-password")!;
-  const buttonContainer = container.querySelector<HTMLDivElement>("#button-container")!;
+  const oldPasswordInput =
+    container.querySelector<HTMLInputElement>("#password")!;
+  const newPasswordContainer = container.querySelector<HTMLDivElement>(
+    "#new-password-container"
+  )!;
+  const newPasswordInput =
+    container.querySelector<HTMLInputElement>("#new-password")!;
+  const buttonContainer =
+    container.querySelector<HTMLDivElement>("#button-container")!;
 
   const emailInit = authStorage.getUserValue("email");
   const usernameInit = authStorage.getUserValue("name");
@@ -29,10 +33,8 @@ export function initializeAccountContent(container: HTMLElement) {
 export function createToggleEditMode(
   elements: ReturnType<typeof initializeAccountContent>,
   navigateTo: (page: string) => void,
-  a2fButton: HTMLElement,
-  avatarButton: HTMLElement,
-  logoutButton: HTMLElement,
-  isModal: boolean
+  isModal: boolean,
+  updateAvatarLayout?: (overrideIsEdit?: boolean) => void
 ) {
   let isEditing = false;
 
@@ -53,15 +55,26 @@ export function createToggleEditMode(
     emailInput.readOnly = !isEditing;
     usernameInput.readOnly = !isEditing;
 
-    // Affiche ou cache les boutons A2F et Logout
-    a2fButton.style.display = isEditing ? "none" : "flex";
-    if (isModal !== false)
-      logoutButton.style.display = isEditing ? "none" : "flex";
-    avatarButton.style.display = isEditing ? "flex" : "none";
+    // Montre les boutons A2F + Avatar dans les bons conteneurs
+    const sideButtonsContainer = document.querySelector(
+      "#side-buttons"
+    ) as HTMLElement;
+    const mobileEditButtons = document.querySelector(
+      "#mobile-edit-buttons"
+    ) as HTMLElement;
 
+    if (isModal) {
+      if (sideButtonsContainer) {
+        sideButtonsContainer.style.display = isEditing ? "flex" : "none";
+      }
+      // Logout uniquement si isModal (desktop)
+    } else {
+      if (mobileEditButtons) {
+        mobileEditButtons.style.display = isEditing ? "flex" : "none";
+      }
+    }
 
     if (isEditing) {
-
       oldPasswordInput.readOnly = false;
       oldPasswordInput.value = "";
       oldPasswordInput.placeholder = t("oldpw");
@@ -73,12 +86,15 @@ export function createToggleEditMode(
       buttonContainer.style.gap = "12px";
       buttonContainer.style.justifyContent = "center";
 
+      mobileEditButtons.classList.remove("flex-col");
+      mobileEditButtons.classList.add("flex-row", "justify-center");
+
       buttonContainer.appendChild(
         accbutton.createValidateEditButton(() => {
           authStorage.setUserValue("email", emailInput.value);
-          authStorage.setUserValue("username", usernameInput.value);
+          authStorage.setUserValue("name", usernameInput.value);
+          if (updateAvatarLayout !== undefined) updateAvatarLayout(false);
           toggleEditMode();
-          navigateTo("home");
         })
       );
       buttonContainer.appendChild(
@@ -87,6 +103,7 @@ export function createToggleEditMode(
           usernameInput.value = usernameInit;
           oldPasswordInput.value = "";
           newPasswordInput.value = "";
+          if (updateAvatarLayout !== undefined) updateAvatarLayout(false);
           toggleEditMode();
         })
       );
@@ -100,10 +117,14 @@ export function createToggleEditMode(
       buttonContainer.style.gap = "";
       buttonContainer.style.justifyContent = "";
 
-      buttonContainer.appendChild(accbutton.createEditInfoButton(toggleEditMode));
+      buttonContainer.appendChild(
+        accbutton.createEditInfoButton(toggleEditMode)
+      );
+
+      mobileEditButtons.classList.remove("flex-row", "justify-center");
+      mobileEditButtons.classList.add("flex-col");
     }
   };
 
   return toggleEditMode;
 }
-

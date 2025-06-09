@@ -1,9 +1,12 @@
-// tailwind.config.cjs
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
-  content: [
-    './src/**/*.{html,js,ts,jsx,tsx}' // Assure-toi que ce chemin correspond à ton projet
-  ],
+  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
   theme: {
+    screens: {
+      xs: '360px',
+      ...defaultTheme.screens, // remplace les écrans par défaut
+    },
     extend: {
       fontFamily: {
         jaro: ['Jaro', 'sans-serif'],
@@ -11,12 +14,7 @@ module.exports = {
       fontSize: {
         '4.5xl': '2.6rem',
       },
-      screens: {
-        "xs": '360px',         // nouveau breakpoint
-        "h-lg": { raw: "(min-height: 760px)" },
-        "h-sm": { raw: "(max-height: 500px)" },
-      },
     },
   },
   plugins: [],
-}
+};

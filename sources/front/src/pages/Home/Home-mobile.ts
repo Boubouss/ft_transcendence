@@ -2,7 +2,6 @@ import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { getSignButtonOptions } from "@/components/Buttons/LoginButton";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { t } from "@/utils/i18n";
-import { createAccountMobilePage } from "../Account/AccountMobilePage";
 import { createLogoutButton } from "@/components/Buttons/AccountButtons";
 import { navigateTo } from "@/router";
 import * as authStorage from "@/utils/authStorage";
