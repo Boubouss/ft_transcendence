@@ -16,8 +16,9 @@ export interface CustomButtonOptions {
   padding?: string;
   fontSizeClass?: string;
   visible?: boolean;
-  onClick?: () => void;
-  onHover?: () => void;
+  onClick?: (() => void) | ((event: any) => void);
+  onHover?: (() => void) | ((buttonElement: any) => void);
+
   onLeave?: () => void;
 }
 
@@ -65,8 +66,14 @@ export function createCustomButton(
     button.textContent = options.text || "";
   }
 
-  if (typeof options.onClick === "function") {
-    button.addEventListener("click", options.onClick);
+    if (typeof options.onClick === "function") {
+    button.addEventListener("click", (event) => {
+      if (options.onClick!.length === 0) {
+        (options.onClick as () => void)();
+      } else {
+        (options.onClick as (event: any) => void)(event);
+      }
+    });
   }
 
   if (options.visible === false) {
@@ -81,8 +88,15 @@ export function createCustomButton(
 
   // Gestion du hover
   if (typeof options.onHover === "function") {
-    button.addEventListener("mouseenter", options.onHover);
+    button.addEventListener("mouseenter", () => {
+      if (options.onHover!.length === 0) {
+        (options.onHover as () => void)();
+      } else {
+        (options.onHover as (buttonElement: any) => void)(button);
+      }
+    });
   }
+
   if (typeof options.onLeave === "function") {
     button.addEventListener("mouseleave", options.onLeave);
   }

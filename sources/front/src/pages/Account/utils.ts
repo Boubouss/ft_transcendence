@@ -32,7 +32,6 @@ export function initializeAccountContent(container: HTMLElement) {
 
 export function createToggleEditMode(
   elements: ReturnType<typeof initializeAccountContent>,
-  navigateTo: (page: string) => void,
   isModal: boolean,
   updateAvatarLayout?: (overrideIsEdit?: boolean) => void
 ) {

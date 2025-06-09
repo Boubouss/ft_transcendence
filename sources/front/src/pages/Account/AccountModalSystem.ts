@@ -82,17 +82,15 @@ function renderAccountDesktop() {
   modal.appendChild(modalInner);
   document.body.appendChild(modal);
 
-  // ⛔ Ferme en cliquant sur fond
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
 
-  // ✅ Bouton de fermeture (positionné dans le coin du viewport)
   const closeButton = accbutton.createCloseModalButton(() => modal.remove());
   Object.assign(closeButton.style, {
     position: "absolute",
-    top: "20px",
-    right: "20px",
+    top: "40px",
+    right: "40px",
     zIndex: "1010",
   });
   modal.appendChild(closeButton);
@@ -156,16 +154,9 @@ function updateAvatarLayout(overrideIsEdit?: boolean) {
     mobileEditButtons.appendChild(avatarButton);
   }
 
-  // Bouton Logout uniquement modal
-  let logoutButton = accbutton.createLogoutButton(modal);
-  if (isModal) {
-    container.appendChild(logoutButton);
-  }
-
   // Bouton éditer
   const toggleEditMode = createToggleEditMode(
     elements,
-    navigateTo,
     isModal,
     updateAvatarLayout);
 

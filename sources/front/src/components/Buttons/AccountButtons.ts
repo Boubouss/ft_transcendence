@@ -88,6 +88,5 @@ export function createLogoutButton(modal: any) {
       navigateTo("home");
       if (modal !== null) modal.remove();
     },
-    visible: false,
   });
 }

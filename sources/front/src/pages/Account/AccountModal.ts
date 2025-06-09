@@ -31,7 +31,7 @@ export function createAccountPage(isModal = false): HTMLElement {
   }
 
   container.innerHTML = `
-    <h2 class="text-4xl md:text-5xl font-jaro text-black text-center">${settings}</h2>
+    <h2 class="text-4xl md:text-6xl font-jaro text-black text-center">${settings}</h2>
     <div class="w-full h-[3px] bg-black"></div>
 
     <div class="flex flex-col items-center gap-4 w-full">

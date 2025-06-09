@@ -3,7 +3,7 @@ import * as authStorage from "@utils/authStorage.ts";
 import { createCustomButton } from "@/components/Buttons/CustomButton"; // adapte le chemin si besoin
 import { t } from "@utils/i18n";
 
-function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
+function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
   const modal = document.createElement("div");
   modal.id = "twofa-modal";
   modal.style.position = "fixed";
@@ -60,7 +60,7 @@ function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
         return;
       }
 
-      if (validOrActivate) {
+      if (validOrActivate == "EnableDisable") {
         // Activation / désactivation 2FA
         const A2FStatus = authStorage.getA2F();
         authStorage.setA2F(!A2FStatus);
@@ -92,7 +92,8 @@ function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
     onClick: () => {
       const modal = document.querySelector("#twofa-modal");
       if (modal) document.body.removeChild(modal);
-      authStorage.clearAuth();
+      if (validOrActivate == "Connexion")
+        authStorage.clearAuth();
     },
   });
 
@@ -107,7 +108,7 @@ function create2FAModal(validOrActivate: boolean, user: any): HTMLDivElement {
   return modal;
 }
 
-function show2FAModal(validOrActivate: boolean, user: any = null) {
+function show2FAModal(validOrActivate: string, user: any = null) {
   const modal = create2FAModal(validOrActivate, user);
   document.body.appendChild(modal);
 }
@@ -116,11 +117,11 @@ export function handlePostLogin(user: any, needs2FA: boolean) {
   if (!needs2FA) {
     navigateTo("home");
   } else {
-    show2FAModal(false, user); // validation mode
+    show2FAModal('Connexion', user); // validation mode
   }
 }
 
 export function EnableDisableA2F() {
   const user = authStorage.getUser();
-  show2FAModal(true, user); // activation mode
+  show2FAModal("EnableDisable", user); // activation mode
 }

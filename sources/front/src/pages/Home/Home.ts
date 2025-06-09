@@ -4,7 +4,6 @@ import * as HM from "@pages/Home/Home-mobile.ts";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { getSignButtonOptions } from "@/components/Buttons/LoginButton";
 import { createCustomButton } from "@/components/Buttons/CustomButton";
-import { navigateTo } from "@/router";
 
 export function renderHome() {
   const appRoot = document.getElementById("app-root");
