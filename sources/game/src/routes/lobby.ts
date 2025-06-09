@@ -1,17 +1,19 @@
 import { FastifyPluginAsync } from "fastify";
-import { SocketList, Player, Lobby, LobbyCreate, PlayerAction, LobbyInfo } from "../types/types";
+import { SocketList, Lobby, LobbyPlayer, LobbyCreate, PlayerAction, LobbyInfo } from "../types/types";
 import { Action, ClientEvent, ServerEvent } from "../types/enums";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { isLobbyCreate, isPlayerAction } from "../types/check";
 import axios from "axios";
 import _ from "lodash";
+import { createMatch } from "../services/matchService";
+import { findOrCreatePlayers } from "../services/playerService";
 
 const lobby: FastifyPluginAsync = async (fastify) => {
 	fastify.addHook("preHandler", authMiddleware);
 
 	const sockets: SocketList = {};
-	const players: Player[] = [];
 	const lobbies: Lobby[] = [];
+	const players: LobbyPlayer[] = [];
 	const infos: LobbyInfo[] = [];
 
 	const broadcastData = (data: string, except_ids?: number[]) => {
@@ -40,7 +42,7 @@ const lobby: FastifyPluginAsync = async (fastify) => {
 			delete data.email;
 			delete data.configuration;
 
-			players.push(data as Player);
+			players.push(data as LobbyPlayer);
 			return JSON.stringify({ event: ClientEvent.UPDATE_LOBBY_LIST, data: lobbies });
 		} catch (err) {
 			if (axios.isAxiosError(err)) {
@@ -51,17 +53,38 @@ const lobby: FastifyPluginAsync = async (fastify) => {
 		}
 	}
 
-	const joinLobby = (info: LobbyInfo, player: Player) => {
+	const initGameInstance = async (info: LobbyInfo) => {
+		try {
+			const players = await findOrCreatePlayers(info.players.map((p) => p.id));
+			const match = await createMatch(players);
+
+			// Call for game instance creation
+			// const { data } = axios.post("url", match, { headers });
+
+			emitLobbyData(info, JSON.stringify({
+				event: ClientEvent.GAME_CREATED,
+				// data
+			}));
+		} catch (err) {
+			emitLobbyData(info, `error: ${JSON.stringify(err)}`);
+		}
+	}
+
+	const joinLobby = (info: LobbyInfo, player: LobbyPlayer) => {
 		if (info.player_limit <= info.players.length) return "error: This lobby is full.";
 		info.players.push(player);
 
 		const data = JSON.stringify({ event: ClientEvent.UPDATE_LOBBY_INFO, data: info });
 		emitLobbyData(info, data);
 
+		if (info.player_limit === info.players.length) {
+			initGameInstance(info);
+		}
+
 		return `message: You joined lobby#${info.lobby_id}.`;
 	}
 
-	const leaveLobby = (info: LobbyInfo, player: Player) => {
+	const leaveLobby = (info: LobbyInfo, player: LobbyPlayer) => {
 		if (info.lobby_id == player.id) {
 			const lobbyIndex = lobbies.findIndex((l) => l.id == info.lobby_id);
 			const infoIndex = infos.indexOf(info);
@@ -90,7 +113,7 @@ const lobby: FastifyPluginAsync = async (fastify) => {
 		return `message: You left lobby#${info.lobby_id}.`;
 	}
 
-	const handleAction = (player: Player, data: PlayerAction) => {
+	const handleAction = (player: LobbyPlayer, data: PlayerAction) => {
 		if (!isPlayerAction(data)) return "error: Expected format wasn't met.";
 
 		const lobby = lobbies.find((l) => l.id === data.target_id);
@@ -109,7 +132,7 @@ const lobby: FastifyPluginAsync = async (fastify) => {
 		}
 	}
 
-	const createLobby = (player: Player, data: LobbyCreate) => {
+	const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
 		if (!isLobbyCreate(data)) return "error: Expected format wasn't met.";
 
 		let lobby = lobbies.find((l) => l.id === player.id);

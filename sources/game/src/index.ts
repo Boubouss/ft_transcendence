@@ -2,6 +2,7 @@ import fastify from "fastify";
 import fastifyJwt from "@fastify/jwt";
 import { errorHandler } from "./errors/errorHandler";
 import fastifyWebsocket from "@fastify/websocket";
+import match from "./routes/match";
 import lobby from "./routes/lobby";
 import { checkEnv } from "./env";
 import * as dotenv from "dotenv";
@@ -27,6 +28,7 @@ app.register(fastifyJwt, {
 });
 
 app.register(lobby);
+app.register(match);
 
 app.setErrorHandler(errorHandler);
 

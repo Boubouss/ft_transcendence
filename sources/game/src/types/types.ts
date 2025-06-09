@@ -17,20 +17,34 @@ export type User = {
 	configuration?: Configuration;
 };
 
-export type Player = {
-	id: number;
-	name: string;
-	avatar: string;
+export type MatchCreate = {
+	user_ids: number[];
+};
+
+export type PlayerInfo = {
+	player_id: number;
+	score: number;
+};
+
+export type MatchUpdate = {
+	winner_id: number;
+	infos: PlayerInfo[];
 };
 
 export type Lobby = {
 	id: number;
 };
 
+export type LobbyPlayer = {
+	id: number;
+	name: string;
+	avatar: string;
+};
+
 export type LobbyInfo = {
 	lobby_id: number;
 	player_limit: number;
-	players: Player[];
+	players: LobbyPlayer[];
 }
 
 export type LobbyCreate = {
