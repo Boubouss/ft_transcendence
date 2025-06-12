@@ -1,9 +1,10 @@
 import { FastifyPluginAsync } from "fastify";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { matchCreateSchema, matchUpdateSchema } from "../validations/matchSchema";
-import { createMatch, getPlayerMatches, updateMatch } from "../services/matchService";
-import { findOrCreatePlayer, findOrCreatePlayers } from "../services/playerService";
-import { MatchCreate, MatchUpdate } from "../types/types";
+import { authMiddleware } from "#middlewares/authMiddleware";
+import { matchCreateSchema, matchUpdateSchema } from "#validations/matchSchema";
+import { findOrCreatePlayer, findOrCreatePlayers } from "#services/playerService";
+import { createMatch, getPlayerMatches, updateMatch } from "#services/matchService";
+import { handleTournamentMatch } from "#services/tournamentService";
+import { MatchCreate, MatchUpdate } from "#types/match";
 import _ from "lodash";
 
 const match: FastifyPluginAsync = async (fastify, opts) => {
@@ -27,9 +28,13 @@ const match: FastifyPluginAsync = async (fastify, opts) => {
 
   fastify.put("/match/end/:id", { schema: matchUpdateSchema }, async (request, reply) => {
     const { id } = request.params as { id: string };
-    const res = await updateMatch(parseInt(id), request.body as MatchUpdate);
+    const match = await updateMatch(parseInt(id), request.body as MatchUpdate);
 
-    return reply.send(res);
+    if (!_.isEmpty(match) && !_.isEmpty(match.round)) {
+      await handleTournamentMatch(match, match.round, _.first(match.players));
+    }
+
+    return reply.send(match);
   });
 };
 
