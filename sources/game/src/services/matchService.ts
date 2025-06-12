@@ -1,5 +1,5 @@
+import { MatchUpdate } from "#types/match";
 import { Player, PrismaClient } from "@prisma/client";
-import { MatchUpdate } from "../types/types";
 import _ from "lodash";
 
 const prisma: PrismaClient = new PrismaClient();

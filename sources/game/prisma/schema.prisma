@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Player {
-  id    Int            @unique
+  id         Int            @unique
   matches    MatchPlayers[]
   created_at DateTime       @default(now())
   updated_at DateTime       @updatedAt

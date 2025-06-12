@@ -1,9 +1,9 @@
 import { FastifyPluginAsync } from "fastify";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { matchCreateSchema, matchUpdateSchema } from "../validations/matchSchema";
-import { createMatch, getPlayerMatches, updateMatch } from "../services/matchService";
-import { findOrCreatePlayer, findOrCreatePlayers } from "../services/playerService";
-import { MatchCreate, MatchUpdate } from "../types/types";
+import { authMiddleware } from "#middlewares/authMiddleware";
+import { matchCreateSchema, matchUpdateSchema } from "#validations/matchSchema";
+import { findOrCreatePlayer, findOrCreatePlayers } from "#services/playerService";
+import { createMatch, getPlayerMatches, updateMatch } from "#services/matchService";
+import { MatchCreate, MatchUpdate } from "#types/match";
 import _ from "lodash";
 
 const match: FastifyPluginAsync = async (fastify, opts) => {

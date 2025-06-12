@@ -1,14 +1,23 @@
 import { FastifyPluginAsync } from "fastify";
-import { SocketList, Lobby, LobbyPlayer, LobbyCreate, PlayerAction, LobbyInfo } from "../types/types";
-import { Action, ClientEvent, ServerEvent } from "../types/enums";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { isLobbyCreate, isPlayerAction } from "../types/check";
+import { authMiddleware } from "#middlewares/authMiddleware";
+import { Action, ClientEvent, ServerEvent } from "#types/enums";
+import { findOrCreatePlayers } from "#services/playerService";
+import { createMatch } from "#services/matchService";
+import { SocketList } from "#types/general";
 import axios from "axios";
 import _ from "lodash";
-import { createMatch } from "../services/matchService";
-import { findOrCreatePlayers } from "../services/playerService";
 
-const lobby: FastifyPluginAsync = async (fastify) => {
+import {
+	Lobby,
+	LobbyInfo,
+	LobbyPlayer,
+	LobbyCreate,
+	LobbyPlayerAction,
+	isLobbyCreate,
+	isLobbyPlayerAction
+} from "#types/lobby";
+
+export const lobby: FastifyPluginAsync = async (fastify) => {
 	fastify.addHook("preHandler", authMiddleware);
 
 	const sockets: SocketList = {};
@@ -32,10 +41,10 @@ const lobby: FastifyPluginAsync = async (fastify) => {
 		})
 	}
 
-	const getUser = async (player_id: number, token?: string) => {
+	const getUser = async (user_id: string, token?: string) => {
 		try {
 			const { data } = await axios.get(
-				`${process.env.API_USER}/crud/user/${player_id}`,
+				`${process.env.API_USER}/crud/user/${user_id}`,
 				{ headers: { Authorization: token } }
 			)
 
@@ -113,8 +122,8 @@ const lobby: FastifyPluginAsync = async (fastify) => {
 		return `message: You left lobby#${info.lobby_id}.`;
 	}
 
-	const handleAction = (player: LobbyPlayer, data: PlayerAction) => {
-		if (!isPlayerAction(data)) return "error: Expected format wasn't met.";
+	const handleAction = (player: LobbyPlayer, data: LobbyPlayerAction) => {
+		if (!isLobbyPlayerAction(data)) return "error: Expected format wasn't met.";
 
 		const lobby = lobbies.find((l) => l.id === data.target_id);
 		if (_.isEmpty(lobby)) return "error: This lobby doesn't exist.";
@@ -156,12 +165,12 @@ const lobby: FastifyPluginAsync = async (fastify) => {
 		return JSON.stringify({ event: ClientEvent.UPDATE_LOBBY_INFO, data: info });
 	};
 
-	fastify.get("/lobby/:id", { websocket: true }, async (socket, request) => {
-		const { id } = request.params as { id: string };
-		const player_id = parseInt(id);
+	fastify.get("/lobby/:user_id", { websocket: true }, async (socket, request) => {
+		const { user_id } = request.params as { user_id: string };
+		const player_id = parseInt(user_id);
 		sockets[player_id] = socket;
 
-		socket.send(await getUser(player_id, request.headers.authorization));
+		socket.send(await getUser(user_id, request.headers.authorization));
 
 		socket.on("message", async (message: string) => {
 			const { event, data } = JSON.parse(message);
