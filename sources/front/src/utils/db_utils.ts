@@ -14,22 +14,17 @@ export async function addUser(email: string, name: string, password: string) {
 
     alert("Utilisateur créé !");
     authStorage.saveUser(newUser);
-    authStorage.deleteUserValue("password");
 
     console.log("✅ Utilisateur créé :", newUser);
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      alert(error.response?.data || error.message);
-      console.error(
-        "❌ Erreur addUser :",
-        error.response?.data || error.message
-      );
+ if (axios.isAxiosError(error)) {
+      console.log("Useredit error : " + error);
+      console.error("Détail validationErrors :", JSON.stringify(error.response?.data?.validationErrors, null, 2));
+      alert("Error: " + error);
     } else if (error instanceof Error) {
-      alert(error.message);
-      console.error("❌ Erreur addUser :", error.message);
+      console.error("❌ Erreur editUser :", error.message);
     } else {
-      alert(String(error));
-      console.error("❌ Erreur addUser :", error);
+      console.error("❌ Erreur editUser :", error);
     }
   }
 }
@@ -48,18 +43,62 @@ export async function loginUser(name: string, password: string) {
 
     return user;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      alert(error.response?.data || error.message);
-      console.error(
-        "❌ Erreur loginUser :",
-        error.response?.data || error.message
-      );
+ if (axios.isAxiosError(error)) {
+      console.log("Useredit error : " + error);
+      console.error("Détail validationErrors :", JSON.stringify(error.response?.data?.validationErrors, null, 2));
+      alert("Error: " + error);
+
     } else if (error instanceof Error) {
-      alert(error.message);
-      console.error("❌ Erreur loginUser :", error.message);
+      console.error("❌ Erreur editUser :", error.message);
     } else {
-      alert(String(error));
-      console.error("❌ Erreur loginUser :", error);
+      console.error("❌ Erreur editUser :", error);
     }
   }
 }
+
+export async function editUser(name: string | null, email: string | null) {
+  const id = authStorage.getUserValue("id");
+  const configuration = authStorage.getConfiguration();
+  const token = authStorage.getUserValue("token"); // Récupération du token
+
+  if (!token || !id) {
+    console.error("❌ Token ou ID utilisateur manquant");
+    return;
+  }
+
+  const newuser = { id, name, email, configuration };
+
+  console.log("Payload envoyé :", newuser);
+
+  try {
+    const response = await axios.put(
+      `https://localhost:3000/crud/user/${id}`,
+      newuser,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+
+    const user = response.data;
+    alert("Edition réussie !");
+    authStorage.saveUser(user);
+    authStorage.saveToken(token);
+
+    return user;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.log("Useredit error : " + error);
+      console.error("Détail validationErrors :", JSON.stringify(error.response?.data?.validationErrors, null, 2));
+      alert("Error: " + error);
+
+    } else if (error instanceof Error) {
+      console.error("❌ Erreur editUser :", error.message);
+    } else {
+      console.error("❌ Erreur editUser :", error);
+    }
+  }
+}
+

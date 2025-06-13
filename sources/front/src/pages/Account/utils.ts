@@ -1,10 +1,12 @@
 import * as authStorage from "@utils/authStorage";
 import * as accbutton from "@components/Buttons/AccountButtons";
 import { t } from "@/utils/i18n";
+import { navigateTo } from "@/router";
+import { editUser } from "@/utils/db_utils";
 
 export function initializeAccountContent(container: HTMLElement) {
   const emailInput = container.querySelector<HTMLInputElement>("#email")!;
-  const usernameInput = container.querySelector<HTMLInputElement>("#username")!;
+  const nameInput = container.querySelector<HTMLInputElement>("#username")!;
   const oldPasswordInput =
     container.querySelector<HTMLInputElement>("#password")!;
   const newPasswordContainer = container.querySelector<HTMLDivElement>(
@@ -20,7 +22,7 @@ export function initializeAccountContent(container: HTMLElement) {
 
   return {
     emailInput,
-    usernameInput,
+    nameInput,
     oldPasswordInput,
     newPasswordContainer,
     newPasswordInput,
@@ -42,7 +44,7 @@ export function createToggleEditMode(
 
     const {
       emailInput,
-      usernameInput,
+      nameInput,
       oldPasswordInput,
       newPasswordContainer,
       newPasswordInput,
@@ -52,7 +54,7 @@ export function createToggleEditMode(
     } = elements;
 
     emailInput.readOnly = !isEditing;
-    usernameInput.readOnly = !isEditing;
+    nameInput.readOnly = !isEditing;
 
     // Montre les boutons A2F + Avatar dans les bons conteneurs
     const sideButtonsContainer = document.querySelector(
@@ -74,6 +76,8 @@ export function createToggleEditMode(
     }
 
     if (isEditing) {
+      authStorage.saveOld2fa(authStorage.getA2FfromConfig());
+
       oldPasswordInput.readOnly = false;
       oldPasswordInput.value = "";
       oldPasswordInput.placeholder = t("oldpw");
@@ -89,21 +93,30 @@ export function createToggleEditMode(
       mobileEditButtons.classList.add("flex-row", "justify-center");
 
       buttonContainer.appendChild(
-        accbutton.createValidateEditButton(() => {
-          authStorage.setUserValue("email", emailInput.value);
-          authStorage.setUserValue("name", usernameInput.value);
+        accbutton.createValidateEditButton(async () => {
           if (updateAvatarLayout !== undefined) updateAvatarLayout(false);
+
+          await editUser(nameInput.value, emailInput.value);
+
           toggleEditMode();
+          //authStorage.setUserValue("email", emailInput.value);
+          //authStorage.setUserValue("name", nameInput.value);
+          authStorage.clearOld2fa();
+          navigateTo("account");
         })
       );
       buttonContainer.appendChild(
         accbutton.createCancelEditButton(() => {
-          emailInput.value = emailInit;
-          usernameInput.value = usernameInit;
+          emailInput.value = emailInit !== null ? emailInit : "";
+          nameInput.value = usernameInit !== null ? usernameInit : "";
+
           oldPasswordInput.value = "";
           newPasswordInput.value = "";
           if (updateAvatarLayout !== undefined) updateAvatarLayout(false);
-          toggleEditMode();
+
+          if (authStorage.getA2FfromConfig() != null)
+            authStorage.getSignificant2FA()
+           toggleEditMode();
         })
       );
     } else {

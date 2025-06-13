@@ -47,7 +47,7 @@ export function createCancelEditButton(onClick: () => void) {
 }
 
 export function createA2FButton(onClick: () => void) {
-  const isEnabled = authStorage.getA2F();
+  const isEnabled = authStorage.getA2FfromConfig();
   return createCustomButton({
     text: isEnabled ? t("offa2f") : t("ona2f"),
     height: "50px",

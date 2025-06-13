@@ -24,5 +24,7 @@
   "requireda2f": "Código 2FA requerido",
   "alerta2f": "Código 2FA incorrecto, inténtelo de nuevo.",
   "alertsignup": "Ocurrió un error, por favor intente nuevamente.",
-  "avatar": "Cambiar avatar"
+  "avatar": "Cambiar avatar",
+  "a2fenable": "A2F activado, ¡confirme la actualización!",
+  "a2fdisable": "A2F desactivado, ¡confirme la actualización!"
 }

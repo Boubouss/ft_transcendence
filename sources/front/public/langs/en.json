@@ -24,5 +24,7 @@
   "requireda2f": "Required A2F code",
   "alerta2f": "Wrong A2F code, please try again.",
   "alertsignup": "An error occured, please try again.",
-  "avatar": "Change avatar"
+  "avatar": "Change avatar",
+  "a2fenable": "A2F enabled, confirm update!",
+  "a2fdisable": "A2F disabled, confirm update!"
 }

@@ -59,24 +59,25 @@ function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
         alert(t("alerta2f"));
         return;
       }
-
+      document.body.removeChild(modal);
       if (validOrActivate == "EnableDisable") {
         // Activation / désactivation 2FA
-        const A2FStatus = authStorage.getA2F();
-        authStorage.setA2F(!A2FStatus);
-        document.body.removeChild(modal);
-        navigateTo("account");
+        const A2FStatus = authStorage.getA2FfromConfig();
+        authStorage.setA2FInConfig(!A2FStatus);
+        if (authStorage.getA2FfromConfig()) {
+          alert(t("a2fenable"))
+        } else {
+          alert(t("a2fdisable"))
+        }
       } else {
         // Validation post-login
         if (user) {
           authStorage.saveUser(user);
-          authStorage.setUserValue("token", "fake-jwt-token-" + Date.now())
         }
 
-        const token = authStorage.getUserValue<string>("token");
+        const token = authStorage.getUserValue("token");
         if (token)
           authStorage.saveToken(token);
-          document.body.removeChild(modal);
           navigateTo("home");
       }
     },

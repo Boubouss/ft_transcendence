@@ -65,7 +65,7 @@ export function createSignInForm(onSuccess: (user: any) => void): HTMLFormElemen
       const user = await loginUser(name, password);
 
       // Vérifier si 2FA est activé dans le stockage
-      const twoFAActive = authStorage.getA2F() ?? false;
+      const twoFAActive = authStorage.getA2FfromConfig() ?? false;
 
       // Gérer la connexion post login
       handlePostLogin(user, twoFAActive);

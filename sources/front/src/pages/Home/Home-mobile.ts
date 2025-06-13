@@ -63,17 +63,11 @@ export function createModalMenuMobile(): HTMLDivElement {
     padding: "p-[5px]",
   });
 
-  let logoutButton = null;
-
-  if (authStorage.getUser() !== null) {
-    logoutButton = createLogoutButton(modal);
-  }
 
   const LangContainer = createLangDropdown();
-  LangContainer.className = "absolute top-[30%] left-[25%]";
+  LangContainer.className = "absolute top-[35%] left-[30%]";
 
   modal.appendChild(closeButton);
-  if (logoutButton) modal.appendChild(logoutButton);
   modal.appendChild(LangContainer);
   modal.appendChild(SignButton);
 

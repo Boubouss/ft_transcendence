@@ -5,6 +5,7 @@ import * as accbutton from "@components/Buttons/AccountButtons";
 import { EnableDisableA2F } from "../Sign/A2F";
 import { createToggleEditMode } from "@pages/Account/utils";
 import { initializeAccountContent } from "@pages/Account/utils";
+import * as authStorage from "@utils/authStorage";
 
 export function renderAccount() {
   const isMobile = window.innerWidth < 640;
@@ -35,8 +36,7 @@ function renderAccountMobile() {
 
   // ✅ Ajoute le bouton dans le coin haut droit du contenu
   const closeButton = accbutton.createCloseModalButton(() =>
-    navigateTo("home"),
-
+    navigateTo("home")
   ); // ou une autre action
   Object.assign(closeButton.style, {
     position: "absolute",
@@ -51,13 +51,11 @@ function renderAccountMobile() {
   setupContent(container, null);
 }
 
-
 /*___  ___ ___ _  _______ ___  ___  __   _____ ___  ___ ___ ___  _  _
  |   \| __/ __| |/ /_   _/ _ \| _ \ \ \ / / __| _ \/ __|_ _/ _ \| \| |
  | |) | _|\__ \ ' <  | || (_) |  _/  \ V /| _||   /\__ \| | (_) | .` |
  |___/|___|___/_|\_\ |_| \___/|_|     \_/ |___|_|_\|___/___\___/|_|\_|
                                                                        */
-
 
 function renderAccountDesktop() {
   const existing = document.getElementById("account-modal");
@@ -83,10 +81,16 @@ function renderAccountDesktop() {
   document.body.appendChild(modal);
 
   modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.remove();
+    if (e.target === modal) {
+      if (authStorage.getA2FfromConfig() != null)
+        authStorage.getSignificant2FA(), modal.remove();
+    }
   });
 
-  const closeButton = accbutton.createCloseModalButton(() => modal.remove());
+  const closeButton = accbutton.createCloseModalButton(() => {
+    if (authStorage.getA2FfromConfig() != null)
+      authStorage.getSignificant2FA(), modal.remove();
+  });
   Object.assign(closeButton.style, {
     position: "absolute",
     top: "40px",
@@ -98,7 +102,6 @@ function renderAccountDesktop() {
   navigateTo("home");
   setupContent(modalInner, modal);
 }
-
 
 function setupContent(container: HTMLElement, modal: HTMLElement | null) {
   const elements = initializeAccountContent(container);
@@ -121,27 +124,34 @@ function setupContent(container: HTMLElement, modal: HTMLElement | null) {
   const avatarButton = accbutton.createAvatarButton();
 
   // Fonction pour appliquer le style avatar selon isEdit
-function updateAvatarLayout(overrideIsEdit?: boolean) {
-  // Utilise overrideIsEdit s’il est défini, sinon la variable isEdit
-  const editMode = overrideIsEdit !== undefined ? overrideIsEdit : isEdit;
+  function updateAvatarLayout(overrideIsEdit?: boolean) {
+    // Utilise overrideIsEdit s’il est défini, sinon la variable isEdit
+    const editMode = overrideIsEdit !== undefined ? overrideIsEdit : isEdit;
 
-  if (editMode) {
-    if (window.innerWidth >= 640) {
-      avatarSection.classList.remove("items-center", "justify-center");
-      avatarSection.classList.add("items-start", "justify-start", "sm:flex-row");
-      sideButtonsContainer.style.display = "flex";
+    if (editMode) {
+      if (window.innerWidth >= 640) {
+        avatarSection.classList.remove("items-center", "justify-center");
+        avatarSection.classList.add(
+          "items-start",
+          "justify-start",
+          "sm:flex-row"
+        );
+        sideButtonsContainer.style.display = "flex";
+      } else {
+        avatarSection.classList.remove("items-start", "justify-start");
+        avatarSection.classList.add(
+          "items-center",
+          "justify-center",
+          "flex-col"
+        );
+        sideButtonsContainer.style.display = "none";
+      }
     } else {
       avatarSection.classList.remove("items-start", "justify-start");
-      avatarSection.classList.add("items-center", "justify-center", "flex-col");
+      avatarSection.classList.add("items-center", "justify-center");
       sideButtonsContainer.style.display = "none";
     }
-  } else {
-    avatarSection.classList.remove("items-start", "justify-start");
-    avatarSection.classList.add("items-center", "justify-center");
-    sideButtonsContainer.style.display = "none";
   }
-}
-
 
   updateAvatarLayout(); // init
 
@@ -158,7 +168,8 @@ function updateAvatarLayout(overrideIsEdit?: boolean) {
   const toggleEditMode = createToggleEditMode(
     elements,
     isModal,
-    updateAvatarLayout);
+    updateAvatarLayout
+  );
 
   elements.buttonContainer.appendChild(
     accbutton.createEditInfoButton(() => {
