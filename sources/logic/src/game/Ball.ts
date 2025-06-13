@@ -15,7 +15,7 @@ export class Ball {
   public get bottom() {
     return this._y + this._r;
   }
-  public get center() {
+  public get center(): { x: number; y: number } {
     return { x: this._x, y: this._y };
   }
   public get left() {
@@ -30,28 +30,31 @@ export class Ball {
   public get top() {
     return this._y - this._r;
   }
-  public set center({ x, y }) {
-    this._x = x;
-    this._y = y;
+  public get velocity(): { dx: number; dy: number } {
+    return { dx: this._dx, dy: this._dy };
   }
-  public accelarate(mul_x: number, mul_y: number) {
-    this._dx *= mul_x;
-    this._dy *= mul_y;
+  public set bottom(value: number) {
+    this._y = value - this._r;
   }
-  public bounce(axis: "horizontal" | "vertical") {
-    if (axis === "horizontal") this._dx *= -1;
-    if (axis === "vertical") this._dy *= -1;
+  public set center({ x, y }: { x?: number; y?: number }) {
+    if (x !== undefined) this._x = x;
+    if (y !== undefined) this._y = y;
+  }
+  public set left(value: number) {
+    this._x = value + this._r;
+  }
+  public set right(value: number) {
+    this._x = value - this._r;
+  }
+  public set top(value: number) {
+    this._y = value + this._r;
+  }
+  public set velocity({ dx, dy }: { dx?: number; dy?: number }) {
+    if (dx !== undefined) this._dx = dx;
+    if (dy !== undefined) this._dy = dy;
   }
   public isStatic(): boolean {
     return this._dx === 0 && this._dy === 0;
-  }
-  public move() {
-    this._x += this._dx;
-    this._y += this._dy;
-  }
-  public setVelocity(dx: number, dy: number) {
-    this._dx = dx;
-    this._dy = dy;
   }
   public toJson() {
     return {
