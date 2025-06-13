@@ -30,9 +30,21 @@ export class Ball {
   public get top() {
     return this._y - this._r;
   }
+  public set bottom(value: number) {
+    this._y = value - this._r;
+  }
   public set center({ x, y }) {
     this._x = x;
     this._y = y;
+  }
+  public set left(value: number) {
+    this._x = value + this._r;
+  }
+  public set right(value: number) {
+    this._x = value - this._r;
+  }
+  public set top(value: number) {
+    this._y = value + this._r;
   }
   public accelarate(mul_x: number, mul_y: number) {
     this._dx *= mul_x;

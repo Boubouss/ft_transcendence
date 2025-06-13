@@ -35,9 +35,21 @@ export class Paddle {
   public get top() {
     return this._y - this._h / 2;
   }
+  public set bottom(value: number) {
+    this._y = value - this._h / 2;
+  }
   public set center({ x, y }) {
     this._x = x;
     this._y = y;
+  }
+  public set left(value: number) {
+    this._x = value + this._w / 2;
+  }
+  public set right(value: number) {
+    this._x = value - this._w / 2;
+  }
+  public set top(value: number) {
+    this._y = value + this._h / 2;
   }
   public move(input: PlayerInput, min: number, max: number) {
     if (input === null) return;

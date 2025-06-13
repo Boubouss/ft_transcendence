@@ -7,6 +7,7 @@ import { Player } from "./Player";
 import { PlayerInput } from "../type/Type";
 import * as other from "./other";
 
+//offset from the center of the object
 const PADDLE_OFFSET: number = 20;
 
 export class Game {
@@ -169,39 +170,31 @@ export class Game {
 
     this._ball.move();
 
-    if (this._ball.top <= 0 || this._ball.bottom >= this._gameField.height)
-      this._ball.bounce("vertical");
+    const outB = this._ball.bottom >= this._gameField.height;
+    const outT = this._ball.top <= 0;
+    if (outT || outB) this._ball.bounce("vertical");
+    if (outT) this._ball.top = 0;
+    if (outB) this._ball.bottom = this._gameField.height;
 
     //todo: consider the horizontal bounce
     for (const [_, paddle] of pairPlayerPaddle) {
       if (!this.overlap(this._ball, paddle)) continue;
-      if (paddle === this._paddleL)
-        this._ball.center = {
-          x: this._paddleL.right + this._ball.radius,
-          y: this._ball.center.y,
-        };
-      if (paddle === this._paddleR)
-        this._ball.center = {
-          x: this._paddleR.left - this._ball.radius,
-          y: this._ball.center.y,
-        };
+      if (paddle === this._paddleL) this._ball.left = this._paddleL.right;
+      if (paddle === this._paddleR) this._ball.right = this._paddleR.left;
       //todo: cap the speed so the ball can't traverse the paddle
       this._ball.accelarate(1.1, 1);
       this._ball.bounce("horizontal");
     }
 
-    const width = this._gameField.width;
-    if (this._ball.right <= 0 || this._ball.left >= width) {
+    const outL = this._ball.right <= 0;
+    const outR = this._ball.left >= this._gameField.width;
+    if (outL || outR) {
       const nextPlayer = this._playersQueue.shift() || null;
-      if (this._ball.right <= 0) this._playerL = nextPlayer;
-      if (this._ball.left >= width) this._playerR = nextPlayer;
-      if (!this._playerL)
-        this._players.get(this._playerR as string)?.addPoint();
-      if (!this._playerR)
-        this._players.get(this._playerL as string)?.addPoint();
-      this._players.forEach((player) => {
-        player.input = null;
-      });
+      if (outL) this._playerL = nextPlayer;
+      if (outR) this._playerR = nextPlayer;
+      if (outL && this._playerR) this._players.get(this._playerR)?.addPoint();
+      if (outR && this._playerL) this._players.get(this._playerL)?.addPoint();
+      this._players.forEach((player) => (player.input = null));
       if (!this._playerL || !this._playerR) this.resetQueue();
       this.resetObjects();
       this._sleep = 1 * this._fps;
