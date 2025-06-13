@@ -1,11 +1,19 @@
 import fastify from "fastify";
 import websocketPlugin from "@fastify/websocket";
-import { schemaWebsocket, schemaCreateGame } from "./Schema";
-import { CreateGameRequestBody, Game } from "./Game";
+import { Game } from "./game/Game";
+import { PlayerInput } from "./type/Type";
+import { CreateGameRequestBody, DeleteGameRequestBody } from "./type/Interface";
+import { GameState, HttpCode, WebSocketCode } from "./type/Enum";
+import {
+  schemaWebSocket,
+  schemaCreateGame,
+  schemaDeleteGame,
+} from "./type/Schema";
 
-// tmp
-const port: number = 3000; // should not be hardcoded
-const wsCode = 4000; // placeholder
+//todo: remove the placeholders and constants
+const FPS: 30 | 60 = 60;
+const PORT: number = 3000;
+const TIMEOUT_GAME_DELETION = 30; //time in second
 
 let games = new Map<string, Game>();
 const app = fastify();
@@ -14,7 +22,7 @@ app.register(websocketPlugin);
 app.register(() => {
   app.get(
     "/ws/:gameId/:playerId",
-    { schema: schemaWebsocket, websocket: true },
+    { schema: schemaWebSocket, websocket: true },
     (connection, request) => {
       const params = request.params as { gameId: string; playerId: string };
       const gameId = params.gameId;
@@ -22,35 +30,45 @@ app.register(() => {
       const game = games.get(gameId);
 
       if (!game) {
-        return connection.close(wsCode, `No game with gameId: ${gameId}`);
+        connection.close(WebSocketCode.UNDEFINED, `Game not found`);
+        return;
       }
-      if (!game.getPlayersId().has(playerId)) {
-        return connection.close(wsCode, `The player is not expected`);
+      if (!game.playersId.has(playerId)) {
+        connection.close(WebSocketCode.UNDEFINED, `Player not connected`);
+        return;
       }
-      if (game.getPlayersConnected().has(playerId)) {
-        return connection.close(wsCode, `The player is already connected`);
+      if (game.playersConnected.has(playerId)) {
+        connection.close(WebSocketCode.UNDEFINED, `Player already connected`);
+        return;
       }
+
       game.setPlayerConnection(playerId, connection);
 
       connection.on("message", (message: string) => {
         let data;
         try {
-          data = JSON.parse(message) as { input?: string };
+          data = JSON.parse(message) as { input?: PlayerInput };
         } catch (e) {
+          //todo: send error ?
           return;
         }
 
-        // send an error message as JSON?
-        if (typeof data !== "object") return;
-        if (!data.input) return;
-        if (typeof data.input !== "string") return;
-        if (data.input !== "up" && data.input !== "down") return;
+        //todo: send error ?
+        if (data.input === undefined) return;
+        if (!["up", "down", null].includes(data.input)) return;
 
         game.setPlayerInput(playerId, data.input);
       });
 
       connection.on("close", () => {
-        games.get(gameId)?.setPlayerConnection(playerId, null);
+        if (!game) return;
+        game.setPlayerConnection(playerId, null);
+
+        if (game.gameState !== GameState.Init && game.isEmpty()) {
+          setTimeout(() => {
+            if (game.isEmpty()) games.delete(gameId);
+          }, TIMEOUT_GAME_DELETION * 1000);
+        }
       });
     },
   );
@@ -62,24 +80,44 @@ app.post(
   async (request, response) => {
     const body = request.body as CreateGameRequestBody;
     if (games.has(body.gameId)) {
-      response.code(403).send();
+      response.code(HttpCode.CONFLICT).send(); //todo: add a body?
       return;
     }
-    games.set(String(body.gameId), new Game(body));
+    games.set(String(body.gameId), new Game(body, FPS));
   },
 );
 
-app.listen({ port: port }, (err) => {
+app.delete(
+  "/delete_game",
+  { schema: schemaDeleteGame },
+  async (request, response) => {
+    const body = request.body as DeleteGameRequestBody;
+    if (!games.has(body.gameId)) {
+      response.code(HttpCode.CONFLICT).send(); //todo: add a body?
+      return;
+    }
+    //todo: disconnect the websockets ?
+    games.delete(body.gameId);
+  },
+);
+
+app.listen({ port: PORT }, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);
   }
+  console.log(`Server listening on port: ${PORT}`);
 });
 
+//todo: swap to individual intervals ?
 setInterval(() => {
-  games.forEach((game) => {
+  games.forEach((game, gameId) => {
     game.update();
-    // broadcast only when running ?
-    game.broadcast(JSON.stringify(game.toJSON()));
+    game.broadcast(JSON.stringify(game.toJson()));
+
+    //todo: improve this and disconnect the websockets ?
+    if (game.gameState === GameState.Over) {
+      games.delete(gameId);
+    }
   });
-}, 1000 / 60);
+}, 1000 / FPS);
