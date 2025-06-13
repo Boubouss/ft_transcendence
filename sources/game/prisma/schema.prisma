@@ -14,40 +14,47 @@ datasource db {
 }
 
 model Player {
-  id              Int               @id @default(autoincrement())
-  user_id         Int               @unique
-  matches         Match[]           @relation("PlayerToMatch")
-  matches_wins    Match[]
-  tournament_wins Tournament[]
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
+  id         Int            @id @default(autoincrement())
+  user_id    Int            @unique
+  matches    MatchPlayers[]
+  created_at DateTime       @default(now())
+  updated_at DateTime       @updatedAt
+  Match      Match[]
+}
+
+model MatchPlayers {
+  match     Match  @relation(fields: [match_id], references: [id])
+  match_id  Int
+  player    Player @relation(fields: [player_id], references: [id])
+  player_id Int
+  score     Int
+
+  @@id([match_id, player_id])
 }
 
 model Match {
-  id              Int               @id @default(autoincrement())
-  players         Player[]          @relation("PlayerToMatch")
-  round           Round             @relation(fields: [roundId], references: [id])
-  roundId         Int
-  winner          Player?           @relation(fields: [winnerId], references: [id])
-  winnerId        Int?
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
+  id         Int            @id @default(autoincrement())
+  players    MatchPlayers[]
+  round      Round?         @relation(fields: [roundId], references: [id])
+  roundId    Int?
+  winner     Player?        @relation(fields: [winnerId], references: [id])
+  winnerId   Int?
+  created_at DateTime       @default(now())
+  updated_at DateTime       @updatedAt
 }
 
 model Round {
-  id              Int               @id @default(autoincrement())
-  matches         Match[]
-  tournament      Tournament        @relation(fields: [tournamentId], references: [id])
-  tournamentId    Int
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
+  id           Int        @id @default(autoincrement())
+  matches      Match[]
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId Int
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
 }
 
 model Tournament {
-  id              Int               @id @default(autoincrement())
-  rounds          Round[]
-  winner          Player?           @relation(fields: [winnerId], references: [id])
-  winnerId        Int?
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
+  id         Int      @id @default(autoincrement())
+  rounds     Round[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

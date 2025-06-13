@@ -3,8 +3,7 @@ export function checkEnv() {
 		"JWT_KEY",
 		"HTTPS_KEY",
 		"HTTPS_CERT",
-		"MAILER_ADDR",
-		"MAILER_PSWD",
+		"API_USER",
 	];
 
 	const missingEnvVars = requiredEnvVars.filter(
