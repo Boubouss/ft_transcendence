@@ -70,10 +70,7 @@ function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
           alert(t("a2fdisable"))
         }
       } else {
-        // Validation post-login
-        if (user) {
-          authStorage.saveUser(user);
-        }
+        authStorage.saveUser(user);
 
         const token = authStorage.getUserValue("token");
         if (token)
