@@ -1,4 +1,5 @@
 import { createCustomButton } from "@/components/Buttons/CustomButton";
+import { navigateTo } from "@/router";
 import { getToken } from "@utils/authStorage.ts";
 import { t } from "@utils/i18n.ts";
 
@@ -30,6 +31,9 @@ export function renderNavBar() {
   const multiplayer_button = createCustomButton({
     ...commonButtonOptions,
     text: t("multiplayer"),
+    onClick: () => {
+      navigateTo("multi");
+    },
   });
 
   if (!getToken())
