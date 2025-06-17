@@ -54,6 +54,8 @@ export function createModalMenuMobile(): HTMLDivElement {
     },
   });
 
+  const LogoutButton = createLogoutButton(modal)
+
   const SignButtonOptions = getSignButtonOptions();
   const SignButton = createCustomButton({
     ...SignButtonOptions,
@@ -67,6 +69,7 @@ export function createModalMenuMobile(): HTMLDivElement {
   const LangContainer = createLangDropdown();
   LangContainer.className = "absolute top-[35%] left-[30%]";
 
+  modal.appendChild(LogoutButton);
   modal.appendChild(closeButton);
   modal.appendChild(LangContainer);
   modal.appendChild(SignButton);

@@ -26,12 +26,12 @@ export function createSignUpForm(
   maxlength="20"
   pattern="^[a-zA-Z0-9_]+$"
   title="Le nom d'utilisateur doit contenir uniquement des lettres, chiffres ou underscores, entre 3 et 20 caractères."
-  class="invalid:border-red-500 invalid:text-red-500 mb-4 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+  class="valid:border-green-500 valid:text-green-500 mb-4 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
 />
 
     <input type="email" name="email" placeholder="Email" required
       style="width: calc(100% - 5px);"
-      class="invalid:border-red-500 invalid:text-red-500 mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
+      class="valid:border-green-500 valid:text-green-500 mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
 <input
   type="password"import fs from 'fs';
 
@@ -42,7 +42,7 @@ export function createSignUpForm(
   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"
   title="Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un caractère spécial."
   style="width: calc(100% - 5px);"
-  class="invalid:border-red-500 invalid:text-red-500 mb-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+  class="valid:border-green-500 valid:text-green-500 mb-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
 />
 
   `;
