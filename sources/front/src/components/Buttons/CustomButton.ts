@@ -1,17 +1,25 @@
-interface CustomButtonOptions {
-  backgroundColor?: string; // ex: "bg-orange-500"
-  width?: string; // ex: "200px"
-  height?: string; // ex: "150px"
-  textColor?: string; // ex: "text-black"
-  borderColor?: string; // ex: "border-black"
-  borderWidth?: string; // ex: "border-2"
-  borderRadius?: string; // ex: "rounded-[20px]"
-  redirectUrl?: string; // ex: "/next-page"
-  position?: string; // ex: "absolute bottom-10 left-1/2 transform -translate-x-1/2"
-  text?: string; // texte à afficher (si pas d'image)
-  imageUrl?: string; // url de l'image à afficher dans le bouton
-  fontStyle?: string; // ex: "font-serif italic font-bold"
+export interface CustomButtonOptions {
+  backgroundColor?: string;
+  width?: string;
+  height?: string;
+  textColor?: string;
+  borderColor?: string;
+  borderWidth?: string;
+  borderRadius?: string;
+  position?: string;
+  text?: string;
+  imageUrl?: string;
+  imageWidth?: string; // ← Nouvelle option
+  minWidth?: string;
+  imageHeight?: string; // ← Nouvelle option
+  fontStyle?: string;
+  padding?: string;
   fontSizeClass?: string;
+  visible?: boolean;
+  onClick?: (() => void) | ((event: any) => void);
+  onHover?: (() => void) | ((buttonElement: any) => void);
+
+  onLeave?: () => void;
 }
 
 export function createCustomButton(
@@ -19,16 +27,18 @@ export function createCustomButton(
 ): HTMLButtonElement {
   const button = document.createElement("button");
 
-  // Construire les classes CSS (utilise Tailwind ou classes custom)
   const classes = [
+    "group",
     options.position || "",
     options.backgroundColor || "bg-orange-500",
     options.textColor || "text-black",
     options.borderWidth || "border-2",
     options.borderColor || "border-black",
     options.borderRadius || "rounded-[20px]",
-    options.fontStyle || "", // ajout de la classe fontStyle
+    options.fontStyle || "font-jaro",
     options.fontSizeClass || "text-lg",
+    options.minWidth || "min-w-[100px]",
+    options.padding || "",
     "font-bold",
     "flex",
     "items-center",
@@ -39,31 +49,66 @@ export function createCustomButton(
 
   button.className = classes;
 
-  // Taille par style inline (taille fixe)
   if (options.width) button.style.width = options.width;
   if (options.height) button.style.height = options.height;
 
-  // Contenu : image ou texte
   if (options.imageUrl) {
     const img = document.createElement("img");
     img.src = options.imageUrl;
     img.alt = options.text || "button image";
-    img.style.maxWidth = "100%";
-    img.style.maxHeight = "100%";
+
+    img.style.objectFit = "contain";
+    img.style.width = options.imageWidth || "100%";
+    img.style.height = options.imageHeight || "100%";
+
     button.appendChild(img);
   } else {
-    button.textContent = options.text || "Cliquer";
+    button.textContent = options.text || "";
   }
 
-  // Clic : redirection si défini
-  if (options.redirectUrl) {
-    button.addEventListener("click", () => {
-      window.location.href = options.redirectUrl!;
+    if (typeof options.onClick === "function") {
+    button.addEventListener("click", (event) => {
+      if (options.onClick!.length === 0) {
+        (options.onClick as () => void)();
+      } else {
+        (options.onClick as (event: any) => void)(event);
+      }
     });
+  }
+
+  if (options.visible === false) {
+    button.style.display = "none";
+  } else {
+    button.style.display = ""; // visible par défaut (inline-block ou flex selon le contexte)
   }
 
   if (options.fontStyle?.includes("font-jaro")) {
     button.style.fontFamily = '"Jaro", sans-serif';
+  }
+
+  // Gestion du hover
+  if (typeof options.onHover === "function") {
+    button.addEventListener("mouseenter", () => {
+      if (options.onHover!.length === 0) {
+        (options.onHover as () => void)();
+      } else {
+        (options.onHover as (buttonElement: any) => void)(button);
+      }
+    });
+  }
+
+  if (typeof options.onLeave === "function") {
+    button.addEventListener("mouseleave", options.onLeave);
+  }
+
+  // Applique un effet par défaut uniquement si aucun custom
+  if (!options.onHover && !options.onLeave) {
+    button.addEventListener("mouseenter", () => {
+      button.classList.add("shadow-lg", "brightness-110");
+    });
+    button.addEventListener("mouseleave", () => {
+      button.classList.remove("shadow-lg", "brightness-110");
+    });
   }
 
   return button;
