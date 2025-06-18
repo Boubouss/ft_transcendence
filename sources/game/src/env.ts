@@ -4,6 +4,7 @@ export function checkEnv() {
 		"HTTPS_KEY",
 		"HTTPS_CERT",
 		"API_USER",
+		"API_LOGIC",
 	];
 
 	const missingEnvVars = requiredEnvVars.filter(

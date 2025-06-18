@@ -14,8 +14,7 @@ datasource db {
 }
 
 model Player {
-  id         Int            @id @default(autoincrement())
-  user_id    Int            @unique
+  id    Int            @unique
   matches    MatchPlayers[]
   created_at DateTime       @default(now())
   updated_at DateTime       @updatedAt
@@ -27,7 +26,7 @@ model MatchPlayers {
   match_id  Int
   player    Player @relation(fields: [player_id], references: [id])
   player_id Int
-  score     Int
+  score     Int    @default(0)
 
   @@id([match_id, player_id])
 }
@@ -35,21 +34,21 @@ model MatchPlayers {
 model Match {
   id         Int            @id @default(autoincrement())
   players    MatchPlayers[]
-  round      Round?         @relation(fields: [roundId], references: [id])
-  roundId    Int?
-  winner     Player?        @relation(fields: [winnerId], references: [id])
-  winnerId   Int?
+  winner     Player?        @relation(fields: [winner_id], references: [id])
+  winner_id  Int?
+  round      Round?         @relation(fields: [round_id], references: [id])
+  round_id   Int?
   created_at DateTime       @default(now())
   updated_at DateTime       @updatedAt
 }
 
 model Round {
-  id           Int        @id @default(autoincrement())
-  matches      Match[]
-  tournament   Tournament @relation(fields: [tournamentId], references: [id])
-  tournamentId Int
-  created_at   DateTime   @default(now())
-  updated_at   DateTime   @updatedAt
+  id            Int        @id @default(autoincrement())
+  matches       Match[]
+  tournament    Tournament @relation(fields: [tournament_id], references: [id])
+  tournament_id Int
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
 }
 
 model Tournament {
