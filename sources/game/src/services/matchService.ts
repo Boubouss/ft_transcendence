@@ -1,5 +1,5 @@
+import { MatchUpdate } from "#types/match";
 import { Player, PrismaClient } from "@prisma/client";
-import { MatchUpdate } from "../types/types";
 import _ from "lodash";
 
 const prisma: PrismaClient = new PrismaClient();
@@ -60,6 +60,7 @@ export async function updateMatch(match_id: number, data: MatchUpdate) {
     },
     include: {
       players: true,
+      round: true,
     }
   });
 }
