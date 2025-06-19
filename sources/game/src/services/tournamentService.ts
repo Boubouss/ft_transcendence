@@ -1,42 +1,56 @@
-import { sendMatchInfo } from "#routes/lobby";
-import { MatchQuery, RoundQuery, TournamentQuery } from "#types/tournament";
 import { Player, Match, PrismaClient, MatchPlayers, Round } from "@prisma/client";
+import { MatchQuery, RoundQuery, TournamentQuery } from "#types/tournament";
+import { findOrCreatePlayers } from "./playerService";
+import { sendMatchInfo } from "./matchService";
+import { emitLobbyData } from "./lobbyService";
+import { LobbyInfo } from "#types/lobby";
 import _ from "lodash";
 
 const prisma: PrismaClient = new PrismaClient();
 
-const shufflePlayers = (players: Player[]) => {
-	for (let i = players.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		const temp = players[i];
-		players[i] = players[j];
-		players[j] = temp;
-	}
-}
-
 const generateTournamentQuery = (players: Player[]) => {
+	const matchCount = players.length / 2;
 	const tournament: TournamentQuery = { rounds: { create: [] } };
 
-	shufflePlayers(players);
+	const round: RoundQuery = {
+		matches: { create: [] },
+		depth: Math.log2(matchCount) + 1
+	};
 
-	for (let i = players.length / 2; i >= 1; i /= 2) {
-		const jump = players.length / i;
-		const round: RoundQuery = { matches: { create: [] }, depth: Math.log2(i) + 1 };
+	for (let i = 0; i < matchCount; i++) {
+		const pos = i * 2;
+		const match: MatchQuery = { players: { create: [] } };
 
-		for (let j = 0; j < i; j++) {
-			const match: MatchQuery = { players: { create: [] } };
+		match.players.create = players.slice(pos, pos + 2).map((p) => {
+			return { player_id: p.id };
+		});
 
-			match.players.create = players.slice(j * jump, (j * jump) + jump).map((p) => {
-				return { player_id: p.id };
-			});
-
-			round.matches.create.push(match);
-		}
-
-		tournament.rounds.create.push(round);
+		round.matches.create.push(match);
 	}
 
+	tournament.rounds.create.push(round);
+
 	return tournament;
+}
+
+export const initTournament = async (info: LobbyInfo) => {
+	try {
+		if (Math.log2(info.players.length) % 1 !== 0) {
+			throw new Error("Player count must be a power of 2.");
+		}
+
+		const players = await findOrCreatePlayers(info.players.map((p) => p.id));
+		const tournament = await createTournament(players);
+
+		const firstRound = _.first(tournament.rounds);
+		if (_.isEmpty(firstRound)) throw new Error("First round wasn't found.");
+
+		for (const match of firstRound.matches) {
+			sendMatchInfo(match, match.players);
+		}
+	} catch (err) {
+		emitLobbyData(info, `error: ${JSON.stringify(err)}`);
+	}
 }
 
 export async function getPlayerTournaments(playerId: number) {
