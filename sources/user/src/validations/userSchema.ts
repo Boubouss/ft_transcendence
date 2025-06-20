@@ -76,3 +76,14 @@ export const auth2FASchema = {
 		additionalProperties: false,
 	},
 };
+
+export const fileSchema = {
+  file: {
+    type: 'object',
+    properties: {
+      filename: { type: 'string' },
+      mimetype: { type: 'string' }
+    },
+    required: ['filename', 'mimetype']
+  }
+};
