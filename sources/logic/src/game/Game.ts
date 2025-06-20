@@ -9,6 +9,7 @@ import * as other from "./other";
 
 //offset from the center of the object
 const PADDLE_OFFSET: number = 20;
+const BALL_SPEED: number = 12;
 
 export class Game {
   private _gameId: string;
@@ -149,13 +150,15 @@ export class Game {
     if (this._gameState != GameState.Running) return;
     if (this._sleep > 0) return this._sleep--;
 
-    //todo: replace with better values
     if (this._ball.isStatic()) {
-      let dx = Math.ceil(Math.random() * 10);
-      let dy = Math.ceil(Math.random() * 10);
-      if (Math.floor(Math.random() * 2) % 2) dx *= -1;
-      if (Math.floor(Math.random() * 2) % 2) dy *= -1;
-      this._ball.velocity = { dx: dx, dy: dy };
+      const angleMax = 60;
+      const angleDeg = Math.random() * angleMax * 2 - angleMax;
+      const angleRad = (angleDeg * Math.PI) / 180;
+      const direction = Math.floor((Math.random() * 2) % 2) ? 1 : -1;
+      this._ball.velocity = {
+        dx: Math.cos(angleRad) * BALL_SPEED * direction,
+        dy: Math.sin(angleRad) * BALL_SPEED,
+      };
     }
 
     const pairPlayerPaddle = [
@@ -199,6 +202,7 @@ export class Game {
     const crossedLeft = this._ball.left <= this._paddleL.right;
     const crossedRight = this._paddleR.left <= this._ball.right;
     if (crossedLeft || crossedRight) {
+      const speed = Math.hypot(this._ball.velocity.dx, this._ball.velocity.dy);
       const paddle = crossedLeft ? this._paddleL : this._paddleR;
       const steps = 10; //todo: could be dynamic
       const stepX = this._ball.velocity.dx / steps;
@@ -216,15 +220,22 @@ export class Game {
           if (Math.abs(dY) >= Math.abs(dX)) {
             if (dY < 0) this._ball.bottom = paddle.top;
             else this._ball.top = paddle.bottom;
-            this._ball.velocity = {
-              dx: Math.abs(this._ball.velocity.dx) * (crossedLeft ? 1 : -1),
-              dy: Math.abs(this._ball.velocity.dy) * (dY > 0 ? 1 : -1),
-            };
           } else if (Math.abs(dX) > Math.abs(dY)) {
+            if (crossedLeft && dX <= 0) continue; //todo: check if usefull
+            if (!crossedLeft && dX >= 0) continue; //todo: check if usefull
             if (crossedLeft) this._ball.left = paddle.right;
             else this._ball.right = paddle.left;
-            this._ball.velocity = { dx: this._ball.velocity.dx * -1 };
           }
+          const relativeY = this._ball.center.y - paddle.center.y;
+          const normalized = relativeY / (paddle.height / 2);
+          const maxBounceAngle = (60 * Math.PI) / 180;
+          const bounceAngle = normalized * maxBounceAngle;
+          const direction = crossedLeft ? 1 : -1;
+          const maxSpeed = Math.min(speed, paddle.width, paddle.height);
+          this._ball.velocity = {
+            dx: Math.cos(bounceAngle) * maxSpeed * direction,
+            dy: Math.sin(bounceAngle) * maxSpeed,
+          };
           break;
         }
       }

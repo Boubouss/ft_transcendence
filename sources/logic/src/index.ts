@@ -66,7 +66,7 @@ app.register(() => {
 
         if (game.gameState !== GameState.Init && game.isEmpty()) {
           setTimeout(() => {
-            if (!game.isEmpty()) return;
+            if (!game || !game.isEmpty()) return;
             game.players.forEach((player) => player.socket?.close());
             games.delete(gameId);
           }, TIMEOUT_GAME_DELETION * 1000);
