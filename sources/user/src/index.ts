@@ -4,12 +4,15 @@ import path from "path";
 import fs from "fs";
 import fastify from "fastify";
 import fastifyJwt from "@fastify/jwt";
+import fastifyStatic from "@fastify/static";
+import fastifyMultipart from "@fastify/multipart";
 import crud from "./routes/crud";
 import auth from "./routes/auth";
 import socket from "./routes/socket";
 import { errorHandler } from "./errors/errorHandler";
 import fastifyWebsocket from "@fastify/websocket";
 import cors from "@fastify/cors";
+import avatar from "./routes/avatar";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
@@ -24,6 +27,11 @@ const app = fastify({
       path.resolve(__dirname, process.env.HTTPS_CERT as string)
     ),
   },
+});
+
+app.register(fastifyStatic, {
+  root: path.join(path.dirname(__dirname), "storage"),
+  prefix: "/download/"
 });
 
 app.register(
@@ -41,11 +49,15 @@ app.register(fastifyJwt, {
   secret: process.env.JWT_KEY as string,
 });
 
+app.register(fastifyMultipart);
+
 app.register(crud, { prefix: "/crud" });
 
 app.register(auth, { prefix: "/auth" });
 
 app.register(socket, { prefix: "/socket" });
+
+app.register(avatar, { prefix: "/avatar" });
 
 app.setErrorHandler(errorHandler);
 
