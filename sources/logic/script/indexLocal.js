@@ -24,17 +24,18 @@ function drawState(state) {
       paddle.h * ratio,
     );
     ctx.strokeStyle = "white";
+    ctx.stroke();
     ctx.fillStyle = "white";
     ctx.fill();
-    ctx.stroke();
   }
 
   const ball = state.ball;
   ctx.beginPath();
   ctx.arc(ball.x * ratio, ball.y * ratio, ball.r * ratio, 0, 2 * Math.PI);
+  ctx.strokeStyle = "white";
+  ctx.stroke();
   ctx.fillStyle = "white";
   ctx.fill();
-  ctx.stroke();
 }
 
 function connect() {
@@ -67,6 +68,7 @@ function connect() {
   let control_0 = new Map([
     ["w", "up"],
     ["s", "down"],
+    ["e", "test"],
   ]);
   let control_1 = new Map([
     ["ArrowUp", "up"],

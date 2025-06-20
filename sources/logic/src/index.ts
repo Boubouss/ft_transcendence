@@ -1,13 +1,13 @@
 import fastify from "fastify";
 import websocketPlugin from "@fastify/websocket";
 import { Game } from "./game/Game";
-import { PlayerInput } from "./type/Type";
 import { CreateGameRequestBody, DeleteGameRequestBody } from "./type/Interface";
 import { GameState, HttpCode, WebSocketCode } from "./type/Enum";
 import {
   schemaWebSocket,
   schemaCreateGame,
   schemaDeleteGame,
+  schemeWebSocketInput,
 } from "./type/Schema";
 
 //todo: remove the placeholders and constants
@@ -47,26 +47,25 @@ app.register(() => {
       connection.on("message", (message: string) => {
         let data;
         try {
-          data = JSON.parse(message) as { input?: PlayerInput };
+          data = JSON.parse(message);
         } catch (e) {
-          //todo: send error ?
           return;
         }
-
-        //todo: send error ?
-        if (data.input === undefined) return;
-        if (!["up", "down", null].includes(data.input)) return;
-
-        game.setPlayerInput(playerId, data.input);
+        if (schemeWebSocketInput.safeParse(data).success)
+          game.setPlayerInput(playerId, data.input);
+        else {
+        }
       });
 
       connection.on("close", () => {
+        const game = games.get(gameId);
         if (!game) return;
         game.setPlayerConnection(playerId, null);
 
         if (game.gameState !== GameState.Init && game.isEmpty()) {
           setTimeout(() => {
-            if (!game.isEmpty()) return;
+            const game = games.get(gameId);
+            if (!game || !game.isEmpty()) return;
             game.players.forEach((player) => player.socket?.close());
             games.delete(gameId);
           }, TIMEOUT_GAME_DELETION * 1000);
