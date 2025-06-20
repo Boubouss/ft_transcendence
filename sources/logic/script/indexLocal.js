@@ -67,6 +67,7 @@ function connect() {
   let control_0 = new Map([
     ["w", "up"],
     ["s", "down"],
+    ["e", "test"],
   ]);
   let control_1 = new Map([
     ["ArrowUp", "up"],

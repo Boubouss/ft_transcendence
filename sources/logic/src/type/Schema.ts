@@ -1,3 +1,5 @@
+import { z } from "zod/v4";
+
 export const schemaCreateGame = {
   body: {
     type: "object",
@@ -34,3 +36,7 @@ export const schemaWebSocket = {
     },
   },
 };
+
+export const schemeWebSocketInput = z.object({
+  input: z.nullable(z.literal(["up", "down"])),
+});
