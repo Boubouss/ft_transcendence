@@ -4,6 +4,7 @@ import { promisify } from "util";
 import fs from "fs";
 import path from "path";
 import { authMiddleware } from "../middlewares/authMiddleware";
+import { fileSchema } from "../validations/userSchema";
 
 const avatar: FastifyPluginAsync = async (fastify, opts) => {
     fastify.addHook("preHandler", authMiddleware);
@@ -14,7 +15,7 @@ const avatar: FastifyPluginAsync = async (fastify, opts) => {
         const { id } = request.params as { id: string };
 
         try {
-            const data = await request.file();
+            const data = await request.file(fileSchema);
 
             if (!data)
                 throw new Error("No file =(");
