@@ -14,6 +14,7 @@ export type User = {
 	name: string;
 	email: string;
 	avatar: string;
+	verify?: boolean;
 	configuration?: Configuration;
 };
 
@@ -22,6 +23,7 @@ export type UserCreate = {
 	email: string;
 	avatar: string;
 	password: string;
+	verify?: boolean;
 };
 
 export type UserUpdate = {
@@ -30,6 +32,7 @@ export type UserUpdate = {
 	email?: string;
 	avatar?: string;
 	password?: string;
+	verify?: boolean;
 	configuration: Configuration;
 };
 
@@ -48,6 +51,7 @@ export type Credential = {
 export type Credential2FA = {
 	name: string;
 	code: string;
+	type: string;
 };
 
 export type Friend = {
@@ -90,3 +94,9 @@ export type SocketResponse = {
 	from: Friend;
 	what: FriendRequestAction;
 };
+
+export type GoogleData = { 
+	id: string;
+	email: string;
+	name: string;
+}

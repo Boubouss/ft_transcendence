@@ -1,6 +1,6 @@
 export function checkEnv() {
 
-    const requiredEnvVars = ['JWT_KEY', 'HTTPS_KEY', 'HTTPS_CERT', 'MAILER_ADDR', 'MAILER_PSWD'];
+    const requiredEnvVars = ['JWT_KEY', 'HTTPS_KEY', 'HTTPS_CERT', 'MAILER_ADDR', 'MAILER_PSWD', 'GOOGLE_OAUTH_ID', 'GOOGLE_OAUTH_SECRET', 'GOOGLE_OAUTH_URI'];
 
     const missingEnvVars = requiredEnvVars.filter(varName => !(varName in process.env));
 

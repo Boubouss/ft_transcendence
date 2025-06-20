@@ -1,5 +1,8 @@
 import { FastifyPluginAsync } from "fastify";
-import { createUser, getUserById } from "../services/userService";
+import { createUser, getUserById, googleSignIn, updateUser, verifyUser } from "../services/userService";
+
+import { OAuth2Client } from "google-auth-library";
+import { google } from 'googleapis';
 
 import {
 	User,
@@ -7,6 +10,8 @@ import {
 	Credential2FA,
 	UserCreate,
 	UserAuth,
+	GoogleData,
+	UserUpdate,
 } from "../types/types";
 
 import {
@@ -23,6 +28,50 @@ import {
 } from "../services/authService";
 
 const auth: FastifyPluginAsync = async (fastify) => {
+	const googleClient = new OAuth2Client(
+  		process.env.GOOGLE_OAUTH_ID, 
+  		process.env.GOOGLE_OAUTH_SECRET, 
+  		process.env.GOOGLE_OAUTH_URI
+	);
+
+	fastify.get('/google', async (request, reply) => {
+  		const url = googleClient.generateAuthUrl({
+    		access_type: 'offline',
+    		scope: ['profile', 'email']
+  		});
+  		reply.redirect(url);
+	});
+
+	fastify.get('/google/callback', async (request, reply) => {
+  		const { code } = request.query as { code: string };
+
+  		try {
+     		const { tokens } = await googleClient.getToken(code);
+    		googleClient.setCredentials(tokens);
+
+    		const oauth2 = google.oauth2({
+      			auth: googleClient,
+      			version: 'v2'
+    		});
+
+    		const { data } = await oauth2.userinfo.get();
+			const googleData: GoogleData = data as GoogleData;
+			if (!data)
+				return reply.status(500).send({ error: 'Authentication failed' });
+
+			const user = await googleSignIn(googleData);
+
+    		if (user) {
+				reply.send({ ...user, token: fastify.jwt.sign({ email: user.email }) });
+    		} else {
+      			reply.status(403).send({ error: 'User not authorized' });
+    		}
+  		} catch (err) {
+    		console.error('Error during authentication:', err);
+    		reply.status(500).send({ error: 'Authentication failed' });
+  		}
+	});
+
 	fastify.post(
 		"/register",
 		{ schema: createSchema },
@@ -30,8 +79,9 @@ const auth: FastifyPluginAsync = async (fastify) => {
 			const userData: UserCreate = request.body as UserCreate;
 			const user: User = await createUser(userData);
 			if (!user) throw new Error("Fail to register user");
-
-			reply.send({ ...user, token: fastify.jwt.sign({ email: user.email }) });
+			const userAuth = await getUserAuth(user.name) as UserAuth;
+			await generate2FA(userAuth);
+			reply.send({ ...user });
 		}
 	);
 
@@ -55,17 +105,19 @@ const auth: FastifyPluginAsync = async (fastify) => {
 		reply.send({ ...user, token: fastify.jwt.sign({ email: user.email }) });
 	});
 
+
 	fastify.post("/2FA", { schema: auth2FASchema }, async (request, reply) => {
-		const { code, name } = request.body as Credential2FA;
+		const { code, name, type } = request.body as Credential2FA;
 		const userAuth: UserAuth = (await getUserAuth(name)) as UserAuth;
 
 		if (code === userAuth.configuration.code2FA) {
 			userAuth.configuration.code2FA = "";
 			await updateConfig(userAuth.configuration);
 
-			const user = await getUserById(userAuth.id);
-
-			reply.send({ ...user, token: fastify.jwt.sign({ email: userAuth.email }) });
+			if (type === "REGISTER")
+				await verifyUser(userAuth.id);
+				
+			reply.send({ token: fastify.jwt.sign({ email: userAuth.email }) });
 			return;
 		}
 

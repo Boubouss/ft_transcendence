@@ -71,7 +71,8 @@ export const auth2FASchema = {
 		required: ["code", "name"],
 		properties: {
 			code: { type: "string" },
-			email: { type: "string", format: "email" },
+			name: { type: "string" },
+			type: { type: "string" },
 		},
 		additionalProperties: false,
 	},
