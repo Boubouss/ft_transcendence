@@ -66,7 +66,9 @@ app.register(() => {
 
         if (game.gameState !== GameState.Init && game.isEmpty()) {
           setTimeout(() => {
-            if (game.isEmpty()) games.delete(gameId);
+            if (!game.isEmpty()) return;
+            game.players.forEach((player) => player.socket?.close());
+            games.delete(gameId);
           }, TIMEOUT_GAME_DELETION * 1000);
         }
       });
@@ -96,7 +98,7 @@ app.delete(
       response.code(HttpCode.CONFLICT).send(); //todo: add a body?
       return;
     }
-    //todo: disconnect the websockets ?
+    games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
     games.delete(body.gameId);
   },
 );
@@ -109,14 +111,13 @@ app.listen({ port: PORT }, (err) => {
   console.log(`Server listening on port: ${PORT}`);
 });
 
-//todo: swap to individual intervals ?
 setInterval(() => {
   games.forEach((game, gameId) => {
     game.update();
     game.broadcast(JSON.stringify(game.toJson()));
 
-    //todo: improve this and disconnect the websockets ?
     if (game.gameState === GameState.Over) {
+      games.get(gameId)?.players.forEach((player) => player.socket?.close());
       games.delete(gameId);
     }
   });

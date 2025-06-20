@@ -1,5 +1,3 @@
-import { PlayerInput } from "../type/Type";
-
 export class Paddle {
   private _x: number;
   private _y: number;
@@ -23,7 +21,7 @@ export class Paddle {
   public get bottom() {
     return this._y + this._h / 2;
   }
-  public get center() {
+  public get center(): { x: number; y: number } {
     return { x: this._x, y: this._y };
   }
   public get left() {
@@ -35,18 +33,30 @@ export class Paddle {
   public get top() {
     return this._y - this._h / 2;
   }
-  public set center({ x, y }) {
-    this._x = x;
-    this._y = y;
+  public get width() {
+    return this._w;
   }
-  public move(input: PlayerInput, min: number, max: number) {
-    if (input === null) return;
-    let step = 0;
-    if (input === "up")
-      step = Math.min(Math.abs(min - this.top), this._step) * -1;
-    if (input === "down")
-      step = Math.min(Math.abs(max - this.bottom), this._step);
-    this._y += step;
+  public get height() {
+    return this._h;
+  }
+  public get step() {
+    return this._step;
+  }
+  public set bottom(value: number) {
+    this._y = value - this._h / 2;
+  }
+  public set center({ x, y }: { x?: number; y?: number }) {
+    if (x !== undefined) this._x = x;
+    if (y !== undefined) this._y = y;
+  }
+  public set left(value: number) {
+    this._x = value + this._w / 2;
+  }
+  public set right(value: number) {
+    this._x = value - this._w / 2;
+  }
+  public set top(value: number) {
+    this._y = value + this._h / 2;
   }
   public toJson() {
     return { x: this._x, y: this._y, h: this._h, w: this._w };
