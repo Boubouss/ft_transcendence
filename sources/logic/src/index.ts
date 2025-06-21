@@ -59,11 +59,13 @@ app.register(() => {
       });
 
       connection.on("close", () => {
+        const game = games.get(gameId);
         if (!game) return;
         game.setPlayerConnection(playerId, null);
 
         if (game.gameState !== GameState.Init && game.isEmpty()) {
           setTimeout(() => {
+            const game = games.get(gameId);
             if (!game || !game.isEmpty()) return;
             game.players.forEach((player) => player.socket?.close());
             games.delete(gameId);

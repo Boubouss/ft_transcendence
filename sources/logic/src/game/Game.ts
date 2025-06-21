@@ -189,8 +189,8 @@ export class Game {
         const dX = this._ball.center.x - pX;
         const dY = this._ball.center.y - pY;
         if (Math.abs(dY) < Math.abs(dX)) continue;
-        if (input === "up") paddle.top = this._ball.bottom;
-        if (input === "down") paddle.bottom = this._ball.top;
+        if (input === "up" && !(dY > 0)) paddle.top = this._ball.bottom;
+        if (input === "down" && !(dY < 0)) paddle.bottom = this._ball.top;
       }
     }
 
