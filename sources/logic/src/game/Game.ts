@@ -151,10 +151,10 @@ export class Game {
     if (this._sleep > 0) return this._sleep--;
 
     if (this._ball.isStatic()) {
-      const angleMax = 60;
+      const angleMax = 5;
       const angleDeg = Math.random() * angleMax * 2 - angleMax;
       const angleRad = (angleDeg * Math.PI) / 180;
-      const direction = Math.floor((Math.random() * 2) % 2) ? 1 : -1;
+      const direction = Math.random() < 0.5 ? 1 : -1;
       this._ball.velocity = {
         dx: Math.cos(angleRad) * BALL_SPEED * direction,
         dy: Math.sin(angleRad) * BALL_SPEED,
