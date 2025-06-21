@@ -21,7 +21,7 @@
   "disco": "Disconnect",
   "username": "Username",
   "entera2f": "Enter A2F code",
-  "requireda2f": "Required A2F code",
+  "sentto": "Email sent to :\n",
   "alerta2f": "Wrong A2F code, please try again.",
   "alertsignup": "An error occured, please try again.",
   "avatar": "Change avatar",

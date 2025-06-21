@@ -21,7 +21,7 @@
   "disco": "Desconectarse",
   "username": "Nombre de usuario",
   "entera2f": "Introducir código 2FA",
-  "requireda2f": "Código 2FA requerido",
+  "sentto": "Email enviado a :\n",
   "alerta2f": "Código 2FA incorrecto, inténtelo de nuevo.",
   "alertsignup": "Ocurrió un error, por favor intente nuevamente.",
   "avatar": "Cambiar avatar",

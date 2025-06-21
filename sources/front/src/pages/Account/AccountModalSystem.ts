@@ -42,7 +42,6 @@ function renderAccountMobile() {
     position: "absolute",
     top: "12px",
     right: "12px",
-    zIndex: "50",
   });
   // Assure-toi que mobilePage est `relative` sinon ça sortira du cadre
   mobilePage.style.position = "relative";
@@ -73,7 +72,6 @@ function renderAccountDesktop() {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: "1000",
   });
 
   const modalInner = createAccountPage(true);
@@ -95,7 +93,6 @@ function renderAccountDesktop() {
     position: "absolute",
     top: "40px",
     right: "40px",
-    zIndex: "1010",
   });
   modal.appendChild(closeButton);
 
