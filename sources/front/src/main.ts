@@ -14,7 +14,7 @@ async function main() {
   }
 
   await initI18n(); // <-- initialise la langue et les traductions
-  navigateTo("multi");
+  navigateTo("sign");
   dotenv.config();
 }
 

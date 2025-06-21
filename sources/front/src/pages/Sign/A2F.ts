@@ -2,8 +2,9 @@ import { navigateTo } from "@/router";
 import * as authStorage from "@utils/authStorage.ts";
 import { createCustomButton } from "@/components/Buttons/CustomButton"; // adapte le chemin si besoin
 import { t } from "@utils/i18n";
+import type { User_T } from "@utils/authStorage.ts";
 
-function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
+function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
   const modal = document.createElement("div");
   modal.id = "twofa-modal";
   modal.style.position = "fixed";
@@ -106,7 +107,7 @@ function create2FAModal(validOrActivate: string, user: any): HTMLDivElement {
   return modal;
 }
 
-function show2FAModal(validOrActivate: string, user: any = null) {
+function show2FAModal(validOrActivate: string, user: User_T) {
   const modal = create2FAModal(validOrActivate, user);
   document.body.appendChild(modal);
 }
@@ -120,6 +121,9 @@ export function handlePostLogin(user: any, needs2FA: boolean) {
 }
 
 export function EnableDisableA2F() {
-  const user = authStorage.getUser();
-  show2FAModal("EnableDisable", user); // activation mode
+  const user: User_T | null = authStorage.getUser();
+  if (user)
+    show2FAModal("EnableDisable", user);
+  else
+    alert("User Issue")
 }

@@ -60,7 +60,6 @@ export function createA2FButton(onClick: () => void) {
   });
 }
 
-
 export function createAvatarButton(onClick: () => void = () => {}) {
   return createCustomButton({
     text: t("avatar"),
@@ -72,7 +71,6 @@ export function createAvatarButton(onClick: () => void = () => {}) {
   });
 }
 
-
 export function createLogoutButton(modal: any) {
   return createCustomButton({
     text: t("disco"),
@@ -81,12 +79,15 @@ export function createLogoutButton(modal: any) {
     fontStyle: "font-jaro",
     backgroundColor: "bg-red-500",
     position:
-      "absolute top-9/10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:top-8/10 sm:left-8/10",
+      "absolute top-9/10 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
     padding: "p-[10px]",
     onClick: () => {
       authStorage.clearAuth();
       navigateTo("home");
-      if (modal !== null) modal.remove();
+      if (modal !== null) {
+        modal.style.transform = "translateY(-100%)";
+        setTimeout(() => modal.remove(), 300);
+      }
     },
   });
 }

@@ -1,6 +1,6 @@
 // src/home.ts
 import { renderNavBar } from "@components/Nav_bar/Nav_bar.ts";
-import * as HM from "@pages/Home/Home-mobile.ts";
+import * as HM from "@components/Buttons/mobileMenuButton";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { getSignButtonOptions } from "@/components/Buttons/LoginButton";
 import { createCustomButton } from "@/components/Buttons/CustomButton";
@@ -37,6 +37,8 @@ export function renderHome() {
   const SignButtonOptions = getSignButtonOptions();
   const SignButton = createCustomButton({
     ...SignButtonOptions,
+    position: "hidden sm:block absolute top-10 right-10 ",
+
   });
 
   app.appendChild(SignButton);
@@ -46,20 +48,20 @@ export function renderHome() {
 
   // === Ajouter à la page ===
   appRoot.appendChild(app);
-  let size: number = 640;
-    let resizeTimeout: NodeJS.Timeout;
-  let currentIsMobile = window.innerWidth < size;
+  //let size: number = 640;
+  //  let resizeTimeout: NodeJS.Timeout;
+  //let currentIsMobile = window.innerWidth < size;
 
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const isMobileNow = window.innerWidth < size;
-      if (isMobileNow !== currentIsMobile) {
-        currentIsMobile = isMobileNow;
-          window.location.reload();
-      }
-    }, 200); // 200ms après le dernier resize
-  });
+  //window.addEventListener("resize", () => {
+  //  clearTimeout(resizeTimeout);
+  //  resizeTimeout = setTimeout(() => {
+  //    const isMobileNow = window.innerWidth < size;
+  //    if (isMobileNow !== currentIsMobile) {
+  //      currentIsMobile = isMobileNow;
+  //        window.location.reload();
+  //    }
+  //  }, 200); // 200ms après le dernier resize
+  //});
 
 
 }

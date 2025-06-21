@@ -25,7 +25,7 @@ export function renderAccount() {
 function renderAccountMobile() {
   const menuModal = document.getElementById("menu-modal");
   if (menuModal) {
-    menuModal.style.transform = "translateX(100%)";
+    menuModal.style.transform = "translateY(-100%)";
     setTimeout(() => menuModal.remove(), 300);
   }
 

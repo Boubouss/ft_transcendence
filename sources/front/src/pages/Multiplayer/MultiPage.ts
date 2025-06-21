@@ -21,7 +21,6 @@ export function renderMultiPage() {
     sm:bg-[length:110%_160%]
     bg-[length:150%_180%]
     blur-sm
-
   `;
 
   // Bouton "Créer une partie"
@@ -163,7 +162,7 @@ export function renderMultiPage() {
   app.appendChild(buttonCloseContainer);
   appRoot.appendChild(app);
 
-  
+
 
 }
 

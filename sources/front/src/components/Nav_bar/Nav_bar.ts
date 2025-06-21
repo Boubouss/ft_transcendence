@@ -14,7 +14,6 @@ export function renderNavBar() {
   const buttonContainer = app.querySelector("#button-container")!;
 
   const commonButtonOptions = {
-    backgroundColor: "bg-[#D6A01A]",
     width: "274px",
     height: "93px",
     textColor: "text-black",
