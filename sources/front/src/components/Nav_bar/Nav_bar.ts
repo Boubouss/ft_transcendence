@@ -28,6 +28,7 @@ export function renderNavBar() {
     text: t("local"),
      onClick: () => {
         navigateTo("1v1");
+
      }
   });
 

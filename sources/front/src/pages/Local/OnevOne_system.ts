@@ -1,19 +1,21 @@
-function drawState(state: any) {
-  const gameCanvas = document.getElementById("canvas") as HTMLCanvasElement;
+import type { toJson_T } from "@pages/Local/type.ts";
+import { create_game } from "./utils";
+
+function drawState(state: toJson_T) {
+  const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 
   if (!gameCanvas) return;
 
   const ctx = gameCanvas.getContext("2d");
-	if (!ctx) return ;
+  if (!ctx) return;
 
   const ratio_h = window.innerHeight / state.field.h;
   const ratio_w = window.innerWidth / state.field.w;
-  const ratio = Math.min(ratio_w, Math.min(1, ratio_h));
+  const ratio = Math.min(ratio_w, Math.min(1.5, ratio_h));
 
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
   gameCanvas.style.background = "black";
-
 
   for (const paddle of [state.paddleL, state.paddleR]) {
     ctx.beginPath();
@@ -37,13 +39,12 @@ function drawState(state: any) {
   ctx.stroke();
 }
 
-function connect() {
-  const socket_0 = new WebSocket(
-    `ws://localhost:${portInput.value}/ws/${gameIdInput.value}/0`
-  );
-  const socket_1 = new WebSocket(
-    `ws://localhost:${portInput.value}/ws/${gameIdInput.value}/1`
-  );
+export async function connect() {
+
+  await create_game();
+
+	const socket_0 = new WebSocket(`ws://localhost:${3000}/ws/${-1}/0`);
+  const socket_1 = new WebSocket(`ws://localhost:${3000}/ws/${-1}/1`);
 
   // no need to listen to both sockets
   socket_0.addEventListener("error", (event) => console.log(event));
@@ -51,23 +52,29 @@ function connect() {
   socket_1.addEventListener("error", (event) => console.log(event));
   socket_1.addEventListener("close", (event) => console.log(event));
   socket_1.addEventListener("message", (event) => {
+    let message_parsed: toJson_T;
+
     try {
-      const message_parsed = JSON.parse(event.data);
+      message_parsed = JSON.parse(event.data);
       drawState(message_parsed);
-      textField.innerHTML = `<pre>${JSON.stringify(
-        message_parsed,
-        null,
-        4
-      )}</pre>`;
+
+
     } catch (e) {
       console.error(e);
-      textField.innerHTML = `${e}<br>${event.data}`;
+
       socket_0.close();
+      return;
     }
+
+    const score_p_1 = document.querySelector<HTMLDivElement>("#score_p_1")!;
+    score_p_1.textContent = `${message_parsed.players[0].score}`
+
+    const score_p_2 = document.querySelector<HTMLDivElement>("#score_p_2")!;
+    score_p_2.textContent = `${message_parsed.players[1].score}`
   });
 
-  let input_0 = [];
-  let input_1 = [];
+  let input_0: string[] = [];
+  let input_1: string[] = [];
   let control_0 = new Map([
     ["w", "up"],
     ["s", "down"],

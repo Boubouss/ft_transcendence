@@ -10,6 +10,9 @@ import {
   schemeWebSocketInput,
 } from "./type/Schema";
 
+import cors from "@fastify/cors";
+
+
 //todo: remove the placeholders and constants
 const FPS: 30 | 60 = 60;
 const PORT: number = 3000;
@@ -74,6 +77,16 @@ app.register(() => {
     },
   );
 });
+
+app.register(
+  cors, {
+    origin: "http://localhost:5173",
+    optionsSuccessStatus: 200,
+    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+    preflightContinue: false,
+  }
+);
+
 
 app.post(
   "/create_game",

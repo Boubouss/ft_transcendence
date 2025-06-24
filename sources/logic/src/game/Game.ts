@@ -118,7 +118,7 @@ export class Game {
     return {
       gameId: this._gameId,
       state: GameState[this._gameState],
-      players: [[...this._players.values()].map((player) => player.toJson())],
+      players: [...this._players.values()].map((player) => player.toJson()),
       queue: this._playersQueue,
       field: this._gameField.toJson(),
       playerL: this._playerL,

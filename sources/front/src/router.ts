@@ -3,6 +3,8 @@ import { renderSignModal } from './pages/Sign/Sign.ts';
 import { renderAccount } from './pages/Account/AccountModalSystem.ts';
 import { renderMultiPage } from './pages/Multiplayer/MultiPage.ts';
 import { renderOneVOne } from './pages/Local/OneVOne.ts';
+import { connect } from './pages/Local/OnevOne_system.ts';
+import { create_game } from './pages/Local/utils.ts';
 
 export function navigateTo(page: string) {
   const appRoot = document.getElementById("app-root");
@@ -25,6 +27,7 @@ export function navigateTo(page: string) {
       break;
     case "1v1":
       renderOneVOne();
+      connect();
       break;
     default:
       appRoot.innerHTML = "<p class='text-center text-red-600 mt-10'>404 - Page Not Found</p>";
