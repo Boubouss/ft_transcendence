@@ -1,9 +1,10 @@
 // src/home.ts
 import { renderNavBar } from "@components/Nav_bar/Nav_bar.ts";
-import * as HM from "@pages/Home/Home-mobile.ts";
+import * as HM from "@components/Buttons/mobileMenuButton";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { getSignButtonOptions } from "@/components/Buttons/LoginButton";
 import { createCustomButton } from "@/components/Buttons/CustomButton";
+import { createLogoutButton } from "@/components/Buttons/AccountButtons";
 
 export function renderHome() {
   const appRoot = document.getElementById("app-root");
@@ -28,38 +29,36 @@ export function renderHome() {
 
   app.appendChild(HM.mobileMenuButton);
 
-  // === Lang Dropdown (visible seulement sur sm et +) ===
-
   app.appendChild(createLangDropdown());
 
-  // === Sign In / Account Button (visible seulement sur sm et +) ===
+  const ButtonContainerRight = document.createElement("div");
+  ButtonContainerRight.className = `
+  absolute
+  right-12
+  top-10
+  flex
+  flex-col
+  items-center
+  gap-4
+  `;
 
   const SignButtonOptions = getSignButtonOptions();
   const SignButton = createCustomButton({
     ...SignButtonOptions,
+    position: "hidden sm:block min-h-[80px]",
+
   });
 
-  app.appendChild(SignButton);
+  const LogoutButton = createLogoutButton(null, true);
 
-  // === Navbar ===
+  ButtonContainerRight.appendChild(SignButton);
+
+  ButtonContainerRight.appendChild(LogoutButton);
+
+  app.appendChild(ButtonContainerRight);
   app.appendChild(renderNavBar());
 
-  // === Ajouter à la page ===
   appRoot.appendChild(app);
-  let size: number = 640;
-    let resizeTimeout: NodeJS.Timeout;
-  let currentIsMobile = window.innerWidth < size;
-
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const isMobileNow = window.innerWidth < size;
-      if (isMobileNow !== currentIsMobile) {
-        currentIsMobile = isMobileNow;
-          window.location.reload();
-      }
-    }, 200); // 200ms après le dernier resize
-  });
 
 
 }

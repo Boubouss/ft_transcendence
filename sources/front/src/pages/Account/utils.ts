@@ -7,15 +7,11 @@ import { editUser } from "@/utils/db_utils";
 export function initializeAccountContent(container: HTMLElement) {
   const emailInput = container.querySelector<HTMLInputElement>("#email")!;
   const nameInput = container.querySelector<HTMLInputElement>("#username")!;
-  const oldPasswordInput =
+  const PasswordInput =
     container.querySelector<HTMLInputElement>("#password")!;
-  const newPasswordContainer = container.querySelector<HTMLDivElement>(
-    "#new-password-container"
-  )!;
-  const newPasswordInput =
-    container.querySelector<HTMLInputElement>("#new-password")!;
   const buttonContainer =
     container.querySelector<HTMLDivElement>("#button-container")!;
+  const buttonEyes = container.querySelector<HTMLDivElement>("#button-eyes")!;
 
   const emailInit = authStorage.getUserValue("email");
   const usernameInit = authStorage.getUserValue("name");
@@ -23,18 +19,16 @@ export function initializeAccountContent(container: HTMLElement) {
   return {
     emailInput,
     nameInput,
-    oldPasswordInput,
-    newPasswordContainer,
-    newPasswordInput,
+    PasswordInput,
     buttonContainer,
     emailInit,
+    buttonEyes,
     usernameInit,
   };
 }
 
 export function createToggleEditMode(
   elements: ReturnType<typeof initializeAccountContent>,
-  isModal: boolean,
   updateAvatarLayout?: (overrideIsEdit?: boolean) => void
 ) {
   let isEditing = false;
@@ -45,11 +39,10 @@ export function createToggleEditMode(
     const {
       emailInput,
       nameInput,
-      oldPasswordInput,
-      newPasswordContainer,
-      newPasswordInput,
+      PasswordInput,
       buttonContainer,
       emailInit,
+      buttonEyes,
       usernameInit,
     } = elements;
 
@@ -57,32 +50,24 @@ export function createToggleEditMode(
     nameInput.readOnly = !isEditing;
 
     // Montre les boutons A2F + Avatar dans les bons conteneurs
-    const sideButtonsContainer = document.querySelector(
-      "#side-buttons"
-    ) as HTMLElement;
+
     const mobileEditButtons = document.querySelector(
       "#mobile-edit-buttons"
     ) as HTMLElement;
 
-    if (isModal) {
-      if (sideButtonsContainer) {
-        sideButtonsContainer.style.display = isEditing ? "flex" : "none";
-      }
-      // Logout uniquement si isModal (desktop)
-    } else {
-      if (mobileEditButtons) {
+    if (mobileEditButtons) {
         mobileEditButtons.style.display = isEditing ? "flex" : "none";
       }
-    }
 
     if (isEditing) {
       authStorage.saveOld2fa(authStorage.getA2FfromConfig());
 
-      oldPasswordInput.readOnly = false;
-      oldPasswordInput.value = "";
-      oldPasswordInput.placeholder = t("oldpw");
-      newPasswordContainer.style.display = "flex";
-      newPasswordInput.value = "";
+      buttonEyes.classList.remove("hidden");
+
+      PasswordInput.readOnly = false;
+      PasswordInput.value = "";
+      PasswordInput.placeholder = t("newpw");
+      PasswordInput.classList.replace("w-[60%]", "w-[55%]")
 
       buttonContainer.innerHTML = "";
       buttonContainer.style.display = "flex";
@@ -96,11 +81,9 @@ export function createToggleEditMode(
         accbutton.createValidateEditButton(async () => {
           if (updateAvatarLayout !== undefined) updateAvatarLayout(false);
 
-          await editUser(nameInput.value, emailInput.value);
+          await editUser(nameInput.value, emailInput.value, PasswordInput.value);
 
           toggleEditMode();
-          //authStorage.setUserValue("email", emailInput.value);
-          //authStorage.setUserValue("name", nameInput.value);
           authStorage.clearOld2fa();
           navigateTo("account");
         })
@@ -110,9 +93,7 @@ export function createToggleEditMode(
           emailInput.value = emailInit !== null ? emailInit : "";
           nameInput.value = usernameInit !== null ? usernameInit : "";
 
-          oldPasswordInput.value = "";
-          newPasswordInput.value = "";
-          if (updateAvatarLayout !== undefined) updateAvatarLayout(false);
+          PasswordInput.value = "";
 
           if (authStorage.getA2FfromConfig() != null)
             authStorage.getSignificant2FA()
@@ -120,9 +101,12 @@ export function createToggleEditMode(
         })
       );
     } else {
-      oldPasswordInput.readOnly = true;
-      oldPasswordInput.value = "******";
-      newPasswordContainer.style.display = "none";
+
+      buttonEyes.classList.add("hidden");
+
+
+      PasswordInput.readOnly = true;
+      PasswordInput.value = "******";
 
       buttonContainer.innerHTML = "";
       buttonContainer.style.display = "";

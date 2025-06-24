@@ -1,6 +1,6 @@
 {
-  "signin": "Se connecter",
-  "signup": "S'inscrire",
+  "loginin": "Se connecter",
+  "signin": "S'inscrire",
   "career": "Carrière",
   "local": "Local",
   "multiplayer": "Multijoueur",
@@ -21,10 +21,12 @@
   "disco": "Se déconnecter",
   "username": "Pseudo",
   "entera2f": "Entrer le code 2FA",
-  "requireda2f": "Code 2FA requis",
+  "sentto": "Email envoye vers :\n",
   "alerta2f": "Code 2FA incorrect, veuillez réessayer.",
   "alertsignup": "Une erreur est survenue, veuillez réessayer.",
   "avatar": "Changer d'Avatar",
   "a2fenable": "A2F activé, veuillez confirmer pour actualiser !",
-  "a2fdisable": "A2F désactivé, veuillez confirmer pour actualiser !"
+  "a2fdisable": "A2F désactivé, veuillez confirmer pour actualiser !",
+  "lobbylist": "Liste des lobby"
+
 }

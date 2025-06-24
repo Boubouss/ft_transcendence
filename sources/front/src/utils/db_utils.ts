@@ -56,7 +56,7 @@ export async function loginUser(name: string, password: string) {
   }
 }
 
-export async function editUser(name: string | null, email: string | null) {
+export async function editUser(name: string | null, email: string | null, password: string | null) {
   const id = authStorage.getUserValue("id");
   const configuration = authStorage.getConfiguration();
   const token = authStorage.getUserValue("token"); // Récupération du token
@@ -65,10 +65,11 @@ export async function editUser(name: string | null, email: string | null) {
     console.error("❌ Token ou ID utilisateur manquant");
     return;
   }
-
-  const newuser = { id, name, email, configuration };
-
-  console.log("Payload envoyé :", newuser);
+    let newuser;
+  if (password)
+      newuser = { id, name, email, password, configuration };
+  else
+      newuser = { id, name, email, configuration };
 
   try {
     const response = await axios.put(
@@ -83,7 +84,7 @@ export async function editUser(name: string | null, email: string | null) {
 
 
     const user = response.data;
-    alert("Edition réussie !");
+    
     authStorage.saveUser(user);
     authStorage.saveToken(token);
 
