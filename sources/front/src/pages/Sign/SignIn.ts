@@ -5,7 +5,7 @@ import * as db_utils from "@utils/db_utils";
 import { type User_T } from "@utils/authStorage.ts";
 
 export function createSignUpForm(
-  onSuccess: (user: User_T) => void
+  onSuccess: (user: User_T | null)  => void
 ): HTMLFormElement {
   const name_tag = t("username");
   const pw = t("pw");
@@ -74,6 +74,7 @@ export function createSignUpForm(
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       await db_utils.addUser(email, name, password);
+
       onSuccess(authStorage.getUser());
     } catch (error) {
       console.error("❌ Erreur simulée :", error);
