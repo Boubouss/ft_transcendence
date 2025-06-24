@@ -9,9 +9,14 @@ function drawState(state: toJson_T) {
   const ctx = gameCanvas.getContext("2d");
   if (!ctx) return;
 
-  const ratio_h = window.innerHeight / state.field.h;
-  const ratio_w = window.innerWidth / state.field.w;
-  const ratio = Math.min(ratio_w, Math.min(1.5, ratio_h));
+
+  const scoreDiv = document.getElementById("score_p_1") as HTMLDivElement |  null;
+  const scoreHeight = scoreDiv?.clientHeight ||  30;
+
+  //todo: remove the hardcoded 4 and 6 that compensate the 2px gaps
+  const ratio_h = (window.innerHeight - scoreHeight - 2)  / state.field.h;
+  const ratio_w = (window.innerWidth - 4) / state.field.w ;
+  const ratio = Math.min(ratio_w, ratio_h);
 
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
@@ -43,7 +48,7 @@ export async function connect() {
 
   await create_game();
 
-	const socket_0 = new WebSocket(`ws://localhost:${3000}/ws/${-1}/0`);
+  const socket_0 = new WebSocket(`ws://localhost:${3000}/ws/${-1}/0`);
   const socket_1 = new WebSocket(`ws://localhost:${3000}/ws/${-1}/1`);
 
   // no need to listen to both sockets
@@ -52,25 +57,23 @@ export async function connect() {
   socket_1.addEventListener("error", (event) => console.log(event));
   socket_1.addEventListener("close", (event) => console.log(event));
   socket_1.addEventListener("message", (event) => {
-    let message_parsed: toJson_T;
+    let message: toJson_T;
 
     try {
-      message_parsed = JSON.parse(event.data);
-      drawState(message_parsed);
-
-
+      message = JSON.parse(event.data);
+      drawState(message);
     } catch (e) {
       console.error(e);
-
       socket_0.close();
       return;
     }
 
-    const score_p_1 = document.querySelector<HTMLDivElement>("#score_p_1")!;
-    score_p_1.textContent = `${message_parsed.players[0].score}`
-
-    const score_p_2 = document.querySelector<HTMLDivElement>("#score_p_2")!;
-    score_p_2.textContent = `${message_parsed.players[1].score}`
+    for (const [playerId, scoreId] of [[message.playerL, "scoreLeft"], [message.playerR, "scoreRight"]]){
+        const scoreElement = document.getElementById(scoreId);
+        const playerInfo = message.players.find((playerInfo)=>playerInfo.playerId === playerId);
+        if (!scoreElement || !playerInfo)  continue;
+        scoreElement.textContent = `${playerInfo.score}`
+    }
   });
 
   let input_0: string[] = [];

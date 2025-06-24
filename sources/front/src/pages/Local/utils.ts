@@ -6,7 +6,7 @@ export async function create_game() {
 	"http://localhost:3000/create_game", {
 		"gameId": "-1",
 		"playersId": ["0", "1"],
-		"scoreMax": 5,
+		"scoreMax": 100000000,
     },
 	{
 		headers: {
