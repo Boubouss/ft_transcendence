@@ -8,7 +8,7 @@ export class Paddle {
   constructor(
     x: number,
     y: number,
-    h: number = 200,
+    h: number = 100,
     w: number = 20,
     step = 10,
   ) {
