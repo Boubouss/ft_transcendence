@@ -26,6 +26,9 @@ export function renderNavBar() {
   const local_button = createCustomButton({
     ...commonButtonOptions,
     text: t("local"),
+     onClick: () => {
+        navigateTo("1v1");
+     }
   });
 
   const multiplayer_button = createCustomButton({
