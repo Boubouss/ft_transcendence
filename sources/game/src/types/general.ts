@@ -1,7 +1,3 @@
-export type SocketList = {
-	[key: string]: WebSocket;
-};
-
 type Configuration = {
 	id: number;
 	is2FA: boolean;

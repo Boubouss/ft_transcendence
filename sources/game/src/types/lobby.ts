@@ -1,12 +1,13 @@
-import _ from "lodash";
 import { Action } from "./enums";
+import _ from "lodash";
 
 export type Lobby = {
 	id: number;
 	name: string;
 	player_limit: number;
-	player_count: number;
 	is_tournament: boolean;
+	players: LobbyPlayer[];
+	ready_ids: number[];
 };
 
 export type LobbyPlayer = {
@@ -15,11 +16,6 @@ export type LobbyPlayer = {
 	avatar: string;
 };
 
-export type LobbyInfo = {
-	lobby_id: number;
-	players: LobbyPlayer[];
-}
-
 export type LobbyCreate = {
 	player_limit: number;
 	is_tournament?: boolean;
@@ -27,6 +23,7 @@ export type LobbyCreate = {
 
 export type LobbyPlayerAction = {
 	target_id: number;
+	player_id?: number;
 	action: Action;
 };
 

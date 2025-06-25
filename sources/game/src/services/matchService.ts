@@ -1,23 +1,23 @@
-import { Match, MatchPlayers, Player, PrismaClient } from "@prisma/client";
+import { Match, MatchPlayers, Player, PrismaClient, Round } from "@prisma/client";
 import { findOrCreatePlayers } from "./playerService";
-import { emitLobbyData } from "./lobbyService";
+import { emitLobbyData, whisperData } from "./lobbyService";
 import { ClientEvent } from "#types/enums";
 import { MatchUpdate } from "#types/match";
-import { LobbyInfo } from "#types/lobby";
-import { sockets } from "#routes/lobby";
+import { Lobby } from "#types/lobby";
 import axios from "axios";
 import _ from "lodash";
+import { TournamentPlayer } from "#types/tournament";
 
 const prisma: PrismaClient = new PrismaClient();
 
-export const initGameInstance = async (info: LobbyInfo) => {
+export const initGameInstance = async (lobby: Lobby) => {
   try {
-    const players = await findOrCreatePlayers(info.players.map((p) => p.id));
+    const players = await findOrCreatePlayers(lobby.players.map((p) => p.id));
     const match = await createMatch(players);
 
     sendMatchInfo(match, match.players);
   } catch (err) {
-    emitLobbyData(info, `error: ${JSON.stringify(err)}`);
+    emitLobbyData(lobby, `error: ${JSON.stringify(err)}`);
   }
 }
 
@@ -33,17 +33,15 @@ export const sendMatchInfo = async (match: Match, players: MatchPlayers[]) => {
     requestData
   );
 
-  players.forEach((p) => {
-    const playerSocket = sockets.get(p.player_id);
-    if (_.isEmpty(playerSocket)) return;
-
-    playerSocket.send(JSON.stringify({
+  whisperData(
+    players.map((p) => p.player_id),
+    JSON.stringify({
       event: ClientEvent.GAME_CREATED,
       data: {
         gameId: match.id
       }
-    }));
-  });
+    })
+  );
 }
 
 
@@ -77,6 +75,22 @@ export async function createMatch(players: Player[]) {
       players: true,
     }
   })
+}
+
+export async function matchDefaultWin(winner: TournamentPlayer, nextRound: Round) {
+  if (_.isEmpty(winner)) return;
+
+  return await prisma.match.create({
+    data: {
+      round_id: nextRound.id,
+      winner_id: winner.id,
+      players: {
+        create: {
+          player_id: winner.id
+        }
+      }
+    }
+  });
 }
 
 export async function updateMatch(match_id: number, data: MatchUpdate) {
