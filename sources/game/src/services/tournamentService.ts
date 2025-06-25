@@ -2,11 +2,12 @@ import { Player, Match, PrismaClient, Round, MatchPlayers } from "@prisma/client
 import { MatchQuery, RoundQuery, TournamentQuery } from "#types/tournament";
 import { findOrCreatePlayers } from "./playerService";
 import { players, sockets, tournaments } from "#routes/lobby";
-import { sendMatchInfo } from "./matchService";
+import { matchDefaultWin, sendMatchInfo } from "./matchService";
 import { emitLobbyData } from "./lobbyService";
 import { ClientEvent } from "#types/enums";
-import { LobbyInfo } from "#types/lobby";
+import { Lobby, LobbyPlayer } from "#types/lobby";
 import _ from "lodash";
+import { findOrCreateRound } from "./roundServices";
 
 const prisma: PrismaClient = new PrismaClient();
 
@@ -35,13 +36,13 @@ const generateTournamentQuery = (players: Player[]) => {
 	return tournament;
 }
 
-export const initTournament = async (info: LobbyInfo) => {
+export const initTournament = async (lobby: Lobby) => {
 	try {
-		if (Math.log2(info.players.length) % 1 !== 0) {
+		if (Math.log2(lobby.players.length) % 1 !== 0) {
 			throw new Error("Player count must be a power of 2.");
 		}
 
-		const dbPlayers = await findOrCreatePlayers(info.players.map((p) => p.id));
+		const dbPlayers = await findOrCreatePlayers(lobby.players.map((p) => p.id));
 		const tournament = await createTournament(dbPlayers);
 
 		const firstRound = _.first(tournament.rounds);
@@ -59,7 +60,7 @@ export const initTournament = async (info: LobbyInfo) => {
 
 		tournaments.push({ id: tournament.id, players: tournamentPlayer });
 	} catch (err) {
-		emitLobbyData(info, `error: ${JSON.stringify(err)}`);
+		emitLobbyData(lobby, `error: ${JSON.stringify(err)}`);
 	}
 }
 
@@ -113,8 +114,32 @@ export async function createTournament(players: Player[]) {
 	});
 }
 
+export async function handleTournamentLeave(player: LobbyPlayer) {
+	for (const tournament of tournaments) {
+		for (const [index, tournamentPlayer] of tournament.players.entries()) {
+			if (!_.isEmpty(tournamentPlayer) && tournamentPlayer.id === player.id) {
+				const interval = Math.pow(2, tournamentPlayer.matchCount);
+				const pos = index - (index % interval);
+				const nextOpponent = tournament.players
+					.slice(pos, pos + interval)
+					.find((p) => !_.isEmpty(p) && p.id !== player.id);
+
+				if (!_.isEmpty(nextOpponent) && nextOpponent.currentDepth < tournamentPlayer.currentDepth) {
+					const nextRound = await findOrCreateRound(tournament.id, nextOpponent.currentDepth);
+					const match = await matchDefaultWin(tournamentPlayer, nextRound);
+					if (_.isEmpty(match)) return;
+
+					handleTournamentMatch(match, nextRound);
+				}
+
+				tournament.players[index] = null;
+			}
+		}
+	}
+}
+
 export async function handleTournamentMatch(match: Match, matchRound: Round, looser?: MatchPlayers) {
-	if (matchRound.depth <= 1 || _.isEmpty(looser)) return;
+	if (matchRound.depth <= 1) return;
 
 	const tournament = tournaments.find((t) => t.id === matchRound.tournament_id);
 	if (_.isEmpty(tournament)) return;
@@ -123,24 +148,14 @@ export async function handleTournamentMatch(match: Match, matchRound: Round, loo
 	const winner = tournament.players[winnerIndex];
 	if (_.isEmpty(winner)) return;
 
-	const prevOpponentIndex = tournament.players
-		.findIndex((p) => !_.isEmpty(p) && p.id === looser.player_id);
+	if (!_.isEmpty(looser)) {
+		const prevOpponentIndex = tournament.players
+			.findIndex((p) => !_.isEmpty(p) && p.id === looser.player_id);
 
-	tournament.players[prevOpponentIndex] = null;
+		tournament.players[prevOpponentIndex] = null;
+	}
 
-	const nextRound = await prisma.round.upsert({
-		where: {
-			tournament_id_depth: {
-				tournament_id: matchRound.tournament_id,
-				depth: matchRound.depth - 1
-			}
-		},
-		create: {
-			tournament_id: matchRound.tournament_id,
-			depth: matchRound.depth - 1
-		},
-		update: {}
-	});
+	const nextRound = await findOrCreateRound(matchRound.tournament_id, matchRound.depth - 1);
 
 	winner.currentDepth = nextRound.depth;
 	winner.matchCount += 1;
@@ -151,7 +166,10 @@ export async function handleTournamentMatch(match: Match, matchRound: Round, loo
 	const nextOpponent = opponentPool.find((p) => !_.isEmpty(p) && p.id !== match.winner_id);
 
 	if (_.isEmpty(nextOpponent)) {
-		// Win by default (recursive call) ?
+		const match = await matchDefaultWin(winner, nextRound);
+		if (_.isEmpty(match)) return;
+
+		handleTournamentMatch(match, nextRound);
 	} else if (nextOpponent.currentDepth === nextRound.depth) {
 		const match = await prisma.match.create({
 			data: {
