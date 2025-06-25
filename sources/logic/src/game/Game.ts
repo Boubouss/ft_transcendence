@@ -4,7 +4,7 @@ import { GameField } from "./GameField";
 import { GameState } from "../type/Enum";
 import { Paddle } from "./Paddle";
 import { Player } from "./Player";
-import { PlayerInput } from "../type/Type";
+import { MessageTypes } from "../type/Schema";
 import * as other from "./other";
 
 //offset from the center of the object
@@ -36,8 +36,8 @@ export class Game {
     this._sleep = 0;
 
     this._gameId = config.gameId;
-    config.playersId.forEach((playerId: string) => {
-      this._players.set(playerId, new Player(playerId));
+    config.playersId.forEach((id: string) => {
+      this._players.set(id, new Player(id));
     });
 
     this._playersQueue = Array(...this._players.keys());
@@ -85,17 +85,19 @@ export class Game {
     this._playerL = this._playersQueue.shift() as string;
     this._playerR = this._playersQueue.shift() as string;
   }
-  public setPlayerConnection(playerId: string, socket: WebSocket | null) {
-    const player = this._players.get(playerId);
+  public setPlayerConnection(id: string, socket: WebSocket | null) {
+    const player = this._players.get(id);
     if (player !== undefined) player.socket = socket;
   }
-  public setPlayerInput(playerId: string, input: PlayerInput) {
-    const player = this._players.get(playerId);
+  public setPlayerPause(id: string, value: MessageTypes["pause"]["value"]) {
+    const player = this._players.get(id);
+    if (!player) return;
+    player.pause = value;
+  }
+  public setPlayerInput(id: string, input: MessageTypes["input"]["value"]) {
+    const player = this._players.get(id);
     if (!player) return;
     player.input = input;
-  }
-  public isFull() {
-    return ![...this._players.values()].some((p) => !p.isConnected());
   }
   public isEmpty() {
     return [...this._players.values()].every((p) => !p.isConnected());
@@ -117,8 +119,9 @@ export class Game {
   public toJson() {
     return {
       gameId: this._gameId,
-      state: GameState[this._gameState],
-      players: [[...this._players.values()].map((player) => player.toJson())],
+      state: GameState[this._gameState].toLowerCase(),
+      sleep: this._sleep,
+      players: [...this._players.values()].map((player) => player.toJson()),
       queue: this._playersQueue,
       field: this._gameField.toJson(),
       playerL: this._playerL,
@@ -130,14 +133,19 @@ export class Game {
   }
   public update() {
     //todo: websocket could set to false onclose and we recheck only if false
-    if (this._gameState == GameState.Init && this.isFull()) {
+    const gameFull = ![...this._players.values()].some((p) => !p.isConnected());
+    const pausedPlayers = [...this._players.values()].some((p) => p.pause);
+    if (this._gameState == GameState.Init && gameFull) {
       this._sleep = 1 * this._fps;
       this._gameState = GameState.Running;
-    } else if (this._gameState == GameState.Running && !this.isFull()) {
-      this._gameState = GameState.Paused;
-    } else if (this._gameState == GameState.Paused && this.isFull()) {
-      this._sleep = 1 * this._fps;
-      this._gameState = GameState.Running;
+    } else if (this._gameState == GameState.Running) {
+      if (!gameFull) this._gameState = GameState.Paused;
+      if (pausedPlayers) this._gameState = GameState.Paused;
+    } else if (this._gameState == GameState.Paused) {
+      if (gameFull && !pausedPlayers) {
+        this._sleep = 1 * this._fps;
+        this._gameState = GameState.Running;
+      }
     }
 
     //todo: check for multiple winners error ?
@@ -168,9 +176,9 @@ export class Game {
       [this._playerR, this._paddleR],
     ] as [string, Paddle][];
 
-    for (const [playerId, paddle] of pairPlayerPaddle) {
+    for (const [id, paddle] of pairPlayerPaddle) {
       let player, input;
-      if (!(player = this._players.get(playerId))) continue;
+      if (!(player = this._players.get(id))) continue;
       if (!(input = player.input)) continue;
       if (input === null) continue;
       let step = 0;
@@ -184,7 +192,6 @@ export class Game {
       }
       const current = this._ball.center;
       paddle.center = { y: paddle.center.y + step };
-      //todo: rework this section (trigger if the ball it the left/right side)
       if (this.overlap(this._ball, paddle)) {
         const pX = Math.max(paddle.left, Math.min(current.x, paddle.right));
         const pY = Math.max(paddle.top, Math.min(current.y, paddle.bottom));

@@ -78,6 +78,15 @@ function connect() {
   window.addEventListener("keydown", (event) => {
     if (socket_0.readyState !== WebSocket.OPEN) return;
     if (socket_1.readyState !== WebSocket.OPEN) return;
+    if (event.key !== "p" && event.code !== "Space") return;
+    // needed due to the fact that both players get paused when reconnecting
+    socket_0.send(JSON.stringify({ type: "pause", value: "flip" }));
+    socket_1.send(JSON.stringify({ type: "pause", value: "flip" }));
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (socket_0.readyState !== WebSocket.OPEN) return;
+    if (socket_1.readyState !== WebSocket.OPEN) return;
 
     if (![...control_0.keys(), ...control_1.keys()].includes(event.key)) return;
     event.preventDefault();
@@ -85,13 +94,13 @@ function connect() {
     if (control_0.has(event.key)) {
       input_0.push(event.key);
       const direction = control_0.get(event.key) || null;
-      socket_0.send(JSON.stringify({ input: direction }));
+      socket_0.send(JSON.stringify({ type: "input", value: direction }));
     }
 
     if (control_1.has(event.key)) {
       input_1.push(event.key);
       const direction = control_1.get(event.key) || null;
-      socket_1.send(JSON.stringify({ input: direction }));
+      socket_1.send(JSON.stringify({ type: "input", value: direction }));
     }
   });
   window.addEventListener("keyup", (event) => {
@@ -104,13 +113,13 @@ function connect() {
     if (control_0.has(event.key)) {
       input_0 = input_0.filter((input) => input !== event.key);
       const direction = control_0.get(input_0[input_0.length - 1]) || null;
-      socket_0.send(JSON.stringify({ input: direction }));
+      socket_0.send(JSON.stringify({ type: "input", value: direction }));
     }
 
     if (control_1.has(event.key)) {
       input_1 = input_1.filter((input) => input !== event.key);
       const direction = control_1.get(input_1[input_1.length - 1]) || null;
-      socket_1.send(JSON.stringify({ input: direction }));
+      socket_1.send(JSON.stringify({ type: "input", value: direction }));
     }
   });
 }
