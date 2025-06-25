@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Player {
-  id    Int            @unique
+  id         Int            @unique
   matches    MatchPlayers[]
   created_at DateTime       @default(now())
   updated_at DateTime       @updatedAt
@@ -47,8 +47,11 @@ model Round {
   matches       Match[]
   tournament    Tournament @relation(fields: [tournament_id], references: [id])
   tournament_id Int
+  depth         Int
   created_at    DateTime   @default(now())
   updated_at    DateTime   @updatedAt
+
+  @@unique([tournament_id, depth])
 }
 
 model Tournament {

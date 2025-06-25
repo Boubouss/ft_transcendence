@@ -2,33 +2,31 @@ import fastify from "fastify";
 import fastifyJwt from "@fastify/jwt";
 import { errorHandler } from "./errors/errorHandler";
 import fastifyWebsocket from "@fastify/websocket";
-import match from "./routes/match";
-import lobby from "./routes/lobby";
+import tournament from "#routes/tournament";
+import match from "#routes/match";
+import lobby from "#routes/lobby";
 import { checkEnv } from "./env";
 import * as dotenv from "dotenv";
-import path from "path";
 import fs from "fs";
 
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: ".env" });
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 checkEnv();
 
 const app = fastify({
 	https: {
-		key: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_KEY as string)),
-		cert: fs.readFileSync(path.resolve(__dirname, process.env.HTTPS_CERT as string)),
-	},
+		key: fs.readFileSync(process.env.HTTPS_KEY as string),
+		cert: fs.readFileSync(process.env.HTTPS_CERT as string)
+	}
 });
 
 app.register(fastifyWebsocket);
+app.register(fastifyJwt, { secret: process.env.JWT_KEY as string });
 
-app.register(fastifyJwt, {
-	secret: process.env.JWT_KEY as string,
-});
-
-app.register(lobby);
+app.register(tournament);
 app.register(match);
+app.register(lobby);
 
 app.setErrorHandler(errorHandler);
 
