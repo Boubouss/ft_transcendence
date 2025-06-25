@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Configuration, User, UserCreate, UserUpdate } from "../types/types";
+import { Configuration, GoogleData, User, UserCreate, UserUpdate } from "../types/types";
 import * as bcrypt from "bcrypt";
 
 const prisma: PrismaClient = new PrismaClient();
@@ -42,6 +42,24 @@ export async function getUserById(id: number) {
 export async function getUserByEmail(email: string) {
 	return await prisma.user.findUnique({
 		where: { email },
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			avatar: true,
+			configuration: {
+				select: {
+					id: true,
+					is2FA: true,
+				},
+			},
+		},
+	});
+}
+
+export async function getUserByName(name: string) {
+	return await prisma.user.findUnique({
+		where: { name },
 		select: {
 			id: true,
 			name: true,
@@ -149,4 +167,43 @@ export async function deleteUser(id: number) {
 		return { ...user, configuration };
 	});
 	return result;
+}
+
+export async function googleSignIn(googleData: GoogleData) {
+	const user = await getUserByEmail(googleData.email);
+
+	if (user)
+		return { ...user };
+
+	let name: string = googleData.name;
+
+	let userName = await getUserByName(name);
+	let index = 0;
+
+	while (userName)
+	{
+		index++;
+		name = name + index;
+		userName = await getUserByName(name);
+	}
+
+
+	const userData: UserCreate = { email: googleData.email, name: name, password: "user" + googleData.id + "!", avatar: "", verify: true};
+
+	const newUser: User = await createUser(userData);
+
+	return newUser;
+}
+
+export async function verifyUser(id: number) {
+	return await prisma.user.update({
+		where: { id },
+		data: { verify: true },
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			avatar: true,
+		},
+	})
 }
