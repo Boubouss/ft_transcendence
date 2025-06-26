@@ -2,8 +2,7 @@ import { navigateTo } from "@/router";
 import { createCustomButton, type CustomButtonOptions } from "@/components/Buttons/CustomButton";
 import { t } from "@utils/i18n";
 import * as authStorage from "@utils/authStorage";
-import { changeRoute } from "@/main";
-
+import { changeRoute } from "@utils/events";
 
 export function getFriendsButtonOptions(): CustomButtonOptions {
 	const isMobile = window.innerWidth < 640;

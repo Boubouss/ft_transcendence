@@ -3,8 +3,7 @@ import { navigateTo } from "@/router";
 import { getToken } from "@utils/authStorage.ts";
 import { t } from "@utils/i18n.ts";
 import * as authStorage from "@utils/authStorage"
-import { changeRoute } from "@/main";
-
+import { changeRoute } from "@utils/events";
 export function renderNavBar() {
   const app = document.createElement("div");
 
@@ -28,7 +27,6 @@ export function renderNavBar() {
     ...commonButtonOptions,
     text: t("local"),
      onClick: () => {
-        //navigateTo("1v1");
         changeRoute("1v1");
 
      }

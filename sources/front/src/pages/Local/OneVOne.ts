@@ -56,4 +56,6 @@ export function renderOneVOne() {
     content_canvas.appendChild(scoreDivL);
     content_canvas.appendChild(scoreDivR);
     content_canvas.appendChild(canvas);
+
+
 }

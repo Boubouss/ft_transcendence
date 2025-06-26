@@ -27,7 +27,8 @@ export function createAccountPage(isModal = false): HTMLElement {
       "w-[90vw]",
       "max-w-[600px]",
       "border-2",
-      "border-black"
+      "border-black",
+      "m-5"
     );
   }
 

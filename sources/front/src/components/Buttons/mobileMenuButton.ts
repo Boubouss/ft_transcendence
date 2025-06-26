@@ -4,8 +4,7 @@ import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { createLogoutButton } from "@/components/Buttons/AccountButtons";
 import * as authStorage from "@/utils/authStorage";
 import { getFriendsButtonOptions } from "@/components/Buttons/FriendsButton";
-import { changeRoute } from "@/main";
-
+import { changeRoute } from "@utils/events";
 export const mobileMenuButton = createCustomButton({
   height: "60px",
   borderRadius: "rounded-[20px]",

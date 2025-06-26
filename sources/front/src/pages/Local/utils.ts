@@ -29,3 +29,27 @@ export async function create_game() {
 	}
   }
 }
+
+export async function delete_game(gameId: string) {
+  try {
+    const response = await axios.delete(
+      `${api_logic}/delete_game`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: { gameId: gameId}
+      }
+    );
+
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.log("delete game error : " + error);
+      console.error(
+        "Détail validationErrors :",
+        JSON.stringify(error.response?.data?.validationErrors, null, 2)
+      );
+    }
+  }
+}
+

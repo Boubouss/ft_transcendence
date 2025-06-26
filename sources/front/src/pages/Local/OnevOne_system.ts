@@ -1,5 +1,6 @@
 import type { toJson_T } from "@pages/Local/type.ts";
-import { create_game } from "./utils";
+import { create_game, delete_game } from "./utils";
+import { openSocketMulti } from "../Multiplayer/MultiWSS";
 
 function drawState(state: toJson_T) {
   const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
@@ -9,13 +10,14 @@ function drawState(state: toJson_T) {
   const ctx = gameCanvas.getContext("2d");
   if (!ctx) return;
 
-
-  const scoreDiv = document.getElementById("score_p_1") as HTMLDivElement |  null;
-  const scoreHeight = scoreDiv?.clientHeight ||  30;
+  const scoreDiv = document.getElementById(
+    "score_p_1"
+  ) as HTMLDivElement | null;
+  const scoreHeight = scoreDiv?.clientHeight || 30;
 
   //todo: remove the hardcoded 4 and 6 that compensate the 2px gaps
-  const ratio_h = (window.innerHeight - scoreHeight - 2)  / state.field.h;
-  const ratio_w = (window.innerWidth - 4) / state.field.w ;
+  const ratio_h = (window.innerHeight - scoreHeight - 2) / state.field.h;
+  const ratio_w = (window.innerWidth - 4) / state.field.w;
   const ratio = Math.min(ratio_w, ratio_h);
 
   gameCanvas.height = state.field.h * ratio;
@@ -45,7 +47,6 @@ function drawState(state: toJson_T) {
 }
 
 export async function connect() {
-
   await create_game();
 
   const socket_0 = new WebSocket(`ws://localhost:${3001}/ws/${-1}/0`);
@@ -69,11 +70,16 @@ export async function connect() {
     }
 
     console.log(message);
-    for (const [playerId, scoreId] of [[message.playerL, "scoreLeft"], [message.playerR, "scoreRight"]]){
-        const scoreElement = document.getElementById(scoreId);
-        const playerInfo = message.players.find((playerInfo)=>playerInfo.playerId === playerId);
-        if (!scoreElement || !playerInfo)  continue;
-        scoreElement.textContent = `${playerInfo.score}`
+    for (const [playerId, scoreId] of [
+      [message.playerL, "scoreLeft"],
+      [message.playerR, "scoreRight"],
+    ]) {
+      const scoreElement = document.getElementById(scoreId);
+      const playerInfo = message.players.find(
+        (playerInfo) => playerInfo.playerId === playerId
+      );
+      if (!scoreElement || !playerInfo) continue;
+      scoreElement.textContent = `${playerInfo.score}`;
     }
   });
 
@@ -126,4 +132,16 @@ export async function connect() {
       socket_1.send(JSON.stringify({ input: direction }));
     }
   });
+
+  // 👂 Écoute de tous les changements d'URL
+  window.addEventListener("locationchange", () => {
+    console.log(
+      "🔄 URL changée :",
+      window.location.pathname + window.location.hash
+
+    );
+    socket_0.close();
+    socket_1.close();
+    delete_game("-1")
+  }, {once:true});
 }

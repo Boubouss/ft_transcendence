@@ -3,7 +3,7 @@ import * as authStorage from "@utils/authStorage.ts";
 import { createCustomButton } from "@/components/Buttons/CustomButton"; // adapte le chemin si besoin
 import { t } from "@utils/i18n";
 import type { User_T } from "@utils/authStorage.ts";
-import { changeRoute } from "@/main";
+import { changeRoute } from "@utils/events";
 
 function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
   const modal = document.createElement("div");

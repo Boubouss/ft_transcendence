@@ -2,7 +2,8 @@ import { createCloseModalButton } from "@/components/Buttons/AccountButtons";
 import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { t } from "@/utils/i18n";
 import { navigateTo } from "@/router";
-import { changeRoute } from "@/main";
+import { changeRoute } from "@utils/events";
+
 
 export function renderMultiPage() {
   const appRoot = document.getElementById("app-root");
