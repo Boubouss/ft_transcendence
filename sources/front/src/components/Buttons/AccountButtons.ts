@@ -2,6 +2,7 @@ import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { t } from "@utils/i18n";
 import * as authStorage from "@utils/authStorage";
 import { navigateTo } from "@/router";
+import { changeRoute } from "@/main";
 import { EnableDisableA2F } from "@/pages/Sign/A2F";
 import { getSignButtonOptions } from "./LoginButton";
 
@@ -137,6 +138,7 @@ export function createLogoutButton(modal: HTMLElement | null, homedesktop: boole
     onClick: () => {
       authStorage.clearAuth();
       navigateTo("home");
+      //changeRoute("home");
       if (modal !== null) {
         modal.style.transform = "translateY(-100%)";
         setTimeout(() => modal.remove(), 300);

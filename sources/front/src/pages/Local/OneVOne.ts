@@ -10,7 +10,7 @@ export function renderOneVOne() {
 	flex
 	justify-center
 	items-center
-	bg-orange-200
+	bg-orange-400
     `;
 
 	const content_canvas =  document.createElement("div");

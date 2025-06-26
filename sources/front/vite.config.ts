@@ -1,16 +1,18 @@
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
+import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig({
-  plugins: [tailwindcss()],
-   resolve: {
+  plugins: [
+    tailwindcss(),
+    // Si tu veux que mkcert gère automatiquement les certificats :
+    //mkcert(),
+  ],
+  resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), // Exemple : @/components → src/components
+      '@/': path.resolve(__dirname, 'src') + '/',
       '@components': path.resolve(__dirname, 'src/components'),
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@pages': path.resolve(__dirname, 'src/pages'),
@@ -18,13 +20,17 @@ export default defineConfig({
     },
   },
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001', // remplace par ton URL backend HTTPS
-        changeOrigin: true,
-        secure: false, // si ton backend utilise un certificat auto-signé
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, 'ssl/cert.key')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'ssl/cert.crt')),
     },
-  },
+    //proxy: {
+    //  '/api': {
+    //    target: 'http://localhost:3001',
+    //    changeOrigin: true,
+    //    secure: false,
+    //    rewrite: (path) => path.replace(/^\/api/, "")
+    //  }
+    //}
+  }
 });

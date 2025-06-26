@@ -6,6 +6,7 @@ import * as accbutton from "@components/Buttons/AccountButtons";
 import { createToggleEditMode } from "@pages/Account/utils";
 import { initializeAccountContent } from "@pages/Account/utils";
 import * as authStorage from "@utils/authStorage";
+import { changeRoute } from "@/main";
 
 export function renderAccount() {
   renderAccountDesktop();
@@ -59,7 +60,6 @@ function renderAccountDesktop() {
     }
   });
 
-  navigateTo("home");
   setupContent(modalInner, modal);
 }
 
@@ -114,5 +114,7 @@ function setupContent(container: HTMLElement, modal: HTMLElement | null) {
 
   if (modal) {
     navigateTo("home");
+    //changeRoute("home");
+
   }
 }

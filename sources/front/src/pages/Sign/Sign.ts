@@ -3,6 +3,7 @@ import { createSignUpForm } from "./SignIn.ts";
 import { navigateTo } from "@/router.ts";
 import { t } from "@utils/i18n.ts";
 import { createCustomButton } from "@/components/Buttons/CustomButton.ts"; // adapte le chemin si besoin
+import { changeRoute } from "@/main.ts";
 
 export function renderSignModal() {
   // Création du modal overlay
@@ -19,7 +20,8 @@ export function renderSignModal() {
   items-center
   justify-center`;
 
-  navigateTo("home");
+  changeRoute("home");
+  //navigateTo("home");
 
   // Card principale
   const card = document.createElement("div");
@@ -43,8 +45,6 @@ export function renderSignModal() {
       borderRadius: "rounded-[20px]",
       padding: "p-2",
       fontSizeClass: "text-lg",
-
-
     });
   }
 
@@ -86,7 +86,8 @@ export function renderSignModal() {
       setTimeout(() => menuModal.remove(), 300);
     }
 
-    navigateTo("home");
+    //navigateTo("home");
+    changeRoute("home");
   };
 
   const formSignIn = createSignInForm(onAuthSuccess);
@@ -134,7 +135,8 @@ export function renderSignModal() {
 
     onClick: () => {
       document.body.removeChild(modal);
-      navigateTo("home");
+      //navigateTo("home");
+      changeRoute("home");
     },
   });
 
@@ -208,7 +210,8 @@ export function renderSignModal() {
   modal.addEventListener("click", (event) => {
     if (event.target === modal) {
       document.body.removeChild(modal);
-      navigateTo("home");
+      //navigateTo("home");
+      changeRoute("home");
     }
   });
 

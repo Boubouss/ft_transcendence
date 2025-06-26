@@ -3,6 +3,7 @@ import * as authStorage from "@utils/authStorage.ts";
 import { createCustomButton } from "@/components/Buttons/CustomButton"; // adapte le chemin si besoin
 import { t } from "@utils/i18n";
 import type { User_T } from "@utils/authStorage.ts";
+import { changeRoute } from "@/main";
 
 function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
   const modal = document.createElement("div");
@@ -95,7 +96,8 @@ function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
         const token = authStorage.getUserValue("token");
         if (token)
           authStorage.saveToken(token);
-          navigateTo("home");
+          //navigateTo("home");
+          changeRoute("home");
       }
     },
   });
@@ -134,7 +136,8 @@ function show2FAModal(validOrActivate: string, user: User_T) {
 
 export function handlePostLogin(user: User_T, needs2FA: boolean) {
   if (!needs2FA) {
-    navigateTo("home");
+    //navigateTo("home");
+    changeRoute("home");
   } else {
     show2FAModal('Connexion', user); // validation mode
   }

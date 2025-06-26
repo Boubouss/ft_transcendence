@@ -18,4 +18,29 @@ async function main() {
   dotenv.config();
 }
 
+export function changeRoute(page: string) {
+  history.pushState({ page }, "", `/${page}`);
+  navigateTo(page);
+}
+
+window.addEventListener("popstate", (event) => {
+  const page = (event.state as any)?.page ?? "home";
+  navigateTo(page);
+});
+
+//document.body.addEventListener("click", (e) => {
+//  const a = (e.target as HTMLElement).closest("a");sign
+//  if (a && a.origin === location.origin) {
+//    e.preventDefault();
+//    const href = a.getAttribute("href")?.slice(1) ?? "home";
+//    changeRoute(href);
+//  }
+//});
+
+window.addEventListener("load", () => {
+  const path = window.location.pathname.slice(1) || "home";
+  history.replaceState({ page: path }, "", window.location.pathname);
+  navigateTo(path);
+});
+
 main();

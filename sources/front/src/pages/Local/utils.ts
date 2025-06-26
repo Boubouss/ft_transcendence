@@ -1,12 +1,13 @@
 import axios from "axios";
+const api_logic = import.meta.env.VITE_API_LOGIC_URL;
 
 export async function create_game() {
   try {
     const response = await axios.post(
-	"http://localhost:3000/create_game", {
+	`${api_logic}/create_game`, {
 		"gameId": "-1",
 		"playersId": ["0", "1"],
-		"scoreMax": 100000000,
+		"scoreMax": 100,
     },
 	{
 		headers: {

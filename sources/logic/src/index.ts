@@ -15,7 +15,7 @@ import cors from "@fastify/cors";
 
 //todo: remove the placeholders and constants
 const FPS: 30 | 60 = 60;
-const PORT: number = 3000;
+const PORT: number = 3001;
 const TIMEOUT_GAME_DELETION = 30; //time in second
 
 let games = new Map<string, Game>();
@@ -80,7 +80,7 @@ app.register(() => {
 
 app.register(
   cors, {
-    origin: "http://localhost:5173",
+    origin: "https://localhost:5173",
     optionsSuccessStatus: 200,
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
     preflightContinue: false,

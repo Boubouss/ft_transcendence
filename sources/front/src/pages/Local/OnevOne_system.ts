@@ -48,8 +48,8 @@ export async function connect() {
 
   await create_game();
 
-  const socket_0 = new WebSocket(`ws://localhost:${3000}/ws/${-1}/0`);
-  const socket_1 = new WebSocket(`ws://localhost:${3000}/ws/${-1}/1`);
+  const socket_0 = new WebSocket(`ws://localhost:${3001}/ws/${-1}/0`);
+  const socket_1 = new WebSocket(`ws://localhost:${3001}/ws/${-1}/1`);
 
   // no need to listen to both sockets
   socket_0.addEventListener("error", (event) => console.log(event));
@@ -68,6 +68,7 @@ export async function connect() {
       return;
     }
 
+    console.log(message);
     for (const [playerId, scoreId] of [[message.playerL, "scoreLeft"], [message.playerR, "scoreRight"]]){
         const scoreElement = document.getElementById(scoreId);
         const playerInfo = message.players.find((playerInfo)=>playerInfo.playerId === playerId);

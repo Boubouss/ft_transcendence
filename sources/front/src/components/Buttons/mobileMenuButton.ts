@@ -4,6 +4,7 @@ import { createLangDropdown } from "@/components/Buttons/LangButton";
 import { createLogoutButton } from "@/components/Buttons/AccountButtons";
 import * as authStorage from "@/utils/authStorage";
 import { getFriendsButtonOptions } from "@/components/Buttons/FriendsButton";
+import { changeRoute } from "@/main";
 
 export const mobileMenuButton = createCustomButton({
   height: "60px",
@@ -66,6 +67,8 @@ export function createModalMenuMobile(): HTMLDivElement {
     onClick: () => {
       modal.classList.replace("translate-y-0", "-translate-y-full");
       setTimeout(() => modal.remove(), 300);
+      changeRoute("home");
+
     },
   });
   content.appendChild(closeButton);

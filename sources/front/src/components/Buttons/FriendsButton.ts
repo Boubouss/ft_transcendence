@@ -2,6 +2,8 @@ import { navigateTo } from "@/router";
 import { createCustomButton, type CustomButtonOptions } from "@/components/Buttons/CustomButton";
 import { t } from "@utils/i18n";
 import * as authStorage from "@utils/authStorage";
+import { changeRoute } from "@/main";
+
 
 export function getFriendsButtonOptions(): CustomButtonOptions {
 	const isMobile = window.innerWidth < 640;
@@ -18,6 +20,7 @@ export function getFriendsButtonOptions(): CustomButtonOptions {
 	  height: "80px",
 	  padding: "p-[10px]",
 	  onClick: () => navigateTo("account"),
+
 	};
   } else {
 	return {
@@ -29,6 +32,7 @@ export function getFriendsButtonOptions(): CustomButtonOptions {
 	  width: "220px",
 	  height: "80px",
 	  onClick: () => navigateTo("sign"),
+
 	};
   }
 }

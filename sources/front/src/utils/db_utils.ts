@@ -1,10 +1,12 @@
 import * as authStorage from "@utils/authStorage";
 
 import axios from "axios";
+const api_user = import.meta.env.VITE_API_USER_URL;
+
 
 export async function addUser(email: string, name: string, password: string) {
   try {
-    const response = await axios.post("https://localhost:3000/auth/register", {
+    const response = await axios.post(`${api_user}/auth/register`, {
       email,
       name,
       password,
@@ -31,7 +33,7 @@ export async function addUser(email: string, name: string, password: string) {
 
 export async function loginUser(name: string, password: string) {
   try {
-    const response = await axios.post("https://localhost:3000/auth/login", {
+    const response = await axios.post(`${api_user}/auth/login`, {
       name,
       password,
     });
@@ -73,7 +75,7 @@ export async function editUser(name: string | null, email: string | null, passwo
 
   try {
     const response = await axios.put(
-      `https://localhost:3000/crud/user/${id}`,
+      `${api_user}/crud/user/${id}`,
       newuser,
       {
         headers: {
@@ -84,7 +86,7 @@ export async function editUser(name: string | null, email: string | null, passwo
 
 
     const user = response.data;
-    
+
     authStorage.saveUser(user);
     authStorage.saveToken(token);
 

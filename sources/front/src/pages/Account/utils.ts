@@ -3,6 +3,7 @@ import * as accbutton from "@components/Buttons/AccountButtons";
 import { t } from "@/utils/i18n";
 import { navigateTo } from "@/router";
 import { editUser } from "@/utils/db_utils";
+import { changeRoute } from "@/main";
 
 export function initializeAccountContent(container: HTMLElement) {
   const emailInput = container.querySelector<HTMLInputElement>("#email")!;

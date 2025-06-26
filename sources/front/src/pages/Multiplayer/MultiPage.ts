@@ -2,6 +2,7 @@ import { createCloseModalButton } from "@/components/Buttons/AccountButtons";
 import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { t } from "@/utils/i18n";
 import { navigateTo } from "@/router";
+import { changeRoute } from "@/main";
 
 export function renderMultiPage() {
   const appRoot = document.getElementById("app-root");
@@ -51,7 +52,8 @@ export function renderMultiPage() {
   `;
 
   const CloseButton = createCloseModalButton(() => {
-      navigateTo("home");
+      //navigateTo("home");
+      changeRoute("home");
     });
 
 
