@@ -27,5 +27,7 @@
   "avatar": "Change avatar",
   "a2fenable": "A2F enabled, confirm update!",
   "a2fdisable": "A2F disabled, confirm update!",
-  "lobbylist": "Lobby List"
+  "lobbylist": "Lobby List",
+  "vs": "Versus",
+  "tournament": "Tournament"
 }

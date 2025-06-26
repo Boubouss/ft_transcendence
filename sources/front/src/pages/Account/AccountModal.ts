@@ -14,23 +14,23 @@ export function createAccountPage(isModal = false): HTMLElement {
   const pw = t("pw");
 
   container.className =
-    "relative flex flex-col items-center px-4 py-6 gap-6 w-full min-h-screen bg-orange-400";
-  container.style.fontFamily = "'Jaro', sans-serif";
+    `relative
+    flex
+    flex-col
+    items-center
+    p-6
+    gap-6
+    bg-orange-400
+    border-2
+    border-black
+    m-5
+    overflow-y-auto
+    max-w-[600px]
+    w-full
+    max-h-[90%]
+    rounded-[20px]`;
 
-  if (isModal) {
-    container.classList.remove("min-h-screen");
-    container.classList.add(
-      "rounded-2xl",
-      "p-6",
-      "max-h-[90vh]",
-      "overflow-y-auto",
-      "w-[90vw]",
-      "max-w-[600px]",
-      "border-2",
-      "border-black",
-      "m-5"
-    );
-  }
+  container.style.fontFamily = "'Jaro', sans-serif";
 
   container.innerHTML = `
 

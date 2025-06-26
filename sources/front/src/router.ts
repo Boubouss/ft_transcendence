@@ -1,10 +1,11 @@
 import { renderHome } from './pages/Home/Home.ts';
 import { renderSignModal } from './pages/Sign/Sign.ts';
-import { renderAccount } from './pages/Account/AccountModalSystem.ts';
+import { renderAccount as renderModalAccount } from './pages/Account/AccountModalSystem.ts';
 import { renderMultiPage } from './pages/Multiplayer/MultiPage.ts';
 import { renderOneVOne } from './pages/Local/OneVOne.ts';
-import { connect } from './pages/Local/OnevOne_system.ts';
+import { connect } from './pages/Local/OnevOneSystem.ts';
 import { create_game } from './pages/Local/utils.ts';
+import { renderModalLocal } from './pages/Local/LocalModal.ts';
 
 export function navigateTo(page: string) {
   const appRoot = document.getElementById("app-root");
@@ -20,7 +21,7 @@ export function navigateTo(page: string) {
       renderSignModal();
       break;
     case "account":
-      renderAccount(); // ← ouvre la modal des paramètres
+      renderModalAccount(); // ← ouvre la modal des paramètres
       break;
     case "multi":
       renderMultiPage();
@@ -29,6 +30,9 @@ export function navigateTo(page: string) {
       renderOneVOne();
       connect();
       break;
+    case "local":
+      renderModalLocal();
+      break
     default:
       appRoot.innerHTML = "<p class='text-center text-red-600 mt-10'>404 - Page Not Found</p>";
   }

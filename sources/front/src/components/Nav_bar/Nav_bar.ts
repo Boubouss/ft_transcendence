@@ -27,8 +27,8 @@ export function renderNavBar() {
     ...commonButtonOptions,
     text: t("local"),
      onClick: () => {
-        changeRoute("1v1");
-
+        //changeRoute("1v1");
+        navigateTo("local")
      }
   });
 

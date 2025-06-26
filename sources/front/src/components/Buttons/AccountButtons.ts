@@ -4,17 +4,25 @@ import * as authStorage from "@utils/authStorage";
 import { navigateTo } from "@/router";
 import { EnableDisableA2F } from "@/pages/Sign/A2F";
 
-export function createCloseModalButton(onClick: () => void) {
+export function createCloseButton(onClick: () => void) {
   return createCustomButton({
     width: "60px",
     height: "60px",
-    borderRadius: "rounded-[20px]",
     imageUrl: "/assets/icons/close_icon.png",
     imageWidth: "45px",
     imageHeight: "45px",
     onClick,
   });
 }
+
+export const CloseBtnOptions = {
+    width: "60px",
+    height: "60px",
+    imageUrl: "/assets/icons/close_icon.png",
+    imageWidth: "45px",
+    imageHeight: "45px",
+
+};
 
 export function createEditInfoButton(onClick: () => void) {
   return createCustomButton({

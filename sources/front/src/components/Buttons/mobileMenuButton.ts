@@ -1,7 +1,7 @@
 import { createCustomButton } from "@/components/Buttons/CustomButton";
 import { getSignButtonOptions } from "@/components/Buttons/LoginButton";
 import { createLangDropdown } from "@/components/Buttons/LangButton";
-import { createLogoutButton } from "@/components/Buttons/AccountButtons";
+import { CloseBtnOptions, createLogoutButton } from "@/components/Buttons/AccountButtons";
 import * as authStorage from "@/utils/authStorage";
 import { getFriendsButtonOptions } from "@/components/Buttons/FriendsButton";
 import { changeRoute } from "@utils/events";
@@ -55,22 +55,22 @@ export function createModalMenuMobile(): HTMLDivElement {
   flex
   flex-col
   `;
-  // Bouton close en haut à droite
-  const closeButton = createCustomButton({
-    imageUrl: "/assets/icons/close_icon.png",
-    imageWidth: "30px",
+
+  const closebtn = createCustomButton({
+    ...CloseBtnOptions,
     imageHeight: "30px",
+    imageWidth: "30px",
     width: "50px",
-    height: "60px",
     position: "absolute top-4 right-4",
     onClick: () => {
       modal.classList.replace("translate-y-0", "-translate-y-full");
       setTimeout(() => modal.remove(), 300);
       changeRoute("home");
+    }
+  })
 
-    },
-  });
-  content.appendChild(closeButton);
+
+  content.appendChild(closebtn);
 
   // Container pour les trois boutons alignés horizontalement
   const actionContainer = document.createElement("div");

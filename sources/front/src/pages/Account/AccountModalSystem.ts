@@ -6,7 +6,6 @@ import * as accbutton from "@components/Buttons/AccountButtons";
 import { createToggleEditMode } from "@pages/Account/utils";
 import { initializeAccountContent } from "@pages/Account/utils";
 import * as authStorage from "@utils/authStorage";
-import { changeRoute } from "@utils/events";
 export function renderAccount() {
   renderAccountDesktop();
 }
@@ -36,18 +35,17 @@ function renderAccountDesktop() {
 
   const modalInner = createAccountPage(true);
 
-  const closeButton = accbutton.createCloseModalButton(() => {
-    if (authStorage.getA2FfromConfig() != null)
+  const closeBtn = createCustomButton({
+    ...accbutton.CloseBtnOptions,
+    position: "absolute top-[5px] right-[5px]",
+    borderWidth: "border-0",
+    onClick: () => {
+       if (authStorage.getA2FfromConfig() != null)
       authStorage.getSignificant2FA(), modal.remove();
-  });
-  Object.assign(closeButton.style, {
-    position: "absolute",
-    top: "5px",
-    right: "5px",
-    border: "0",
-  });
+    }
+  })
 
-  modalInner.appendChild(closeButton);
+  modalInner.appendChild(closeBtn);
 
   modal.appendChild(modalInner);
   document.body.appendChild(modal);

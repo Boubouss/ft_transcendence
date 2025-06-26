@@ -27,5 +27,7 @@
   "avatar": "Cambiar avatar",
   "a2fenable": "A2F activado, ¡confirme la actualización!",
   "a2fdisable": "A2F desactivado, ¡confirme la actualización!",
-  "lobbylist": "Lista de lobby"
+  "lobbylist": "Lista de lobby",
+  "vs": "Duelo",
+  "tournament": "Torneos"
 }

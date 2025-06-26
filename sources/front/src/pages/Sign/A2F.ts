@@ -20,7 +20,7 @@ function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
   justify-center
   items-center
   `;
-  modal.style.fontStyle = "font-jaro";
+  modal.style.fontFamily = "font-jaro";
 
 
   const modalContent = document.createElement("div");
@@ -102,7 +102,7 @@ function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
     },
   });
 
-  const closeBtn = createCustomButton({
+  const cancelBtn = createCustomButton({
     text: t("cancel"),
     backgroundColor: "bg-red-500",
     textColor: "text-white",
@@ -119,7 +119,7 @@ function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
   });
 
   buttonsContainer.appendChild(submitBtn);
-  buttonsContainer.appendChild(closeBtn);
+  buttonsContainer.appendChild(cancelBtn);
 
   modalContent.appendChild(title);
   modalContent.appendChild(input);
