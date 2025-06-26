@@ -1,6 +1,7 @@
 import type { toJson_T } from "@pages/Local/type.ts";
 import { create_game, delete_game } from "./utils";
 import { openSocketMulti } from "../Multiplayer/MultiWSS";
+import { changeRoute } from "@/utils/events";
 
 function drawState(state: toJson_T) {
   const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
@@ -49,6 +50,7 @@ function drawState(state: toJson_T) {
 export async function connect() {
   await create_game();
 
+
   const socket_0 = new WebSocket(`ws://localhost:${3001}/ws/${-1}/0`);
   const socket_1 = new WebSocket(`ws://localhost:${3001}/ws/${-1}/1`);
 
@@ -69,7 +71,7 @@ export async function connect() {
       return;
     }
 
-    console.log(message);
+    //console.log(message);
     for (const [playerId, scoreId] of [
       [message.playerL, "scoreLeft"],
       [message.playerR, "scoreRight"],
@@ -93,6 +95,7 @@ export async function connect() {
     ["ArrowUp", "up"],
     ["ArrowDown", "down"],
   ]);
+  window.addEventListener("click", handleClick);
 
   window.addEventListener("keydown", (event) => {
     if (socket_0.readyState !== WebSocket.OPEN) return;
@@ -140,8 +143,17 @@ export async function connect() {
       window.location.pathname + window.location.hash
 
     );
+    delete_game("-1")
     socket_0.close();
     socket_1.close();
-    delete_game("-1")
+    window.removeEventListener("click", handleClick);
   }, {once:true});
+
 }
+
+function handleClick(event: MouseEvent) {
+  console.log(event.x);
+}
+
+
+

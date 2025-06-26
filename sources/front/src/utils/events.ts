@@ -33,11 +33,27 @@ window.addEventListener("popstate", (event) => {
   // `locationchange` aussi déclenché via l’intercepteur
 });
 
-// 📥 Initialisation au chargement
-window.addEventListener("load", () => {
-  const path = window.location.pathname.slice(1) || "home";
-  history.replaceState({ page: path }, "", window.location.pathname);
-  navigateTo(path);
-});
+//// Sauvegarder l'URL actuelle avant le rechargement
+//window.addEventListener('beforeunload', () => {
+//  // Enlève le premier '/' du pathname avant de stocker
+//  const pathSansSlash = window.location.pathname.startsWith('/')
+//    ? window.location.pathname.slice(1)
+//    : window.location.pathname;
+
+//  localStorage.setItem('lastVisitedPage', pathSansSlash);
+//});
+
+
+//// Restaurer l'URL après le rechargement
+//window.addEventListener('load', () => {
+//  const lastVisitedPage = localStorage.getItem('lastVisitedPage');
+//  if (lastVisitedPage) {
+//    changeRoute(lastVisitedPage);
+//  } else {
+//    changeRoute('home'); // Par défaut, rediriger vers la page d'accueil
+//  }
+//});
+
+
 
 

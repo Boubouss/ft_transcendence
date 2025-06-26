@@ -74,6 +74,10 @@ function create_content_local(modal :HTMLElement): HTMLElement {
 	const local_button = createCustomButton({
 		...base_button,
 		text: t("vs"),
+		onClick: () => {
+			modal.remove();
+			changeRoute("1v1")
+		}
 	})
 
 
