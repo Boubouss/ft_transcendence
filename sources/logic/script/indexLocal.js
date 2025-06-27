@@ -15,6 +15,12 @@ function drawState(state) {
   gameCanvas.width = state.field.w * ratio;
   gameCanvas.style.background = "black";
 
+  const size = 24;
+  ctx.textAlign = "center";
+  ctx.fillStyle = "white";
+  ctx.font = `${Math.floor(24 * ratio)}px bold arial`;
+  ctx.fillText(state.ball.speed.toFixed(2), gameCanvas.width / 2, 24 * ratio);
+
   for (paddle of [state.paddleL, state.paddleR]) {
     ctx.beginPath();
     ctx.rect(

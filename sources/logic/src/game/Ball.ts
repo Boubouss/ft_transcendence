@@ -63,6 +63,7 @@ export class Ball {
       r: this._r,
       dx: this._dx,
       dy: this._dy,
+      speed: Math.sqrt(this._dx ** 2 + this._dy ** 2),
     };
   }
 }
