@@ -3,13 +3,13 @@ const gameIdInput = document.getElementById("gameId");
 const textField = document.getElementById("textField");
 const confirm = document.getElementById("confirm");
 
-function drawState(state) {
-  const gameCanvas = document.getElementById("gameCanvas");
-  const ctx = gameCanvas.getContext("2d");
+const gameCanvas = document.getElementById("gameCanvas");
+const ctx = gameCanvas.getContext("2d");
 
+function drawState(state) {
   const ratio_h = window.innerHeight / state.field.h;
   const ratio_w = window.innerWidth / state.field.w;
-  const ratio = Math.min(ratio_w, Math.min(1, ratio_h));
+  const ratio = Math.min(1, ratio_h, ratio_w);
 
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
@@ -18,17 +18,13 @@ function drawState(state) {
   const size = 24;
   ctx.textAlign = "center";
   ctx.fillStyle = "white";
-  ctx.font = `${Math.floor(24 * ratio)}px bold arial`;
-  ctx.fillText(state.ball.speed.toFixed(2), gameCanvas.width / 2, 24 * ratio);
+  ctx.font = `${Math.floor(size * ratio)}px bold arial`;
+  ctx.fillText(state.ball.speed.toFixed(2), gameCanvas.width / 2, size * ratio);
 
-  for (paddle of [state.paddleL, state.paddleR]) {
+  for (const pad of [state.paddleL, state.paddleR]) {
     ctx.beginPath();
-    ctx.rect(
-      (paddle.x - paddle.w / 2) * ratio,
-      (paddle.y - paddle.h / 2) * ratio,
-      paddle.w * ratio,
-      paddle.h * ratio,
-    );
+    const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
+    ctx.rect(...rect.map((value) => value * ratio));
     ctx.strokeStyle = "white";
     ctx.stroke();
     ctx.fillStyle = "white";
@@ -37,7 +33,8 @@ function drawState(state) {
 
   const ball = state.ball;
   ctx.beginPath();
-  ctx.arc(ball.x * ratio, ball.y * ratio, ball.r * ratio, 0, 2 * Math.PI);
+  const arc = [ball.x, ball.y, ball.r];
+  ctx.arc(...arc.map((value) => value * ratio), 0, 2 * Math.PI);
   ctx.strokeStyle = "white";
   ctx.stroke();
   ctx.fillStyle = "white";
