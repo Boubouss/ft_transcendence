@@ -19,7 +19,9 @@ function drawState(state) {
   ctx.textAlign = "center";
   ctx.fillStyle = "white";
   ctx.font = `${Math.floor(size * ratio)}px bold arial`;
-  ctx.fillText(state.ball.speed.toFixed(2), gameCanvas.width / 2, size * ratio);
+  const speed = Math.sqrt(state.ball.dx ** 2 + state.ball.dy ** 2);
+  console.log(speed);
+  ctx.fillText(speed.toFixed(2), gameCanvas.width / 2, size * ratio);
 
   for (const pad of [state.paddleL, state.paddleR]) {
     ctx.beginPath();
