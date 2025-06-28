@@ -73,7 +73,6 @@ function connect() {
   let control_0 = new Map([
     ["w", "up"],
     ["s", "down"],
-    ["e", "test"],
   ]);
   let control_1 = new Map([
     ["ArrowUp", "up"],
@@ -83,7 +82,7 @@ function connect() {
   window.addEventListener("keydown", (event) => {
     if (socket_0.readyState !== WebSocket.OPEN) return;
     if (socket_1.readyState !== WebSocket.OPEN) return;
-    if (event.key !== "p") return;
+    if (event.key !== "p" && event.code !== "Space") return;
     socket_0.send(JSON.stringify({ type: "pause", value: "flip" }));
   });
 
