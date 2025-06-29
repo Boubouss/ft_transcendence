@@ -5,7 +5,7 @@ export class Ball {
   private _dx: number;
   private _dy: number;
 
-  constructor(x: number, y: number, r: number = 10) {
+  constructor(x: number, y: number, r: number = 16) {
     this._x = x;
     this._y = y;
     this._r = r;

@@ -8,7 +8,7 @@ import { MessageTypes } from "../type/Schema";
 import * as other from "./other";
 
 //offset from the center of the object
-const PADDLE_OFFSET: number = 20;
+const PADDLE_OFFSET: number = 32;
 const BALL_SPEED_MIN: number = 10;
 const BALL_SPEED_MAX: number = 20;
 const BALL_SPEED_RATIO: number = 1.05;

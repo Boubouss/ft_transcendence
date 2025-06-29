@@ -2,9 +2,56 @@ const portInput = document.getElementById("port");
 const gameIdInput = document.getElementById("gameId");
 const textField = document.getElementById("textField");
 const confirm = document.getElementById("confirm");
-
 const gameCanvas = document.getElementById("gameCanvas");
 const ctx = gameCanvas.getContext("2d");
+
+const assetTiles = [
+  "./Sliced/PNG0000.PNG",
+  "./Sliced/PNG0001.PNG",
+  "./Sliced/PNG0002.PNG",
+  "./Sliced/PNG0003.PNG",
+];
+const assetDecos = [
+  "./Sliced/PNG0004.PNG",
+  "./Sliced/PNG0005.PNG",
+  "./Sliced/PNG0006.PNG",
+  "./Sliced/PNG0007.PNG",
+  "./Sliced/PNG0008.PNG",
+  "./Sliced/PNG0009.PNG",
+  "./Sliced/PNG0010.PNG",
+  "./Sliced/PNG0011.PNG",
+];
+
+const paddleImg = new Image();
+paddleImg.src = "./Crate sprite sheet.png";
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function generateMapTiles() {
+  const map = [];
+  //todo: replace the 19 and 25
+  for (let y = 0; y < 19; y++) {
+    const row = [];
+    for (let x = 0; x < 25; x++) {
+      const tileImg = new Image();
+      tileImg.src = assetTiles[getRandomInt(0, assetTiles.length)];
+
+      let decoImg = null;
+      if (Math.random() < 0.2) {
+        decoImg = new Image();
+        decoImg.src = assetDecos[getRandomInt(0, assetDecos.length)];
+      }
+      row.push([tileImg, decoImg]);
+    }
+    map.push(row);
+  }
+  return map;
+}
+const backgroundTiles = generateMapTiles();
 
 function drawState(state) {
   const ratio_h = window.innerHeight / state.field.h;
@@ -13,34 +60,44 @@ function drawState(state) {
 
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
-  gameCanvas.style.background = "black";
+
+  // draw the background
+  backgroundTiles.forEach((row, n_row) => {
+    row.forEach((cell, n_cell) => {
+      const tile = cell[0];
+      const tile_w = tile.width;
+      const tile_h = tile.height;
+      ctx.drawImage(tile, n_cell * tile_w, n_row * tile_h, tile_w, tile_h);
+      if (!cell[1]) return;
+      ctx.drawImage(cell[1], n_cell * tile_w, n_row * tile_h, tile_w, tile_h);
+    });
+  });
 
   const size = 24;
   ctx.textAlign = "center";
-  ctx.fillStyle = "white";
-  ctx.font = `${Math.floor(size * ratio)}px bold arial`;
+  ctx.fillStyle = "blue";
+  ctx.font = `${Math.floor(size * ratio)}px arial`;
   const speed = Math.sqrt(state.ball.dx ** 2 + state.ball.dy ** 2);
   console.log(speed);
   ctx.fillText(speed.toFixed(2), gameCanvas.width / 2, size * ratio);
 
   for (const pad of [state.paddleL, state.paddleR]) {
-    ctx.beginPath();
     const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
-    ctx.rect(...rect.map((value) => value * ratio));
-    ctx.strokeStyle = "white";
-    ctx.stroke();
-    ctx.fillStyle = "white";
-    ctx.fill();
+    ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect);
   }
 
   const ball = state.ball;
-  ctx.beginPath();
-  const arc = [ball.x, ball.y, ball.r];
-  ctx.arc(...arc.map((value) => value * ratio), 0, 2 * Math.PI);
-  ctx.strokeStyle = "white";
-  ctx.stroke();
-  ctx.fillStyle = "white";
-  ctx.fill();
+  // const arc = [ball.x, ball.y, ball.r];
+  //todo: replace with a circle
+  const rect = [ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2];
+
+  ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect);
+  // ctx.beginPath();
+  // ctx.arc(...arc.map((value) => value * ratio), 0, 2 * Math.PI);
+  // ctx.strokeStyle = "blue";
+  // ctx.stroke();
+  // ctx.fillStyle = "blue";
+  // ctx.fill();
 }
 
 function connect() {
