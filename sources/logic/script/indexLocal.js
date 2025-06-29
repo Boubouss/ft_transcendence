@@ -88,7 +88,6 @@ function drawState(state) {
 
   const ball = state.ball;
   // const arc = [ball.x, ball.y, ball.r];
-  //todo: replace with a circle
   const rect = [ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2];
 
   ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect);
