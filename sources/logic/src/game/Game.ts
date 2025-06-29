@@ -12,6 +12,7 @@ const PADDLE_OFFSET: number = 32;
 const BALL_SPEED_MIN: number = 10;
 const BALL_SPEED_MAX: number = 20;
 const BALL_SPEED_RATIO: number = 1.05;
+const ANGLE_BOUNCE_MAX: number = 60;
 
 export class Game {
   private _gameId: string;
@@ -120,6 +121,7 @@ export class Game {
     return {
       gameId: this._gameId,
       state: GameState[this._gameState].toLowerCase(),
+      sleep: this._sleep,
       players: [...this._players.values()].map((player) => player.toJson()),
       queue: this._playersQueue,
       field: this._gameField.toJson(),
@@ -240,7 +242,7 @@ export class Game {
           }
           const relativeY = current.y - paddle.center.y;
           const normalized = relativeY / (paddle.height / 2);
-          const maxBounceAngle = (60 * Math.PI) / 180;
+          const maxBounceAngle = (ANGLE_BOUNCE_MAX * Math.PI) / 180;
           const bounceAngle = normalized * maxBounceAngle;
           const direction = crossedLeft ? 1 : -1;
           const maxSpeed = Math.min(speed * BALL_SPEED_RATIO, BALL_SPEED_MAX); //todo: replace with better value

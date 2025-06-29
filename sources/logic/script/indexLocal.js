@@ -18,9 +18,12 @@ const assetDecos = [
   "./Sliced/PNG0007.PNG",
   "./Sliced/PNG0008.PNG",
   "./Sliced/PNG0009.PNG",
-  "./Sliced/PNG0010.PNG",
+  // "./Sliced/PNG0010.PNG", //signpost
   "./Sliced/PNG0011.PNG",
 ];
+
+let rot = 0;
+let rot_step = 0.01;
 
 const paddleImg = new Image();
 paddleImg.src = "./Crate sprite sheet.png";
@@ -51,6 +54,7 @@ function generateMapTiles() {
   }
   return map;
 }
+//todo: make it persistent between the page reload
 const backgroundTiles = generateMapTiles();
 
 function drawState(state) {
@@ -61,42 +65,67 @@ function drawState(state) {
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
 
-  // draw the background
+  // fill the possible space between the tiles
+  {
+    ctx.fillStyle = "#CEC682";
+    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+  }
+
+  // draw the tiles
   backgroundTiles.forEach((row, n_row) => {
     row.forEach((cell, n_cell) => {
       const tile = cell[0];
       const tile_w = tile.width;
       const tile_h = tile.height;
-      ctx.drawImage(tile, n_cell * tile_w, n_row * tile_h, tile_w, tile_h);
+      const rect = [n_cell * tile_w, n_row * tile_h, tile_w, tile_h];
+      ctx.drawImage(tile, ...rect.map((v) => v * ratio));
       if (!cell[1]) return;
-      ctx.drawImage(cell[1], n_cell * tile_w, n_row * tile_h, tile_w, tile_h);
+      ctx.drawImage(cell[1], ...rect.map((v) => v * ratio));
     });
   });
 
-  const size = 24;
-  ctx.textAlign = "center";
-  ctx.fillStyle = "blue";
-  ctx.font = `${Math.floor(size * ratio)}px arial`;
   const speed = Math.sqrt(state.ball.dx ** 2 + state.ball.dy ** 2);
-  console.log(speed);
-  ctx.fillText(speed.toFixed(2), gameCanvas.width / 2, size * ratio);
+  {
+    const size = 24;
+    ctx.textAlign = "center";
+    ctx.fillStyle = "blue";
+    ctx.font = `${Math.floor(size * ratio)}px arial`;
+    ctx.fillText(speed.toFixed(2), gameCanvas.width / 2, size * ratio);
+  }
 
   for (const pad of [state.paddleL, state.paddleR]) {
     const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
-    ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect);
+    ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect.map((v) => v * ratio));
   }
 
   const ball = state.ball;
-  // const arc = [ball.x, ball.y, ball.r];
   const rect = [ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2];
 
-  ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect);
-  // ctx.beginPath();
-  // ctx.arc(...arc.map((value) => value * ratio), 0, 2 * Math.PI);
-  // ctx.strokeStyle = "blue";
-  // ctx.stroke();
-  // ctx.fillStyle = "blue";
-  // ctx.fill();
+  if (state.state === "running" && !state.sleep) rot += rot_step;
+
+  ctx.translate(ball.x * ratio, ball.y * ratio);
+  ctx.rotate(Math.PI * ((rot * speed) / 2));
+  ctx.translate(-ball.x * ratio, -ball.y * ratio);
+  ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect.map((v) => v * ratio));
+
+  if (state.sleep || state.state === "paused") {
+    //needed to revert the previous rotation
+    {
+      ctx.translate(ball.x * ratio, ball.y * ratio);
+      ctx.rotate(-Math.PI * ((rot * speed) / 2));
+      ctx.translate(-ball.x * ratio, -ball.y * ratio);
+    }
+    const size = 64;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "blue";
+    ctx.font = `${Math.floor(size * ratio)}px arial`;
+    const text =
+      state.state === "paused"
+        ? "PAUSED"
+        : `${(state.sleep / 60).toFixed(1) * 10}`;
+    ctx.fillText(text, gameCanvas.width / 2, gameCanvas.height / 2);
+  }
 }
 
 function connect() {
