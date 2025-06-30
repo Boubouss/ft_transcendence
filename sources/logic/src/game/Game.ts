@@ -245,6 +245,7 @@ export class Game {
           const maxBounceAngle = (ANGLE_BOUNCE_MAX * Math.PI) / 180;
           const bounceAngle = normalized * maxBounceAngle;
           const direction = crossedLeft ? 1 : -1;
+          //todo: might need to limit the speed increase to one time per horizontal bounce
           const maxSpeed = Math.min(speed * BALL_SPEED_RATIO, BALL_SPEED_MAX); //todo: replace with better value
           this._ball.velocity = {
             dx: Math.cos(bounceAngle) * maxSpeed * direction,

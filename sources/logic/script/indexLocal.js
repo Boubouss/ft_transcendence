@@ -169,6 +169,7 @@ function connect() {
     if (socket_1.readyState !== WebSocket.OPEN) return;
     if (event.key !== "p" && event.code !== "Space") return;
     socket_0.send(JSON.stringify({ type: "pause", value: "flip" }));
+    // needed due to the fact that both players get paused when reconnecting
     socket_1.send(JSON.stringify({ type: "pause", value: "flip" }));
   });
 
