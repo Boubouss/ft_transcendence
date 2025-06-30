@@ -27,6 +27,7 @@ let rot_step = 0.01;
 
 const paddleImg = new Image();
 paddleImg.src = "./Crate sprite sheet.png";
+const SIZE = 64;
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -95,7 +96,7 @@ function drawState(state) {
 
   for (const pad of [state.paddleL, state.paddleR]) {
     const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
-    ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect.map((v) => v * ratio));
+    ctx.drawImage(paddleImg, 0, 0, SIZE, SIZE, ...rect.map((v) => v * ratio));
   }
 
   const ball = state.ball;
@@ -106,7 +107,7 @@ function drawState(state) {
   ctx.translate(ball.x * ratio, ball.y * ratio);
   ctx.rotate(Math.PI * ((rot * speed) / 2));
   ctx.translate(-ball.x * ratio, -ball.y * ratio);
-  ctx.drawImage(paddleImg, 0, 0, 64, 64, ...rect.map((v) => v * ratio));
+  ctx.drawImage(paddleImg, 0, 0, SIZE, SIZE, ...rect.map((v) => v * ratio));
 
   if (state.sleep || state.state === "paused") {
     //needed to revert the previous rotation
