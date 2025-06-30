@@ -43,6 +43,8 @@ app.register(() => {
       }
 
       game.setPlayerConnection(playerId, connection);
+      if (game.gameState !== GameState.Init)
+        game.setPlayerPause(playerId, "pause");
 
       connection.on("message", (message: string) => {
         try {
