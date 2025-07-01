@@ -1,22 +1,23 @@
-import { FastifyPluginAsync } from "fastify";
+import { handleTournamentLeave } from "#services/tournamentService";
 import { authMiddleware } from "#middlewares/authMiddleware";
-import { Lobby, LobbyInfo, LobbyPlayer } from "#types/lobby";
+import { ClientEvent, ServerEvent } from "#types/enums";
+import { Lobby, LobbyPlayer } from "#types/lobby";
 import { Tournament } from "#types/tournament";
-import { ServerEvent } from "#types/enums";
+import { FastifyPluginAsync } from "fastify";
 import _ from "lodash";
 
 import {
 	createLobby,
 	getLobbyPlayer,
 	handleAction,
-	leaveLobby
+	leaveLobby,
+	whisperData
 } from "#services/lobbyService";
 
 export const sockets: Map<number, WebSocket> = new Map;
 export const lobbies: Lobby[] = [];
 export const players: LobbyPlayer[] = [];
 export const tournaments: Tournament[] = [];
-export const infos: LobbyInfo[] = [];
 
 
 export const lobby: FastifyPluginAsync = async (fastify) => {
@@ -33,15 +34,26 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
 			const { event, data } = JSON.parse(message);
 
 			const player = players.find((p) => p.id === player_id);
-			if (_.isEmpty(player)) return socket.send("error: This player doesn't exist.");
+			if (_.isEmpty(player)) {
+				return socket.send(JSON.stringify({
+					event: ClientEvent.ERROR,
+					data: { message: "This player doesn't exist." }
+				}));
+			}
 
 			switch (event) {
 				case ServerEvent.CREATE:
-					return socket.send(createLobby(player, data));
+					return createLobby(player, data);
 				case ServerEvent.ACTION:
-					return socket.send(handleAction(player, data));
+					return handleAction(player, data);
 				default:
-					return socket.send("error: This event doesn't exist.")
+					return whisperData(
+						[player.id],
+						JSON.stringify({
+							event: ClientEvent.ERROR,
+							data: { message: "This event doesn't exist." }
+						})
+					);
 			}
 		})
 
@@ -49,17 +61,17 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
 			const playerIndex = players.findIndex((p) => p.id === player_id);
 			if (playerIndex === -1) return;
 
-			const playerId = players[playerIndex].id
+			const lobby = lobbies.find((l) => l.id === players[playerIndex].id);
+			if (!_.isEmpty(lobby)) {
+				leaveLobby(lobby, players[playerIndex]);
+
+				if (lobby.is_tournament) {
+					handleTournamentLeave(players[playerIndex]);
+				}
+			}
+
 			players.splice(playerIndex, 1);
 			sockets.delete(player_id);
-
-			const info = infos.find((i) => i.players.find((p) => p.id === player_id));
-			if (_.isEmpty(info)) return;
-
-			const lobby = lobbies.find((l) => l.id === info.lobby_id);
-			if (_.isEmpty(lobby)) return;
-
-			leaveLobby(lobby, info, playerId);
 		});
 	});
 };
