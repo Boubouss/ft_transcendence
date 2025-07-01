@@ -5,6 +5,18 @@ const confirm = document.getElementById("confirm");
 const gameCanvas = document.getElementById("gameCanvas");
 const ctx = gameCanvas.getContext("2d");
 
+// Const
+const GAME_HEIGHT = 600;
+const GAME_WIDTH = 800;
+const RATIO_DEFAULT = 1;
+const TILESET_SIZE = 32;
+const DECO_PROP = 1 / 10; // used to determine if background should be placed
+
+// Global var
+let rot = 0; //todo: find a way to preserve it between reconnection/reload
+let rot_step = 0.01;
+
+// Assets
 const assetTiles = [
   "./Sliced/PNG0000.PNG",
   "./Sliced/PNG0001.PNG",
@@ -22,12 +34,11 @@ const assetDecos = [
   "./Sliced/PNG0011.PNG",
 ];
 
-let rot = 0;
-let rot_step = 0.01;
-
+// Globals
 const paddleImg = new Image();
 paddleImg.src = "./Crate sprite sheet.png";
-const SIZE = 64;
+const assetSubsection = [0, 0, 64, 64]; //part used from the crate asset
+const backgroundTiles = generateMapTiles(); //todo: make it persistent between the page reload
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -37,15 +48,18 @@ function getRandomInt(min, max) {
 
 function generateMapTiles() {
   const map = [];
-  //todo: replace the 19 and 25
-  for (let y = 0; y < 19; y++) {
+  const max_col = Math.ceil(GAME_WIDTH / TILESET_SIZE);
+  const max_row = Math.ceil(GAME_HEIGHT / TILESET_SIZE);
+
+  for (let y = 0; y < max_row; y++) {
     const row = [];
-    for (let x = 0; x < 25; x++) {
+    for (let x = 0; x < max_col; x++) {
       const tileImg = new Image();
       tileImg.src = assetTiles[getRandomInt(0, assetTiles.length)];
 
       let decoImg = null;
-      if (Math.random() < 0.2) {
+      //todo: find a better and more controlled way to place the assets
+      if (Math.random() < DECO_PROP) {
         decoImg = new Image();
         decoImg.src = assetDecos[getRandomInt(0, assetDecos.length)];
       }
@@ -55,22 +69,18 @@ function generateMapTiles() {
   }
   return map;
 }
-//todo: make it persistent between the page reload
-const backgroundTiles = generateMapTiles();
 
 function drawState(state) {
   const ratio_h = window.innerHeight / state.field.h;
   const ratio_w = window.innerWidth / state.field.w;
-  const ratio = Math.min(1, ratio_h, ratio_w);
+  const ratio = Math.min(RATIO_DEFAULT, ratio_h, ratio_w);
 
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
 
-  // fill the possible space between the tiles
-  {
-    ctx.fillStyle = "#CEC682";
-    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-  }
+  // fill the possible joints
+  ctx.fillStyle = "#CEC682";
+  ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
   // draw the tiles
   backgroundTiles.forEach((row, n_row) => {
@@ -85,18 +95,18 @@ function drawState(state) {
     });
   });
 
-  const speed = Math.sqrt(state.ball.dx ** 2 + state.ball.dy ** 2);
+  const ballSpeed = Math.sqrt(state.ball.dx ** 2 + state.ball.dy ** 2);
   {
     const size = 24;
     ctx.textAlign = "center";
     ctx.fillStyle = "blue";
     ctx.font = `${Math.floor(size * ratio)}px arial`;
-    ctx.fillText(speed.toFixed(2), gameCanvas.width / 2, size * ratio);
+    ctx.fillText(ballSpeed.toFixed(2), gameCanvas.width / 2, size * ratio);
   }
 
   for (const pad of [state.paddleL, state.paddleR]) {
     const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
-    ctx.drawImage(paddleImg, 0, 0, SIZE, SIZE, ...rect.map((v) => v * ratio));
+    ctx.drawImage(paddleImg, ...assetSubsection, ...rect.map((v) => v * ratio));
   }
 
   const ball = state.ball;
@@ -105,26 +115,23 @@ function drawState(state) {
   if (state.state === "running" && !state.sleep) rot += rot_step;
 
   ctx.translate(ball.x * ratio, ball.y * ratio);
-  ctx.rotate(Math.PI * ((rot * speed) / 2));
+  ctx.rotate(Math.PI * ((rot * ballSpeed) / 2));
   ctx.translate(-ball.x * ratio, -ball.y * ratio);
-  ctx.drawImage(paddleImg, 0, 0, SIZE, SIZE, ...rect.map((v) => v * ratio));
+
+  ctx.drawImage(paddleImg, ...assetSubsection, ...rect.map((v) => v * ratio));
+
+  ctx.translate(ball.x * ratio, ball.y * ratio);
+  ctx.rotate(-Math.PI * ((rot * ballSpeed) / 2));
+  ctx.translate(-ball.x * ratio, -ball.y * ratio);
 
   if (state.sleep || state.state === "paused") {
-    //needed to revert the previous rotation
-    {
-      ctx.translate(ball.x * ratio, ball.y * ratio);
-      ctx.rotate(-Math.PI * ((rot * speed) / 2));
-      ctx.translate(-ball.x * ratio, -ball.y * ratio);
-    }
     const size = 64;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = "blue";
     ctx.font = `${Math.floor(size * ratio)}px arial`;
-    const text =
-      state.state === "paused"
-        ? "PAUSED"
-        : `${(state.sleep / 60).toFixed(1) * 10}`;
+    const countdown = (state.sleep / 60).toFixed(1) * 10;
+    const text = state.state === "paused" ? "PAUSED" : `${countdown}`;
     ctx.fillText(text, gameCanvas.width / 2, gameCanvas.height / 2);
   }
 }
