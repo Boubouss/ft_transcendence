@@ -12,4 +12,4 @@ jq <<<"${data}"
 curl -v -X DELETE \
 	-H "Content-Type: application/json" \
 	-d "$data" \
-	"http://localhost:${port}/delete_game"
+	"http://localhost:${port}/games"
