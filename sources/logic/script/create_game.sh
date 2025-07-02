@@ -12,4 +12,4 @@ jq <<<"${data}"
 curl -v -X POST \
 	-H "Content-Type: application/json" \
 	-d "$data" \
-	"http://localhost:${port}/create_game"
+	"http://localhost:${port}/games"

@@ -4,9 +4,10 @@ import { Game } from "./game/Game";
 import { CreateGameRequestBody, DeleteGameRequestBody } from "./type/Interface";
 import { GameState, HttpCode, WebSocketCode } from "./type/Enum";
 import {
-  schemaWebSocket,
   schemaCreateGame,
   schemaDeleteGame,
+  schemaGetGame,
+  schemaWebSocket,
   schemeWebSocketInput,
 } from "./type/Schema";
 
@@ -75,21 +76,28 @@ app.register(() => {
   );
 });
 
-app.post(
-  "/create_game",
-  { schema: schemaCreateGame },
+app.get(
+  "/players/:id/game",
+  { schema: schemaGetGame },
   async (request, response) => {
-    const body = request.body as CreateGameRequestBody;
-    if (games.has(body.gameId)) {
-      response.code(HttpCode.CONFLICT).send(); //todo: add a body?
-      return;
-    }
-    games.set(String(body.gameId), new Game(body, FPS));
+    const params = request.params as { id: string };
+    for (const [gameId, game] of games.entries())
+      if (game.players.has(params.id)) return response.send({ gameId: gameId });
+    response.send({ gameId: null });
   },
 );
 
+app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
+  const body = request.body as CreateGameRequestBody;
+  if (games.has(body.gameId)) {
+    response.code(HttpCode.CONFLICT).send(); //todo: add a body?
+    return;
+  }
+  games.set(String(body.gameId), new Game(body, FPS));
+});
+
 app.delete(
-  "/delete_game",
+  "/games",
   { schema: schemaDeleteGame },
   async (request, response) => {
     const body = request.body as DeleteGameRequestBody;

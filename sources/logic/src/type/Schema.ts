@@ -1,5 +1,14 @@
 import { z } from "zod/v4";
 
+export const schemaGetGame = {
+  params: {
+    type: "object",
+    properties: {
+      id: { type: "string" },
+    },
+  },
+};
+
 export const schemaCreateGame = {
   body: {
     type: "object",
