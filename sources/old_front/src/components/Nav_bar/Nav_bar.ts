@@ -33,7 +33,7 @@ export function renderNavBar() {
     text: t("multiplayer"),
     onClick: () => {
       if (authStorage.getToken())
-        navigateTo("multi");
+        navigateTo("/multi");
     },
   });
 
@@ -44,7 +44,7 @@ export function renderNavBar() {
     text: t("career"),
     onClick: () => {
       if (authStorage.getToken())
-          navigateTo("");
+          navigateTo("/");
     }
   });
 

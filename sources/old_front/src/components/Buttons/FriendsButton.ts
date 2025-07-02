@@ -17,7 +17,7 @@ export function getFriendsButtonOptions(): CustomButtonOptions {
 	  width: "",
 	  height: "80px",
 	  padding: "p-[10px]",
-	  onClick: () => navigateTo("account"),
+	  onClick: () => navigateTo("/account"),
 	};
   } else {
 	return {
@@ -28,7 +28,7 @@ export function getFriendsButtonOptions(): CustomButtonOptions {
 	  fontSizeClass: "text-3xl",
 	  width: "220px",
 	  height: "80px",
-	  onClick: () => navigateTo("sign"),
+	  onClick: () => navigateTo("/sign"),
 	};
   }
 }
