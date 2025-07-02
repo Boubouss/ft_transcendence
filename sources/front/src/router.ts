@@ -2,6 +2,7 @@ import { renderHome } from './pages/Home/Home.ts';
 import { renderSignModal } from './pages/Sign/Sign.ts';
 import { renderAccount } from './pages/Account/AccountModalSystem.ts';
 import { renderMultiPage } from './pages/Multiplayer/MultiPage.ts';
+import { renderVersus } from './pages/Local/Versus.ts';
 
 export function navigateTo(page: string) {
   const appRoot = document.getElementById("app-root");
@@ -21,6 +22,9 @@ export function navigateTo(page: string) {
       break;
     case "multi":
       renderMultiPage();
+      break;
+    case "versus":
+      renderVersus();
       break;
     default:
       appRoot.innerHTML = "<p class='text-center text-red-600 mt-10'>404 - Page Not Found</p>";
