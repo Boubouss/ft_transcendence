@@ -8,7 +8,8 @@ import {
   schemaDeleteGame,
   schemaGetGame,
   schemaWebSocket,
-  schemeWebSocketInput,
+  schemaWebSocketInput,
+
 } from "./type/Schema";
 
 //todo: remove the placeholders and constants
@@ -35,7 +36,7 @@ app.register(() => {
         return;
       }
       if (!game.playersId.has(playerId)) {
-        connection.close(WebSocketCode.UNDEFINED, `Player not connected`);
+        connection.close(WebSocketCode.UNDEFINED, `Player not expected`);
         return;
       }
       if (game.playersConnected.has(playerId)) {
@@ -44,17 +45,21 @@ app.register(() => {
       }
 
       game.setPlayerConnection(playerId, connection);
+      if (game.gameState !== GameState.Init)
+        game.setPlayerPause(playerId, "pause");
 
       connection.on("message", (message: string) => {
-        let data;
         try {
-          data = JSON.parse(message);
+          const data = JSON.parse(message);
+          schemaWebSocketInput.parse(data);
+
+          if (data.type === "input") {
+            game.setPlayerInput(playerId, data.value);
+          } else if (data.type === "pause") {
+            game.setPlayerPause(playerId, data.value);
+          }
         } catch (e) {
           return;
-        }
-        if (schemeWebSocketInput.safeParse(data).success)
-          game.setPlayerInput(playerId, data.input);
-        else {
         }
       });
 
@@ -62,6 +67,7 @@ app.register(() => {
         const game = games.get(gameId);
         if (!game) return;
         game.setPlayerConnection(playerId, null);
+        game.setPlayerInput(playerId, null);
 
         if (game.gameState !== GameState.Init && game.isEmpty()) {
           setTimeout(() => {
