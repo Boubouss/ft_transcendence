@@ -16,7 +16,7 @@ export function getSignButtonOptions(): CustomButtonOptions {
       fontSizeClass: "text-3xl",
       padding: "p-[10px]",
       height: "80px",
-      onClick: () => navigateTo("account"),
+      onClick: () => navigateTo("/account"),
     };
   } else {
     return {
@@ -26,7 +26,7 @@ export function getSignButtonOptions(): CustomButtonOptions {
       fontStyle: "font-jaro font-semibold",
       fontSizeClass: "text-3xl",
       width: "220px",
-      onClick: () => navigateTo("sign"),
+      onClick: () => navigateTo("/sign"),
     };
   }
 }

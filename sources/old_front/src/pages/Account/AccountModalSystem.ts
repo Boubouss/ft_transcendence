@@ -59,7 +59,7 @@ function renderAccountDesktop() {
     }
   });
 
-  navigateTo("home");
+  navigateTo("/");
   setupContent(modalInner, modal);
 }
 
@@ -113,6 +113,6 @@ function setupContent(container: HTMLElement, modal: HTMLElement | null) {
   );
 
   if (modal) {
-    navigateTo("home");
+    navigateTo("/");
   }
 }

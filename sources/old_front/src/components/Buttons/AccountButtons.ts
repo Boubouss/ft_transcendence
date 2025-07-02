@@ -136,7 +136,7 @@ export function createLogoutButton(modal: HTMLElement | null, homedesktop: boole
     padding: "p-[10px]",
     onClick: () => {
       authStorage.clearAuth();
-      navigateTo("home");
+      navigateTo("/");
       if (modal !== null) {
         modal.style.transform = "translateY(-100%)";
         setTimeout(() => modal.remove(), 300);

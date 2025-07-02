@@ -1,21 +1,24 @@
-// src/main.ts
+import './style.css'
+import typescriptLogo from './typescript.svg'
+import viteLogo from '/vite.svg'
+import { setupCounter } from './counter.ts'
 
-import "./assets/styles/style.css"; // importe les styles
-import { renderAccount } from "./pages/Account/AccountModalSystem.ts";
-import { renderHome } from "./pages/Home/Home.ts"; // importe la fonction depuis home.ts
-import { navigateTo } from "./router.ts";
-import { initI18n } from "./utils/i18n";
-import * as langStorage from "./utils/langStorage.ts";
-import dotenv from "dotenv";
+document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+  <div>
+    <a href="https://vite.dev" target="_blank">
+      <img src="${viteLogo}" class="logo" alt="Vite logo" />
+    </a>
+    <a href="https://www.typescriptlang.org/" target="_blank">
+      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
+    </a>
+    <h1>Vite + TypeScript</h1>
+    <div class="card">
+      <button id="counter" type="button"></button>
+    </div>
+    <p class="read-the-docs">
+      Click on the Vite and TypeScript logos to learn more
+    </p>
+  </div>
+`
 
-async function main() {
-  if (!langStorage.getLang()) {
-    langStorage.saveLang("fr");
-  }
-
-  await initI18n(); // <-- initialise la langue et les traductions
-  navigateTo("home");
-  dotenv.config();
-}
-
-main();
+setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)

@@ -19,7 +19,7 @@ export function renderSignModal() {
   items-center
   justify-center`;
 
-  navigateTo("home");
+  // navigateTo("/");
 
   // Card principale
   const card = document.createElement("div");
@@ -86,7 +86,7 @@ export function renderSignModal() {
       setTimeout(() => menuModal.remove(), 300);
     }
 
-    navigateTo("home");
+    navigateTo("/");
   };
 
   const formSignIn = createSignInForm(onAuthSuccess);
@@ -134,7 +134,7 @@ export function renderSignModal() {
 
     onClick: () => {
       document.body.removeChild(modal);
-      navigateTo("home");
+      navigateTo("/");
     },
   });
 
@@ -208,7 +208,7 @@ export function renderSignModal() {
   modal.addEventListener("click", (event) => {
     if (event.target === modal) {
       document.body.removeChild(modal);
-      navigateTo("home");
+      navigateTo("/");
     }
   });
 

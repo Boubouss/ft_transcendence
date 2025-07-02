@@ -95,7 +95,7 @@ function create2FAModal(validOrActivate: string, user: User_T): HTMLDivElement {
         const token = authStorage.getUserValue("token");
         if (token)
           authStorage.saveToken(token);
-          navigateTo("home");
+          navigateTo("/");
       }
     },
   });
@@ -134,7 +134,7 @@ function show2FAModal(validOrActivate: string, user: User_T) {
 
 export function handlePostLogin(user: User_T, needs2FA: boolean) {
   if (!needs2FA) {
-    navigateTo("home");
+    navigateTo("/");
   } else {
     show2FAModal('Connexion', user); // validation mode
   }

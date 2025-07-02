@@ -85,7 +85,7 @@ export function createToggleEditMode(
 
           toggleEditMode();
           authStorage.clearOld2fa();
-          navigateTo("account");
+          navigateTo("/account");
         })
       );
       buttonContainer.appendChild(
