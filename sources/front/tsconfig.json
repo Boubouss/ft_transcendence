@@ -13,6 +13,14 @@
     "moduleDetection": "force",
     "noEmit": true,
 
+    "baseUrl": ".",
+    "paths": {
+      "#assets/*": ["./src/assets/*"],
+      "#hooks/*": ["./src/hooks/*"],
+      "#components/*": ["./src/components/*"],
+      "#pages/*": ["./src/pages/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
