@@ -1,21 +1,24 @@
 import { routes } from "#src/routes.ts";
-import { render } from "./render";
+import { resetEffects } from "./hooks/useEffect";
+import { reRender } from "./render";
 
 window.addEventListener("popstate", () => {
-	document.getElementById("app")!.innerHTML = "";
-	render(
-		routes[window.location.pathname]
-			? routes[window.location.pathname].component()
-			: routes["/404"].component(),
-		document.getElementById("app")
-	);
+	resetEffects();
+	reRender();
 });
+
+export function router() {
+	const path = window.location.pathname;
+
+	if (!routes[path]) {
+		return routes["/404"].component();
+	}
+
+	return routes[path].component();
+}
 
 export function navigateTo(path: string) {
 	window.history.pushState({}, "", path);
-	document.getElementById("app")!.innerHTML = "";
-	render(
-		routes[path] ? routes[path].component() : routes["/404"].component(),
-		document.getElementById("app")
-	);
+	resetEffects();
+	reRender();
 }

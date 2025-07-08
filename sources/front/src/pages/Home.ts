@@ -1,7 +1,9 @@
-import { useEffect } from "#src/core/hooks/useEffect.ts";
-import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
-import { navigateTo } from "#src/core/router.ts";
+import {
+	createElement,
+	navigateTo,
+	useState,
+	useEffect,
+} from "#core/framework";
 
 const Home = () => {
 	const [count, setCount] = useState(0);
@@ -16,12 +18,13 @@ const Home = () => {
 	}
 
 	useEffect(() => {
-		setTimeout(() => {
-			setCount(1);
-		}, 1000);
+		setCount(1);
+		setCount(2);
+		setCount(3);
 	}, []);
 
 	useEffect(() => {
+		setCount2(1);
 		setCount2(2);
 	}, []);
 
@@ -31,7 +34,7 @@ const Home = () => {
 		createElement("h1", null, `Compteur: ${count}`),
 		createElement("h1", null, `Compteur 2: ${count2}`),
 		createElement("button", { onClick: handleClick }, "Incrémenter"),
-		createElement("button", { onClick: handleClick2 }, "Incrémenter 2"),
+		createElement("button", { onClick: handleClick2 }, "Incrémenter 2")
 	);
 };
 

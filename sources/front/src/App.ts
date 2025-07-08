@@ -1,8 +1,7 @@
-import { createElement } from "#core/render";
-import Home from "./pages/Home";
+import { createElement, router } from "#core/framework";
 
 function App() {
-  return createElement("div", { id: "app" }, Home());
+	return createElement("template", null, router());
 }
 
 export default App;
