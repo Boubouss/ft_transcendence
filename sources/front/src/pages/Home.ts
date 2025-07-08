@@ -16,12 +16,13 @@ const Home = () => {
 	}
 
 	useEffect(() => {
-		setTimeout(() => {
-			setCount(1);
-		}, 1000);
+		setCount(1);
+		setCount(2);
+		setCount(3);
 	}, []);
 
 	useEffect(() => {
+		setCount2(1);
 		setCount2(2);
 	}, []);
 

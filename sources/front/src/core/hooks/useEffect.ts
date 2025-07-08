@@ -7,10 +7,14 @@ type Effect = {
 
 let index = 0;
 const effects: Effect[] = [];
-let callbacks: Callback[] = [];
+const callbacks: Callback[] = [];
 
 export function resetEffectIndex() {
   index = 0;
+}
+
+export function resetEffects() {
+  effects.splice(0, effects.length);
 }
 
 function isDependenciesSame(effect: Effect, dependencies: any[]) {
@@ -41,8 +45,7 @@ export function useEffect(callback: () => void, dependencies: any[]) {
 
 export function handleEffects() {
   for (const [index, callback] of callbacks.entries()) {
-    // callbacks.splice(index, 1);
-    callbacks = callbacks.filter((c) => c === callback);
+    callbacks.splice(index, 1);
     callback();
   }
 }

@@ -1,9 +1,10 @@
+import type { Component } from "./core/render";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 
 type Routes = {
 	[key: string]: {
-		component: () => void;
+		component: () => Component;
 		id: string;
 	};
 };
