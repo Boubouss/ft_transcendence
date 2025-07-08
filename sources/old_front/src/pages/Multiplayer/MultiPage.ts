@@ -51,7 +51,7 @@ export function renderMultiPage() {
   `;
 
   const CloseButton = createCloseModalButton(() => {
-      navigateTo("home");
+      navigateTo("/");
     });
 
 
