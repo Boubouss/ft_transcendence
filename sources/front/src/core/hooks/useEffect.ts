@@ -7,7 +7,7 @@ type Effect = {
 
 let index = 0;
 const effects: Effect[] = [];
-const callbacks: Callback[] = [];
+let callbacks: Callback[] = [];
 
 export function resetEffectIndex() {
   index = 0;
@@ -41,7 +41,8 @@ export function useEffect(callback: () => void, dependencies: any[]) {
 
 export function handleEffects() {
   for (const [index, callback] of callbacks.entries()) {
-    callbacks.splice(index, 1);
+    // callbacks.splice(index, 1);
+    callbacks = callbacks.filter((c) => c === callback);
     callback();
   }
 }
