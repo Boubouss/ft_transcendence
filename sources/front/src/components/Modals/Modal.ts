@@ -1,13 +1,24 @@
-import { createElement } from "#src/core/render.ts";
+import {
+	createElement,
+	type Component,
+	type ComponentAttr,
+} from "#src/core/framework";
 import { modal_background, modal_default } from "./style";
 
 const Modal = (
-	state: boolean,
-	setter: (setState: boolean) => void,
-	children: any,
-	props: any = { class: modal_default }
+	props: {
+		state: boolean;
+		setter: (setState: boolean) => void;
+		attr?: ComponentAttr;
+	},
+	children: Component
 ) => {
-	if (!props.class) props.class = modal_default;
+	let { state, setter, attr } = props;
+
+	const default_attr = { class: modal_default };
+
+	attr = { ...default_attr, ...attr };
+
 	if (state)
 		return createElement(
 			"div",
@@ -16,7 +27,7 @@ const Modal = (
 				class: modal_background,
 				onClick: () => setter(!state),
 			}),
-			createElement("div", props, children)
+			createElement("div", attr, children)
 		);
 	return createElement("div", { class: `hidden` });
 };

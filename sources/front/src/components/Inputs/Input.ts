@@ -1,18 +1,16 @@
-import { createElement } from "#src/core/render.ts";
+import { createElement, type ComponentAttr } from "#src/core/framework";
 import { input_default, label_default } from "./style";
 
-const Input = (
-	type: string,
-	name: string,
-	props: any = { class: input_default },
-	labelProps: any = { class: label_default }
-) => {
-	if (!props.class) props.class = input_default;
-	return createElement(
-		"label",
-		labelProps,
-		createElement("input", { type, name, placeholder: name, ...props })
-	);
+const Input = (props: { attr: ComponentAttr; labelAttr?: ComponentAttr }) => {
+	let { attr, labelAttr } = props;
+
+	const default_attr = { class: input_default };
+	const default_label_attr = { class: label_default };
+
+	attr = { ...default_attr, ...attr };
+	labelAttr = { ...default_label_attr, ...labelAttr };
+
+	return createElement("label", labelAttr, createElement("input", attr));
 };
 
 export default Input;

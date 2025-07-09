@@ -1,4 +1,4 @@
-export const home_background: string = `
+export const home_background = `
     w-full
     h-screen
     bg-[url('/public/images/main_background.jpg')]
@@ -16,6 +16,7 @@ export const btn_menu_container = `
     gap-[15px]
     p-10
     w-100
+    mb-20
 `;
 
 export const btn_modal_container = `
