@@ -11,5 +11,8 @@ type Routes = {
 
 export const routes: Routes = {
 	"/": { component: Home, id: "home" },
+	"/local": { component: NotFound, id: "local" },
+	"/lobby": { component: NotFound, id: "lobby" },
+	"/stats": { component: NotFound, id: "stats" },
 	"/404": { component: NotFound, id: "404" },
 };
