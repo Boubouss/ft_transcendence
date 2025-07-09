@@ -22,5 +22,10 @@ export const btn_modal_container = `
     absolute
     top-[40px]
     right-[40px]
+`;
 
+export const dropdown_container = `
+    absolute
+    top-[40px]
+    left-[40px]
 `;

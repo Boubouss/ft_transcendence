@@ -28,8 +28,6 @@ const FormAuth = () => {
 		console.log(data.get("username"));
 	}
 
-	console.log(isConnexion);
-
 	return Form(
 		{ class: form_connexion, id: "form_auth" },
 		createElement(

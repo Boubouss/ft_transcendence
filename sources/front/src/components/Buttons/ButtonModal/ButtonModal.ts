@@ -4,9 +4,10 @@ import { btn_modal } from "../style";
 const ButtonModal = (
 	text: string,
 	state: boolean,
-	setter: (toSet: boolean) => void
+	setter: (toSet: boolean) => void,
+	props: any = { class: btn_modal }
 ) => {
-	return Button({ class: btn_modal, onClick: () => setter(!state) }, text);
+	return Button(text, { class: props.class, onClick: () => setter(!state) });
 };
 
 export default ButtonModal;
