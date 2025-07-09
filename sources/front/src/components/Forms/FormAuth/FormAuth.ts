@@ -37,7 +37,7 @@ const FormAuth = () => {
 				"div",
 				{
 					class: isConnexion ? form_choice_active : form_choice,
-					onclick: () => setIsConnexion(true),
+					onClick: () => setIsConnexion(true),
 				},
 				"Sign In"
 			),
@@ -45,13 +45,13 @@ const FormAuth = () => {
 				"div",
 				{
 					class: isConnexion ? form_choice : form_choice_active,
-					onclick: () => setIsConnexion(false),
+					onClick: () => setIsConnexion(false),
 				},
 				"Sign Up"
 			),
 			createElement(
 				"div",
-				{ class: form_choice, onclick: () => handleGoogleSign() },
+				{ class: form_choice, onClick: () => handleGoogleSign() },
 				"Google"
 			)
 		),
@@ -61,8 +61,8 @@ const FormAuth = () => {
 		Input("text", "username"),
 		Input("password", "password"),
 		isConnexion
-			? Submit("Connexion", { onclick: () => handleConnexion() })
-			: Submit("Inscription", { onclick: () => handleRegister() })
+			? Submit("Connexion", { onClick: () => handleConnexion() })
+			: Submit("Inscription", { onClick: () => handleRegister() })
 	);
 };
 

@@ -12,9 +12,15 @@ const DropdownLang = (props: any = { class: dropdown_default }) => {
 		createElement(
 			"div",
 			{ class: dropdown_content },
-			Button("FR", { class: dropdown_items, onClick: () => setLanguage("FR") }),
+			Button("FR", {
+				class: dropdown_items + " rounded-t-[20px]",
+				onClick: () => setLanguage("FR"),
+			}),
 			Button("EN", { class: dropdown_items, onClick: () => setLanguage("EN") }),
-			Button("ES", { class: dropdown_items, onClick: () => setLanguage("ES") })
+			Button("ES", {
+				class: dropdown_items + " rounded-b-[20px]",
+				onClick: () => setLanguage("ES"),
+			})
 		),
 		props
 	);
