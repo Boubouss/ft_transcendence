@@ -1,7 +1,6 @@
 import ButtonNavigation from "#src/components/Buttons/ButtonNavigation/ButtonNavigation.ts";
 import ButtonModal from "#src/components/Buttons/ButtonModal/ButtonModal.ts";
 import ModalAuth from "#src/components/Modals/ModalAuth/ModalAuth.ts";
-import Dropdown from "#src/components/Dropdowns/Dropdown.ts";
 import { useState } from "#src/core/hooks/useState.ts";
 import { createElement } from "#src/core/render.ts";
 import {
