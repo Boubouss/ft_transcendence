@@ -1,0 +1,25 @@
+export async function fetchAPI(path: string, options: RequestInit) {
+	return await fetch(path, options)
+		.then((response) => {
+			if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+			return response.json();
+		})
+		.then((data) => {
+			console.log(data);
+			return data;
+		})
+		.catch((error) => console.log(error));
+}
+
+export function getStorage(storage: Storage, key: string) {
+	const data = storage.getItem(key);
+	return data ? JSON.parse(data) : null;
+}
+
+export function setStorage(storage: Storage, key: string, data: {}) {
+	if (data) storage.setItem(key, JSON.stringify(data));
+}
+
+export function removeStorage(storage: Storage, key: string) {
+	if (storage.getItem(key)) storage.removeItem(key);
+}

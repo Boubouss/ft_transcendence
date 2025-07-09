@@ -16,6 +16,7 @@ export const btn_menu_container = `
     gap-[15px]
     p-10
     w-100
+    mb-20
 `;
 
 export const btn_modal_container = `

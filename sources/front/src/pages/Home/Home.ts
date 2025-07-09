@@ -1,6 +1,7 @@
 import ButtonNavigation from "#src/components/Buttons/ButtonNavigation/ButtonNavigation.ts";
 import ButtonModal from "#src/components/Buttons/ButtonModal/ButtonModal.ts";
 import ModalAuth from "#src/components/Modals/ModalAuth/ModalAuth.ts";
+import DropdownLang from "#src/components/Dropdowns/DropdownLang/DropdownLang.ts";
 import { useState } from "#src/core/hooks/useState.ts";
 import { createElement } from "#src/core/render.ts";
 import {
@@ -9,14 +10,30 @@ import {
 	dropdown_container,
 	home_background,
 } from "./style";
-import DropdownLang from "#src/components/Dropdowns/DropdownLang/DropdownLang.ts";
 import { useEffect } from "#src/core/hooks/useEffect.ts";
+import { fetchAPI, getStorage, setStorage } from "#src/services/services.ts";
 
 const Home = () => {
 	const [modal, setModal] = useState(false);
+	const [auth, setAuth] = useState(false);
 
-	useEffect(() => {
-		console.log("Auto connexion...");
+	useEffect(async () => {
+		const credentials: { id: string; token: string } = getStorage(
+			localStorage,
+			"transcendence_token"
+		);
+		if (credentials) {
+			const user = await fetchAPI(
+				"https://localhost:3000/crud/user/" + credentials.id,
+				{
+					method: "GET",
+					headers: { Authorization: `Bearer ` + credentials.token },
+				}
+			);
+
+			setStorage(sessionStorage, "user", user);
+			setAuth(true);
+		}
 	}, []);
 
 	return createElement(
@@ -26,8 +43,9 @@ const Home = () => {
 			"div",
 			{ class: btn_menu_container },
 			ButtonNavigation("Local", "/local"),
-			ButtonNavigation("Multiplayer", "/lobby"),
-			ButtonNavigation("Career", "/stats")
+			auth
+				? ButtonNavigation("Multiplayer", "/lobby")
+				: createElement("div", { class: `hidden` })
 		),
 		createElement("div", { class: dropdown_container }, DropdownLang()),
 		createElement(
