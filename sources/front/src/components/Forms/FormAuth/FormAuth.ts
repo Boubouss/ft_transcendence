@@ -24,7 +24,6 @@ const FormAuth = () => {
 		const form = useForm("form_auth");
 		const user = await fetchAPI("https://localhost:3000/auth/login", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
 			body: form,
 		});
 
@@ -47,7 +46,6 @@ const FormAuth = () => {
 		};
 		const user = await fetchAPI("https://localhost:3000/auth/register", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(data),
 		});
 
