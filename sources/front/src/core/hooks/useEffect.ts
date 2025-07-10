@@ -44,8 +44,8 @@ export function useEffect(callback: () => void, dependencies: any[]) {
 }
 
 export function handleEffects() {
-  for (const [index, callback] of callbacks.entries()) {
-    callbacks.splice(index, 1);
-    callback();
-  }
+  let begin = 0;
+  const end = callbacks.length - 1;
+
+  while (begin++ < end) callbacks.shift()!();
 }
