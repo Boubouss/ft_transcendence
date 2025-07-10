@@ -37,11 +37,6 @@ const Home = () => {
 		}
 	}, []);
 
-	useEffect(
-		() => setAuth(true),
-		[getStorage(localStorage, "transcendence_token")]
-	);
-
 	return createElement(
 		"div",
 		{ id: "home", class: home_background },
