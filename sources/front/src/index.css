@@ -1,19 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Jaro&display=swap");
-/* @import "tailwindcss"; */
+@import "tailwindcss";
 
 html,
 body,
 #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
 }
 
 #root {
-  font-family: Jaro, sans-serif;
+	font-family: Jaro, sans-serif;
 
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
