@@ -3,15 +3,14 @@
 
 html,
 body,
-#app {
+#root {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--background);
 }
 
-#app {
+#root {
   font-family: Jaro, sans-serif;
 
   text-rendering: optimizeLegibility;

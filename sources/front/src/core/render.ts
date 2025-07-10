@@ -1,33 +1,13 @@
-import NotFound from "#src/pages/NotFound.ts";
-import { routes } from "#src/routes.ts";
 import { handleEffects, resetEffectIndex } from "./hooks/useEffect";
+import type { Component, ComponentProps } from "./framework";
+import App from "#src/App.ts";
 
-export function createElement(type: any, props: any, ...children: any) {
-	return { type, props, children };
-}
-
-export function renderComponent(component: any, container: any) {
-	if (typeof component === "string") {
-		container.appendChild(document.createTextNode(component));
-		return;
-	}
-
-	const element = document.createElement(component.type);
-
-	if (component.props) {
-		Object.keys(component.props).forEach((key) => {
-			element.setAttribute(key, component.props[key]);
-			if (key.toLowerCase() === "onclick") {
-				element.onclick = () => component.props[key]();
-			}
-		});
-	}
-
-	component.children.forEach((child: any) => {
-		renderComponent(child, element);
-	});
-
-	container.appendChild(element);
+export function createElement(
+	type: string,
+	props: ComponentProps | null,
+	...children: (string | Component)[]
+) {
+	return { type, props, children } as Component;
 }
 
 export function render(component: any, container: any) {
@@ -36,11 +16,50 @@ export function render(component: any, container: any) {
 }
 
 export function reRender() {
+	const rootContainer = document.getElementById("root")!;
+
 	resetEffectIndex();
-	document.getElementById("app")!.innerHTML = "";
-	const path = window.location.pathname;
-	// console.log(path);
-	if (routes[path])
-		render(routes[path].component(), document.getElementById("app"));
-	else render(NotFound(), document.getElementById("app"));
+	rootContainer.innerHTML = "";
+
+	render(App(), rootContainer);
+}
+
+function handleProps(component: Component, element: HTMLElement) {
+	if (!component.props) return;
+
+	for (const [key, value] of Object.entries(component.props)) {
+		switch (key) {
+			case "onClick":
+				element.onclick = () => (value as () => void)();
+				break;
+			default:
+				element.setAttribute(key, value as string);
+				break;
+		}
+	}
+}
+
+function renderComponent(
+	component: Component,
+	container: HTMLElement | DocumentFragment
+) {
+	if (typeof component === "string") {
+		container.appendChild(document.createTextNode(component));
+		return;
+	}
+
+	const element =
+		component.type === "template"
+			? document.createDocumentFragment()
+			: document.createElement(component.type);
+
+	if (element instanceof HTMLElement) {
+		handleProps(component, element);
+	}
+
+	component.children.forEach((child: any) => {
+		renderComponent(child, element);
+	});
+
+	container.appendChild(element);
 }
