@@ -1,17 +1,17 @@
+import { createElement } from "#src/core/render.ts";
+import { useState } from "#src/core/hooks/useState.ts";
+import { useEffect } from "#src/core/hooks/useEffect.ts";
+import { fetchAPI, getStorage, setStorage } from "#src/services/data.ts";
 import ButtonNavigation from "#src/components/Buttons/ButtonNavigation/ButtonNavigation.ts";
 import ButtonModal from "#src/components/Buttons/ButtonModal/ButtonModal.ts";
 import ModalAuth from "#src/components/Modals/ModalAuth/ModalAuth.ts";
 import DropdownLang from "#src/components/Dropdowns/DropdownLang/DropdownLang.ts";
-import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
 import {
 	btn_menu_container,
 	btn_modal_container,
 	dropdown_container,
 	home_background,
 } from "./style";
-import { useEffect } from "#src/core/hooks/useEffect.ts";
-import { fetchAPI, getStorage, setStorage } from "#src/services/services.ts";
 
 const Home = () => {
 	const [modal, setModal] = useState(false);
@@ -22,7 +22,7 @@ const Home = () => {
 			localStorage,
 			"transcendence_token"
 		);
-		if (credentials) {
+		if (credentials && !getStorage(sessionStorage, "transcendence_user")) {
 			const user = await fetchAPI(
 				"https://localhost:3000/crud/user/" + credentials.id,
 				{
@@ -30,11 +30,17 @@ const Home = () => {
 					headers: { Authorization: `Bearer ` + credentials.token },
 				}
 			);
-
-			setStorage(sessionStorage, "user", user);
-			setAuth(true);
+			if (user) {
+				setStorage(sessionStorage, "transcendence_user", user);
+				setAuth(true);
+			}
 		}
 	}, []);
+
+	useEffect(
+		() => setAuth(true),
+		[getStorage(localStorage, "transcendence_token")]
+	);
 
 	return createElement(
 		"div",

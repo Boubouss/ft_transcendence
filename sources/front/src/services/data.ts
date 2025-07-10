@@ -1,6 +1,7 @@
 export async function fetchAPI(path: string, options: RequestInit) {
 	return await fetch(path, options)
 		.then((response) => {
+			console.log(response);
 			if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 			return response.json();
 		})
@@ -22,4 +23,10 @@ export function setStorage(storage: Storage, key: string, data: {}) {
 
 export function removeStorage(storage: Storage, key: string) {
 	if (storage.getItem(key)) storage.removeItem(key);
+}
+
+export function useForm(id: string) {
+	return document.getElementById(id)
+		? new FormData(document.getElementById(id) as HTMLFormElement)
+		: null;
 }
