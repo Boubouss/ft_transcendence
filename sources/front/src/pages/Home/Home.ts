@@ -22,7 +22,10 @@ const Home = () => {
 			localStorage,
 			"transcendence_token"
 		);
-		if (credentials && !getStorage(sessionStorage, "transcendence_user")) {
+		if (
+			credentials.token &&
+			!getStorage(sessionStorage, "transcendence_user")
+		) {
 			const user = await fetchAPI(
 				"https://localhost:3000/crud/user/" + credentials.id,
 				{

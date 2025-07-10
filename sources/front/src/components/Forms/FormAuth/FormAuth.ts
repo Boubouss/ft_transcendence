@@ -3,11 +3,10 @@ import Submit from "#src/components/Inputs/Submit.ts";
 import { useState } from "#src/core/hooks/useState.ts";
 import { createElement } from "#src/core/render.ts";
 import {
-	fetchAPI,
-	getStorage,
-	setStorage,
-	useForm,
-} from "#src/services/data.ts";
+	handleConnexion,
+	handleGoogleSign,
+	handleRegister,
+} from "#src/requests/authRequest.ts";
 import Form from "../Form";
 import {
 	form_choice,
@@ -18,49 +17,6 @@ import {
 
 const FormAuth = () => {
 	const [isConnexion, setIsConnexion] = useState(false);
-
-	const handleConnexion = async () => {
-		console.log("API Connexion");
-		const form = useForm("form_auth");
-		const user = await fetchAPI("https://localhost:3000/auth/login", {
-			method: "POST",
-			body: form,
-		});
-
-		if (user) {
-			setStorage(localStorage, "transcendence_token", {
-				id: user.id,
-				token: user.token,
-			});
-			setStorage(sessionStorage, "transcendence_user", user);
-		}
-	};
-
-	const handleRegister = async () => {
-		console.log("API Inscription");
-		const form = useForm("form_auth");
-		const data = {
-			email: form?.get("email"),
-			name: form?.get("name"),
-			password: form?.get("password"),
-		};
-		const user = await fetchAPI("https://localhost:3000/auth/register", {
-			method: "POST",
-			body: JSON.stringify(data),
-		});
-
-		if (user) {
-			setStorage(localStorage, "transcendence_token", {
-				id: user.id,
-				token: user.token,
-			});
-			setStorage(sessionStorage, "transcendence_user", user);
-		}
-	};
-
-	function handleGoogleSign() {
-		console.log("API Google Sign In");
-	}
 
 	return Form(
 		{ class: form_connexion, id: "form_auth" },
