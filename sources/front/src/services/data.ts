@@ -1,3 +1,10 @@
+export enum API_USER_ROUTES {
+	REGISTER = "/auth/register",
+	LOGIN = "/auth/login",
+	AUTH_2FA = "/auth/2FA",
+	CRUD_USER = "/crud/user",
+}
+
 export async function fetchAPI(path: string, options: RequestInit) {
 	return await fetch(path, options)
 		.then((response) => {

@@ -19,7 +19,7 @@ const FormAuth = () => {
 	const [isConnexion, setIsConnexion] = useState(false);
 
 	return Form(
-		{ class: form_connexion, id: "form_auth" },
+		{ attr: { class: form_connexion, id: "form_auth" } },
 		createElement(
 			"div",
 			{ class: form_choice_container },
@@ -47,12 +47,20 @@ const FormAuth = () => {
 		),
 		isConnexion
 			? createElement("div", { class: `hidden` })
-			: Input("email", "email"),
-		Input("text", "name"),
-		Input("password", "password"),
+			: Input({ attr: { type: "email", name: "email", placeholder: "email" } }),
+		Input({ attr: { type: "text", name: "name", placeholder: "name" } }),
+		Input({
+			attr: { type: "password", name: "password", placeholder: "password" },
+		}),
 		isConnexion
-			? Submit("Connexion", { onClick: () => handleConnexion() })
-			: Submit("Inscription", { onClick: () => handleRegister() })
+			? Submit({
+					text: "Connexion",
+					attr: { onClick: () => handleConnexion() },
+			  })
+			: Submit({
+					text: "Inscription",
+					attr: { onClick: () => handleRegister() },
+			  })
 	);
 };
 

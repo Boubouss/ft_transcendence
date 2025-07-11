@@ -1,12 +1,25 @@
-import { fetchAPI, setStorage, useForm } from "#src/services/data.ts";
+import {
+	API_USER_ROUTES,
+	fetchAPI,
+	setStorage,
+	useForm,
+} from "#src/services/data.ts";
 
 export const handleConnexion = async () => {
 	console.log("API Connexion");
 	const form = useForm("form_auth");
-	const user = await fetchAPI("https://localhost:3000/auth/login", {
-		method: "POST",
-		body: form,
-	});
+	const data = {
+		name: form?.get("name"),
+		password: form?.get("password"),
+	};
+	const user = await fetchAPI(
+		import.meta.env.VITE_API_USER + API_USER_ROUTES.LOGIN,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(data),
+		}
+	);
 
 	if (user) {
 		setStorage(localStorage, "transcendence_token", {
@@ -26,11 +39,14 @@ export const handleRegister = async () => {
 		password: form?.get("password"),
 	};
 	console.log(JSON.stringify(data));
-	const user = await fetchAPI("https://localhost:3000/auth/register", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data),
-	});
+	const user = await fetchAPI(
+		import.meta.env.VITE_API_USER + API_USER_ROUTES.REGISTER,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(data),
+		}
+	);
 
 	if (user) {
 		setStorage(localStorage, "transcendence_token", {

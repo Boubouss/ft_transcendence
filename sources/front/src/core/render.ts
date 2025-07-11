@@ -1,30 +1,33 @@
 import { handleEffects, resetEffectIndex } from "./hooks/useEffect";
 import App from "#src/App.ts";
 
-type ComponentProps = {
+export type ComponentAttr = {
 	id?: string;
 	class?: string;
 	onClick?: () => void;
+	name?: string;
+	type?: string;
+	placeholder?: string;
 };
 
 export type Component = {
 	type: string;
-	props: ComponentProps | null;
+	attr: ComponentAttr | null;
 	children: (string | Component)[];
 };
 
 export function createElement(
 	type: string,
-	props: ComponentProps | null,
+	attr: ComponentAttr | null,
 	...children: (string | Component)[]
 ) {
-	return { type, props, children } as Component;
+	return { type, attr, children } as Component;
 }
 
-function handleProps(component: Component, element: HTMLElement) {
-	if (!component.props) return;
+function handleAttr(component: Component, element: HTMLElement) {
+	if (!component.attr) return;
 
-	for (const [key, value] of Object.entries(component.props)) {
+	for (const [key, value] of Object.entries(component.attr)) {
 		switch (key) {
 			case "onClick":
 				element.onclick = () => (value as () => void)();
@@ -38,7 +41,7 @@ function handleProps(component: Component, element: HTMLElement) {
 
 export function renderComponent(
 	component: Component,
-	container: HTMLElement | DocumentFragment,
+	container: HTMLElement | DocumentFragment
 ) {
 	if (typeof component === "string") {
 		container.appendChild(document.createTextNode(component));
@@ -51,7 +54,7 @@ export function renderComponent(
 			: document.createElement(component.type);
 
 	if (element instanceof HTMLElement) {
-		handleProps(component, element);
+		handleAttr(component, element);
 	}
 
 	component.children.forEach((child: any) => {

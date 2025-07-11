@@ -1,9 +1,14 @@
-import { createElement } from "#src/core/render.ts";
+import { createElement, type ComponentProps } from "#src/core/render.ts";
 import { btn_default } from "./style";
 
-const Button = (text: string = "btn", props: any = { class: btn_default }) => {
-	if (!props.class) props.class = btn_default;
-	return createElement("button", props, text);
+const Button = (props: ComponentProps) => {
+	let { text, attr } = props;
+
+	const default_attr = { class: btn_default };
+
+	attr = { ...default_attr, ...attr };
+
+	return createElement("button", attr, text ?? "btn");
 };
 
 export default Button;

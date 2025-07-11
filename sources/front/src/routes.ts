@@ -1,6 +1,6 @@
 import type { Component } from "./core/render";
 import Home from "./pages/Home/Home";
-import NotFound from "./pages/NotFound";
+import NotFound from "./pages/NotFound/NotFound";
 
 type Routes = {
 	[key: string]: {

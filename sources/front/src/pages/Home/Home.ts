@@ -4,7 +4,6 @@ import { useEffect } from "#src/core/hooks/useEffect.ts";
 import { fetchAPI, getStorage, setStorage } from "#src/services/data.ts";
 import ButtonNavigation from "#src/components/Buttons/ButtonNavigation/ButtonNavigation.ts";
 import ButtonModal from "#src/components/Buttons/ButtonModal/ButtonModal.ts";
-import ModalAuth from "#src/components/Modals/ModalAuth/ModalAuth.ts";
 import DropdownLang from "#src/components/Dropdowns/DropdownLang/DropdownLang.ts";
 import {
 	btn_menu_container,
@@ -12,6 +11,8 @@ import {
 	dropdown_container,
 	home_background,
 } from "./style";
+import Modal from "#src/components/Modals/Modal.ts";
+import FormAuth from "#src/components/Forms/FormAuth/FormAuth.ts";
 
 const Home = () => {
 	const [modal, setModal] = useState(false);
@@ -46,18 +47,18 @@ const Home = () => {
 		createElement(
 			"div",
 			{ class: btn_menu_container },
-			ButtonNavigation("Local", "/local"),
+			ButtonNavigation({ text: "Local", path: "/lobby" }),
 			auth
-				? ButtonNavigation("Multiplayer", "/lobby")
+				? ButtonNavigation({ text: "Multiplayer", path: "/lobby" })
 				: createElement("div", { class: `hidden` })
 		),
-		createElement("div", { class: dropdown_container }, DropdownLang()),
+		createElement("div", { class: dropdown_container }, DropdownLang({})),
 		createElement(
 			"div",
 			{ class: btn_modal_container },
-			ButtonModal("Sign in / Sign up", modal, setModal)
+			ButtonModal({ text: "Sign in / Sign up", state: modal, setter: setModal })
 		),
-		ModalAuth(modal, setModal)
+		Modal({ state: modal, setter: setModal }, FormAuth())
 	);
 };
 

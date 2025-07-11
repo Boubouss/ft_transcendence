@@ -1,21 +1,31 @@
 import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
+import {
+	createElement,
+	type Component,
+	type ComponentAttr,
+} from "#src/core/render.ts";
 import ButtonModal from "../Buttons/ButtonModal/ButtonModal";
 import { dropdown_default } from "./style";
 
 const Dropdown = (
-	name: string,
-	content: any,
-	props: any = { class: dropdown_default }
+	props: {
+		text: string;
+		attr?: ComponentAttr;
+	},
+	content: Component
 ) => {
-	if (!props.class) props.class = dropdown_default;
+	let { text, attr } = props;
+
+	const default_attr = { class: dropdown_default };
+
+	attr = { ...default_attr, ...attr };
 
 	const [dropdown, setDropdown] = useState(false);
 
 	return createElement(
 		"div",
-		props,
-		ButtonModal(name, dropdown, setDropdown),
+		attr,
+		ButtonModal({ text: text ?? "btn", state: dropdown, setter: setDropdown }),
 		dropdown ? content : createElement("div", { class: `hidden` })
 	);
 };
