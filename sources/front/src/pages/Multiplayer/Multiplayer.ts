@@ -33,7 +33,7 @@ const Multiplayer = () => {
 	}, []);
 
 	const handleSocketMessage = (event: MessageEvent) => {
-		console.log(event);
+		//console.log(event);
 	};
 
 	const handleJoinLobby = (lobby: Lobby) => {
