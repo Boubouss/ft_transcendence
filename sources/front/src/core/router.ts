@@ -1,5 +1,5 @@
-import { routes } from "#src/routes.ts";
 import { resetEffects } from "./hooks/useEffect";
+import { routes } from "../routes.ts";
 import { reRender } from "./render";
 
 window.addEventListener("popstate", () => {

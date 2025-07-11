@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "imports": {
-    "#src/*": "./src/*",
     "#core/*": "./src/core/*",
     "#assets/*": "./src/assets/*",
     "#hooks/*": "./src/hooks/*",

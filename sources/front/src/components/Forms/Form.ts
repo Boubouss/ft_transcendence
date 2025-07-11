@@ -1,4 +1,4 @@
-import { createElement } from "#src/core/render.ts";
+import { createElement } from "#core/render.ts";
 import { form_default } from "./style";
 
 const Form = (props: any = { class: form_default }, ...inputs: any) => {

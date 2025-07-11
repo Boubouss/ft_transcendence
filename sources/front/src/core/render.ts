@@ -1,6 +1,6 @@
 import { handleEffects, resetEffectIndex } from "./hooks/useEffect";
-import type { Component, ComponentProps } from "./framework";
-import App from "#src/App.ts";
+import type { Component, ComponentProps } from "./framework.ts";
+import App from "../App.ts";
 
 export function createElement(
 	type: string,
@@ -41,7 +41,7 @@ function handleProps(component: Component, element: HTMLElement) {
 
 function renderComponent(
 	component: Component,
-	container: HTMLElement | DocumentFragment
+	container: HTMLElement | DocumentFragment,
 ) {
 	if (typeof component === "string") {
 		container.appendChild(document.createTextNode(component));

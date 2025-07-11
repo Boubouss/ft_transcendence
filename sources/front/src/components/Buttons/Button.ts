@@ -1,4 +1,4 @@
-import { createElement } from "#src/core/render.ts";
+import { createElement } from "#core/render.ts";
 import { btn_default } from "./style";
 
 const Button = (text: string = "btn", props: any = { class: btn_default }) => {

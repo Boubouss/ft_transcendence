@@ -1,4 +1,4 @@
-import { createElement } from "#src/core/render.ts";
+import { createElement } from "#core/render.ts";
 import { modal_background, modal_default } from "./style";
 
 const Modal = (

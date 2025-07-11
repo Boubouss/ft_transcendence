@@ -1,7 +1,7 @@
-import Input from "#src/components/Inputs/Input.ts";
-import Submit from "#src/components/Inputs/Submit.ts";
-import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
+import Input from "#components/Inputs/Input.ts";
+import Submit from "#components/Inputs/Submit.ts";
+import { useState } from "#core/hooks/useState.ts";
+import { createElement } from "#core/render.ts";
 import Form from "../Form";
 import {
 	form_choice,

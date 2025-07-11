@@ -1,4 +1,4 @@
-import { navigateTo } from "#src/core/router.ts";
+import { navigateTo } from "#core/router.ts";
 import Button from "../Button";
 import { btn_menu } from "../style";
 

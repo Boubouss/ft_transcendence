@@ -1,4 +1,4 @@
-import { createElement } from "#src/core/render.ts";
+import { createElement } from "#core/render.ts";
 import { submit_default } from "./style";
 
 const Submit = (name: string, props: any = { class: submit_default }) => {

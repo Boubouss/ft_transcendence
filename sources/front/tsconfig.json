@@ -13,9 +13,8 @@
     "moduleDetection": "force",
     "noEmit": true,
 
-    "baseUrl": ".",
+    "baseUrl": "..",
     "paths": {
-      "#src/*": ["./src/*"],
       "#core/*": ["./src/core/*"],
       "#assets/*": ["./src/assets/*"],
       "#components/*": ["./src/components/*"],

@@ -1,6 +1,6 @@
-import Button from "#src/components/Buttons/Button.ts";
-import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
+import Button from "#components/Buttons/Button.ts";
+import { useState } from "#core/hooks/useState.ts";
+import { createElement } from "#core/render.ts";
 import Dropdown from "../Dropdown";
 import { dropdown_content, dropdown_default, dropdown_items } from "../style";
 

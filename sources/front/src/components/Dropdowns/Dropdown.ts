@@ -1,5 +1,5 @@
-import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
+import { useState } from "#core/hooks/useState.ts";
+import { createElement } from "#core/render.ts";
 import ButtonModal from "../Buttons/ButtonModal/ButtonModal";
 import { dropdown_default } from "./style";
 
