@@ -6,6 +6,10 @@ export enum API_USER_ROUTES {
 	CRUD_USER = "/crud/user",
 }
 
+export enum API_GAME_ROUTES {
+	MATCH = "/match"
+}
+
 export async function fetchAPI(path: string, options: RequestInit) {
 	return await fetch(path, options)
 		.then((response) => {

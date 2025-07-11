@@ -11,7 +11,7 @@ import {
 import { authMiddleware } from "../middlewares/authMiddleware";
 
 const crud: FastifyPluginAsync = async (fastify, opts) => {
-	fastify.addHook("preHandler", authMiddleware);
+	// fastify.addHook("preHandler", authMiddleware);
 
 	fastify.get("/users", async () => {
 		return getUsers();
