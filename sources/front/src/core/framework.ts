@@ -3,20 +3,22 @@ import { router, navigateTo } from "./router.ts";
 import { useState } from "./hooks/useState.ts";
 import { useEffect } from "./hooks/useEffect.ts";
 
+export type ComponentChildren = string | Component | false | null;
+
 export type ComponentAttr = {
 	id?: string;
 	class?: string;
+	src?: string;
 	onClick?: () => void;
 	name?: string;
 	type?: string;
 	placeholder?: string;
-	src?: string;
 };
 
 export type Component = {
 	type: string;
 	attr: ComponentAttr | null;
-	children: (string | Component | false | null)[];
+	children: ComponentChildren[];
 };
 
 export {

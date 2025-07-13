@@ -3,7 +3,7 @@ import {
 	useState,
 	type Component,
 	type ComponentAttr,
-} from "#src/core/framework.ts";
+} from "#core/framework.ts";
 import { dropdown_btn, dropdown_default } from "./style";
 
 const Dropdown = (

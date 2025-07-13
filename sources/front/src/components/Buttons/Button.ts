@@ -2,7 +2,7 @@ import {
 	createElement,
 	type Component,
 	type ComponentAttr,
-} from "#src/core/framework";
+} from "#core/framework";
 import { btn_default } from "./style";
 
 const Button = (props: {

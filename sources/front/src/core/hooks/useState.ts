@@ -3,6 +3,11 @@ import { reRender } from "../render";
 let index = 0;
 let states: any[] = [];
 
+export const resetStates = () => {
+	index = 0;
+	states = [];
+}
+
 export function useState<T>(initialValue: T): [T, (toSet: T) => void] {
 	const currentIndex = index;
 
