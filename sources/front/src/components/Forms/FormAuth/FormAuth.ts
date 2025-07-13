@@ -1,13 +1,13 @@
 import Form from "../Form";
-import Input from "#src/components/Inputs/Input.ts";
-import Submit from "#src/components/Inputs/Submit.ts";
-import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
+import Input from "#components/Inputs/Input.ts";
+import Submit from "#components/Inputs/Submit.ts";
+import { useState } from "#core/hooks/useState.ts";
+import { createElement } from "#core/render.ts";
 import {
 	handleConnexion,
 	handleGoogleSign,
 	handleRegister,
-} from "#src/requests/authRequest.ts";
+} from "#requests/authRequest.ts";
 import {
 	form_choice,
 	form_choice_active,
@@ -60,18 +60,18 @@ const FormAuth = (props: {
 		}),
 		isConnexion
 			? Submit({
-					text: "Connexion",
-					attr: {
-						onClick: () => {
-							handleConnexion(set2FA, setUser);
-							setModal(false);
-						},
+				text: "Connexion",
+				attr: {
+					onClick: () => {
+						handleConnexion(set2FA, setUser);
+						setModal(false);
 					},
-			  })
+				},
+			})
 			: Submit({
-					text: "Inscription",
-					attr: { onClick: () => handleRegister(set2FA) },
-			  })
+				text: "Inscription",
+				attr: { onClick: () => handleRegister(set2FA) },
+			})
 	);
 };
 

@@ -2,7 +2,7 @@ import {
 	createElement,
 	type Component,
 	type ComponentAttr,
-} from "#src/core/framework";
+} from "#core/framework";
 import { modal_background, modal_default } from "./style";
 
 const Modal = (

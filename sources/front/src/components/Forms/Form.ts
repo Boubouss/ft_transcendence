@@ -2,7 +2,7 @@ import {
 	createElement,
 	type Component,
 	type ComponentAttr,
-} from "#src/core/framework";
+} from "#core/framework";
 import { form_default } from "./style";
 
 const Form = (

@@ -1,5 +1,5 @@
-import { createElement, type ComponentAttr } from "#src/core/framework.ts";
-import { useLanguage } from "#src/services/language.ts";
+import { createElement, type ComponentAttr } from "#core/framework.ts";
+import { useLanguage } from "#services/language.ts";
 import Button from "../Buttons/Button";
 import { btn_modal } from "../Buttons/style";
 import DropdownUser from "../Dropdowns/DorpdownUser/DropdownUser";

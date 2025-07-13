@@ -4,16 +4,20 @@
 html,
 body,
 #root {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 #root {
-	font-family: Jaro, sans-serif;
+  font-family: Jaro, sans-serif;
 
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.my-scrollbar {
+  scrollbar-color: black #ff8904;
 }

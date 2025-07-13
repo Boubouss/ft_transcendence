@@ -1,4 +1,4 @@
-import { createElement, router } from "#core/framework";
+import { createElement, router } from "#core/framework.ts";
 
 function App() {
 	return createElement("template", null, router());

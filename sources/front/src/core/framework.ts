@@ -6,6 +6,7 @@ import { useEffect } from "./hooks/useEffect.ts";
 export type ComponentAttr = {
 	id?: string;
 	class?: string;
+	src?: string;
 	onClick?: () => void;
 	name?: string;
 	type?: string;
