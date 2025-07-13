@@ -1,7 +1,8 @@
+import _ from "lodash";
+
 type Callback = () => void;
 
 type Effect = {
-  callback: Callback;
   dependencies: any[];
 };
 
@@ -33,19 +34,19 @@ export function useEffect(callback: () => void, dependencies: any[]) {
   const effect = effects[index];
 
   if (!effect) {
-    effects.push({ callback, dependencies });
+    effects.push({
+      dependencies: JSON.parse(JSON.stringify(dependencies)),
+    });
+
     callbacks.push(callback);
   } else if (!isDependenciesSame(effect, dependencies)) {
-    effect.dependencies = dependencies;
-    callbacks.push(effect.callback);
+    effect.dependencies = JSON.parse(JSON.stringify(dependencies));
+    callbacks.push(callback);
   }
 
   index++;
 }
 
 export function handleEffects() {
-  for (const [index, callback] of callbacks.entries()) {
-    callbacks.splice(index, 1);
-    callback();
-  }
+  for (let i = 0; i <= callbacks.length; i++) if (_.first(callbacks)) callbacks.shift()!();
 }
