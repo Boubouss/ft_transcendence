@@ -1,9 +1,21 @@
-import { createElement } from "#src/core/render.ts";
+import {
+	createElement,
+	type Component,
+	type ComponentAttr,
+} from "#src/core/framework";
 import { form_default } from "./style";
 
-const Form = (props: any = { class: form_default }, ...inputs: any) => {
-	if (!props.class) props.class = form_default;
-	return createElement("form", props, ...inputs);
+const Form = (
+	props: {
+		attr?: ComponentAttr;
+	},
+	...inputs: Component[]
+) => {
+	let { attr } = props;
+	const default_attr = { class: form_default };
+	attr = { ...default_attr, ...attr };
+
+	return createElement("form", attr, ...inputs);
 };
 
 export default Form;

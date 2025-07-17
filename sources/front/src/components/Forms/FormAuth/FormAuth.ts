@@ -1,8 +1,13 @@
+import Form from "../Form";
 import Input from "#src/components/Inputs/Input.ts";
 import Submit from "#src/components/Inputs/Submit.ts";
 import { useState } from "#src/core/hooks/useState.ts";
 import { createElement } from "#src/core/render.ts";
-import Form from "../Form";
+import {
+	handleConnexion,
+	handleGoogleSign,
+	handleRegister,
+} from "#src/requests/authRequest.ts";
 import {
 	form_choice,
 	form_choice_active,
@@ -10,26 +15,17 @@ import {
 	form_connexion,
 } from "../style";
 
-const FormAuth = () => {
+const FormAuth = (props: {
+	setModal: (toSet: boolean) => void;
+	set2FA: (toSet: boolean) => void;
+	setUser: (toSet: {} | null) => void;
+}) => {
 	const [isConnexion, setIsConnexion] = useState(false);
 
-	function handleConnexion() {
-		console.log("API Connexion");
-	}
-
-	function handleRegister() {
-		console.log("API Inscription");
-	}
-
-	function handleGoogleSign() {
-		console.log("API Google Sign In");
-		const form = document.getElementById("form_auth") as HTMLFormElement;
-		const data = new FormData(form);
-		console.log(data.get("username"));
-	}
+	const { setModal, set2FA, setUser } = props;
 
 	return Form(
-		{ class: form_connexion, id: "form_auth" },
+		{ attr: { class: form_connexion, id: "form_auth" } },
 		createElement(
 			"div",
 			{ class: form_choice_container },
@@ -57,12 +53,25 @@ const FormAuth = () => {
 		),
 		isConnexion
 			? createElement("div", { class: `hidden` })
-			: Input("email", "email"),
-		Input("text", "username"),
-		Input("password", "password"),
+			: Input({ attr: { type: "email", name: "email", placeholder: "email" } }),
+		Input({ attr: { type: "text", name: "name", placeholder: "name" } }),
+		Input({
+			attr: { type: "password", name: "password", placeholder: "password" },
+		}),
 		isConnexion
-			? Submit("Connexion", { onClick: () => handleConnexion() })
-			: Submit("Inscription", { onClick: () => handleRegister() })
+			? Submit({
+					text: "Connexion",
+					attr: {
+						onClick: () => {
+							handleConnexion(set2FA, setUser);
+							setModal(false);
+						},
+					},
+			  })
+			: Submit({
+					text: "Inscription",
+					attr: { onClick: () => handleRegister(set2FA) },
+			  })
 	);
 };
 

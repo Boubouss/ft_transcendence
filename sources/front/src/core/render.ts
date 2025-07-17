@@ -1,13 +1,13 @@
 import { handleEffects, resetEffectIndex } from "./hooks/useEffect";
-import type { Component, ComponentProps } from "./framework";
+import type { Component, ComponentAttr } from "./framework";
 import App from "#src/App.ts";
 
 export function createElement(
 	type: string,
-	props: ComponentProps | null,
+	attr: ComponentAttr | null,
 	...children: (string | Component)[]
 ) {
-	return { type, props, children } as Component;
+	return { type, attr, children } as Component;
 }
 
 export function render(component: any, container: any) {
@@ -24,10 +24,10 @@ export function reRender() {
 	render(App(), rootContainer);
 }
 
-function handleProps(component: Component, element: HTMLElement) {
-	if (!component.props) return;
+function handleAttr(component: Component, element: HTMLElement) {
+	if (!component.attr) return;
 
-	for (const [key, value] of Object.entries(component.props)) {
+	for (const [key, value] of Object.entries(component.attr)) {
 		switch (key) {
 			case "onClick":
 				element.onclick = () => (value as () => void)();
@@ -54,7 +54,7 @@ function renderComponent(
 			: document.createElement(component.type);
 
 	if (element instanceof HTMLElement) {
-		handleProps(component, element);
+		handleAttr(component, element);
 	}
 
 	component.children.forEach((child: any) => {

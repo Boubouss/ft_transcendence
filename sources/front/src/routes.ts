@@ -1,6 +1,6 @@
-import type { Component } from "#core/framework";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
+import type { Component } from "./core/render";
+import Home from "./pages/Home/Home";
+import NotFound from "./pages/NotFound/NotFound";
 
 type Routes = {
 	[key: string]: {

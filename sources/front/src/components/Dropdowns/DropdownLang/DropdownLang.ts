@@ -1,28 +1,50 @@
+import { useState, type ComponentAttr } from "#src/core/framework.ts";
 import Button from "#src/components/Buttons/Button.ts";
-import { useState } from "#src/core/hooks/useState.ts";
-import { createElement } from "#src/core/render.ts";
+import List from "#src/components/Lists/List.ts";
 import Dropdown from "../Dropdown";
-import { dropdown_content, dropdown_default, dropdown_items } from "../style";
+import { btn_list } from "#src/components/Buttons/style.ts";
+import { dropdown_content, dropdown_default } from "../style";
 
-const DropdownLang = (props: any = { class: dropdown_default }) => {
+const DropdownLang = (props: {
+	attr?: ComponentAttr;
+	attrContent?: ComponentAttr;
+}) => {
 	const [language, setLanguage] = useState("FR");
 
+	let { attr, attrContent } = props;
+
+	const default_attr = { class: dropdown_default };
+	const default_attr_content = { class: dropdown_content };
+
+	attr = { ...default_attr, ...attr };
+	attrContent = { ...default_attr_content, ...attrContent };
+
 	return Dropdown(
-		language,
-		createElement(
-			"div",
-			{ class: dropdown_content },
-			Button("FR", {
-				class: dropdown_items + " rounded-t-[20px]",
-				onClick: () => setLanguage("FR"),
-			}),
-			Button("EN", { class: dropdown_items, onClick: () => setLanguage("EN") }),
-			Button("ES", {
-				class: dropdown_items + " rounded-b-[20px]",
-				onClick: () => setLanguage("ES"),
-			})
-		),
-		props
+		{ btn: { children: language }, attr },
+		Button,
+		List({ attr: attrContent }, Button, [
+			{
+				children: "FR",
+				attr: {
+					class: btn_list + " rounded-t-[20px]",
+					onClick: () => setLanguage("FR"),
+				},
+			},
+			{
+				children: "EN",
+				attr: {
+					class: btn_list,
+					onClick: () => setLanguage("EN"),
+				},
+			},
+			{
+				children: "ES",
+				attr: {
+					class: btn_list + " rounded-b-[20px]",
+					onClick: () => setLanguage("ES"),
+				},
+			},
+		])
 	);
 };
 

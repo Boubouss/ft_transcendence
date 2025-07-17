@@ -12,7 +12,7 @@ rounded-[20px]
 hover:cursor-pointer
 `;
 
-export const btn_menu = `
+export const btn_nav = `
 flex
 p-5
 text-5xl 
@@ -39,4 +39,18 @@ w-full
 justify-center
 rounded-[20px]
 hover:cursor-pointer
+`;
+
+export const btn_list = `
+    hover:bg-orange-300
+    hover:cursor-pointer
+    text-white
+    text-[30px]
+`;
+
+export const btn_user = `
+    flex
+    justify-center
+    items-center
+    gap-[10px]
 `;
