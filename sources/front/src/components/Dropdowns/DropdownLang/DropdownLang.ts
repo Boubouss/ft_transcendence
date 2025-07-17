@@ -1,9 +1,15 @@
-import { useState, type ComponentAttr } from "#src/core/framework.ts";
+import {
+	useEffect,
+	useState,
+	type ComponentAttr,
+} from "#src/core/framework.ts";
 import Button from "#src/components/Buttons/Button.ts";
 import List from "#src/components/Lists/List.ts";
 import Dropdown from "../Dropdown";
 import { btn_list } from "#src/components/Buttons/style.ts";
 import { dropdown_content, dropdown_default } from "../style";
+import { getStorage, setStorage } from "#src/services/data.ts";
+import { handleLang } from "#src/services/language.ts";
 
 const DropdownLang = (props: {
 	attr?: ComponentAttr;
@@ -13,11 +19,23 @@ const DropdownLang = (props: {
 
 	let { attr, attrContent } = props;
 
-	const default_attr = { class: dropdown_default };
-	const default_attr_content = { class: dropdown_content };
+	const default_attr = { class: dropdown_default + " w-[96px]" };
+	const default_attr_content = { class: dropdown_content + " w-[96px]" };
 
 	attr = { ...default_attr, ...attr };
 	attrContent = { ...default_attr_content, ...attrContent };
+
+	useEffect(() => {
+		const configuration = getStorage(localStorage, "transcendence_conf");
+		if (configuration?.lang) setLanguage(configuration.lang);
+		else {
+			setStorage(localStorage, "transcendence_conf", {
+				lang: "FR",
+				...configuration,
+			});
+			setLanguage("FR");
+		}
+	}, []);
 
 	return Dropdown(
 		{ btn: { children: language }, attr },
@@ -27,21 +45,21 @@ const DropdownLang = (props: {
 				children: "FR",
 				attr: {
 					class: btn_list + " rounded-t-[20px]",
-					onClick: () => setLanguage("FR"),
+					onClick: () => handleLang("FR", setLanguage),
 				},
 			},
 			{
 				children: "EN",
 				attr: {
 					class: btn_list,
-					onClick: () => setLanguage("EN"),
+					onClick: () => handleLang("EN", setLanguage),
 				},
 			},
 			{
 				children: "ES",
 				attr: {
 					class: btn_list + " rounded-b-[20px]",
-					onClick: () => setLanguage("ES"),
+					onClick: () => handleLang("ES", setLanguage),
 				},
 			},
 		])

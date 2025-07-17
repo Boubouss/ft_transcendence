@@ -48,6 +48,5 @@ export function useEffect(callback: () => void, dependencies: any[]) {
 }
 
 export function handleEffects() {
-	for (let i = 0; i <= callbacks.length; i++)
-		if (_.first(callbacks)) callbacks.shift()!();
+	while (_.first(callbacks)) callbacks.shift()!();
 }

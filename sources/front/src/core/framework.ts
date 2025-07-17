@@ -16,7 +16,7 @@ export type ComponentAttr = {
 export type Component = {
 	type: string;
 	attr: ComponentAttr | null;
-	children: (string | Component)[];
+	children: (string | Component | false | null)[];
 };
 
 export {

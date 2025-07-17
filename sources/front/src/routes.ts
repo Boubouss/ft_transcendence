@@ -1,18 +1,13 @@
-import type { Component } from "./core/render";
+import type { Component } from "./core/framework";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 
-type Routes = {
-	[key: string]: {
-		component: () => Component;
-		id: string;
-	};
-};
+type Routes = Record<string, { component: () => Component }>;
 
 export const routes: Routes = {
-	"/": { component: Home, id: "home" },
-	"/local": { component: NotFound, id: "local" },
-	"/lobby": { component: NotFound, id: "lobby" },
-	"/stats": { component: NotFound, id: "stats" },
-	"/404": { component: NotFound, id: "404" },
+	"/": { component: Home },
+	"/local": { component: NotFound },
+	"/lobby": { component: NotFound },
+	"/stats": { component: NotFound },
+	"/404": { component: NotFound },
 };
