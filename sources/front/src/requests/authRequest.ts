@@ -140,18 +140,6 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
 	}
 };
 
-export const getMatches = async (): Promise<Match[]> => {
-	const conf = getStorage(localStorage, "transcendence_token");
-
-	console.log(import.meta.env.VITE_API_GAME + API_GAME_ROUTES.MATCH );
-	const matches = await fetchAPI(import.meta.env.VITE_API_GAME + API_GAME_ROUTES.MATCH + `/${conf.id}`,
-		{
-			method: "GET",
-			headers: {Authorization: `Bearer ` + conf.token}
-		}
-	 )
-	 return matches;
-}
 export const handleDeconnexion = (setter: (toSet: {} | null) => void) => {
 	const configuration = getStorage(localStorage, "transcendence_conf");
 	setStorage(localStorage, "transcendence_conf", { lang: configuration.lang });

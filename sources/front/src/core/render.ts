@@ -58,7 +58,7 @@ function renderComponent(
 		handleAttr(component, element);
 	}
 
-	component.children.forEach((child: any) => {
+	component?.children?.forEach((child: any) => {
 		renderComponent(child, element);
 	});
 
