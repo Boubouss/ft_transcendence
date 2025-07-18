@@ -1,8 +1,9 @@
 import _ from "lodash";
 
-type Callback = () => void;
+type Callback = () => void | (() => void);
 
 type Effect = {
+	callback: Callback;
 	dependencies: any[];
 };
 
@@ -15,7 +16,13 @@ export function resetEffectIndex() {
 }
 
 export function resetEffects() {
-	effects.splice(0, effects.length);
+	while (_.first(effects)) {
+		const cleanUp = effects.shift()!.callback();
+
+		if (typeof cleanUp === "function") {
+			cleanUp();
+		}
+	}
 }
 
 function isDependenciesSame(effect: Effect, dependencies: any[]) {
@@ -30,16 +37,18 @@ function isDependenciesSame(effect: Effect, dependencies: any[]) {
 	return true;
 }
 
-export function useEffect(callback: () => void, dependencies: any[]) {
+export function useEffect(callback: Callback, dependencies: any[]) {
 	const effect = effects[index];
 
 	if (!effect) {
 		effects.push({
+			callback,
 			dependencies: JSON.parse(JSON.stringify(dependencies)),
 		});
 
 		callbacks.push(callback);
 	} else if (!isDependenciesSame(effect, dependencies)) {
+		effect.callback = callback;
 		effect.dependencies = JSON.parse(JSON.stringify(dependencies));
 		callbacks.push(callback);
 	}
