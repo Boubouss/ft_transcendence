@@ -7,7 +7,7 @@ const MatchCard = (match: Match) => {
 	const user = getStorage(sessionStorage, "transcendence_user");
 
 	const winner = match.winner_id;
-	const duel = match.players.length > 2;
+	const duel = match.players.length == 2;
 
 	return createElement(
 		"div",

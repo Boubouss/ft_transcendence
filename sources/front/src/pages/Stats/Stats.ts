@@ -6,6 +6,7 @@ import List from "#src/components/Lists/List.ts";
 import NavigationBar from "#src/components/NavigationBar/NavigationBar.ts";
 import { getStorage } from "#src/services/data.ts";
 import { home_background } from "../Home/style";
+import { wrapper } from "./style";
 
 const testMatches: Match[] = [
 	{
@@ -46,9 +47,11 @@ const Stats = () => {
 		"div",
 		{ class: home_background },
 		NavigationBar({ userState: { user, setUser } }),
-		createElement("h1", null, "Page d'affichage des statistiques !"),
+		createElement("div", {class: wrapper},
+		),
+		createElement("h1", null, "Historique des matchs"),
 		// ...testMatches.map((m) => MatchCard(m))
-		List({}, MatchCard, matches ?? testMatches)
+		List({attr: {class: wrapper}}, MatchCard, matches ?? testMatches)
 	);
 };
 

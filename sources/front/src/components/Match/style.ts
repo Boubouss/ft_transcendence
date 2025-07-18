@@ -11,9 +11,10 @@ export const match_card=`
     flex-col
     w-1/3
     justify-start
-    m-8
-    p-4
-    bg-yellow-100
+    p-5
+    bg-orange-400
+    rounded-[20px]
+    border-2
 `
 
 export const score=`
