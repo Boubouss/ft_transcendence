@@ -5,7 +5,7 @@ import App from "#src/App.ts";
 export function createElement(
 	type: string,
 	attr: ComponentAttr | null,
-	...children: (string | Component)[]
+	...children: (string | Component | false | null)[]
 ) {
 	return { type, attr, children } as Component;
 }
@@ -43,6 +43,7 @@ function renderComponent(
 	component: Component,
 	container: HTMLElement | DocumentFragment
 ) {
+	if (!component) return;
 	if (typeof component === "string") {
 		container.appendChild(document.createTextNode(component));
 		return;

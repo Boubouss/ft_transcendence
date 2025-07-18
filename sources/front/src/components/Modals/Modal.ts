@@ -10,23 +10,26 @@ const Modal = (
 		state: boolean;
 		setter: (setState: boolean) => void;
 		attr?: ComponentAttr;
+		attrBackground?: ComponentAttr;
 	},
 	children: Component
 ) => {
-	let { state, setter, attr } = props;
+	let { state, setter, attr, attrBackground } = props;
 
 	const default_attr = { class: modal_default };
+	const default_attr_bckg = {
+		class: modal_background,
+		onClick: () => setter(!state),
+	};
 
 	attr = { ...default_attr, ...attr };
+	attrBackground = { ...default_attr_bckg, ...attrBackground };
 
 	if (state)
 		return createElement(
 			"div",
 			null,
-			createElement("div", {
-				class: modal_background,
-				onClick: () => setter(!state),
-			}),
+			createElement("div", attrBackground),
 			createElement("div", attr, children)
 		);
 	return createElement("div", { class: `hidden` });

@@ -35,7 +35,7 @@ border-3
 border-black
 bg-orange-400
 h-fit
-w-full
+w-fit
 justify-center
 rounded-[20px]
 hover:cursor-pointer
@@ -46,6 +46,7 @@ export const btn_list = `
     hover:cursor-pointer
     text-white
     text-[30px]
+    p-[10px]
 `;
 
 export const btn_user = `

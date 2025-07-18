@@ -31,13 +31,13 @@ export const handleConnexion = async (
 		setStorage(sessionStorage, "transcendence_user", userData);
 
 		if (token) {
-			setStorage(localStorage, "transcendence_token", {
+			setStorage(localStorage, "transcendence_conf", {
 				id: user.id,
 				token: user.token,
 			});
 			setUser(getStorage(sessionStorage, "transcendence_user"));
 		} else {
-			setStorage(localStorage, "transcendence_token", {
+			setStorage(localStorage, "transcendence_conf", {
 				id: user.id,
 			});
 			set2FA(true);
@@ -62,7 +62,7 @@ export const handleRegister = async (setter: (toSet: boolean) => void) => {
 	);
 
 	if (user) {
-		setStorage(localStorage, "transcendence_token", {
+		setStorage(localStorage, "transcendence_conf", {
 			id: user.id,
 		});
 		setStorage(sessionStorage, "transcendence_user", user);
@@ -88,7 +88,7 @@ export const handle2FA = async (setter: (toSet: boolean) => void) => {
 	);
 
 	if (token) {
-		setStorage(localStorage, "transcendence_token", { id: user.id, ...token });
+		setStorage(localStorage, "transcendence_conf", { id: user.id, ...token });
 		setter(getStorage(sessionStorage, "transcendence_user"));
 	}
 };
@@ -105,31 +105,42 @@ export const handleGoogleSign = async () => {
 };
 
 export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
-	const credentials: { id: string; token: string } = getStorage(
-		localStorage,
-		"transcendence_token"
-	);
-	if (credentials?.token && !getStorage(sessionStorage, "transcendence_user")) {
+	const configuration: {
+		id: string;
+		token: string;
+		lang?: string;
+	} = getStorage(localStorage, "transcendence_conf");
+	if (
+		configuration?.token &&
+		!getStorage(sessionStorage, "transcendence_user")
+	) {
 		const user = await fetchAPI(
 			import.meta.env.VITE_API_USER +
 				API_USER_ROUTES.CRUD_USER +
-				`/${credentials.id}`,
+				`/${configuration.id}`,
 			{
 				method: "GET",
-				headers: { Authorization: `Bearer ` + credentials.token },
+				headers: { Authorization: `Bearer ` + configuration.token },
 			}
 		);
 		if (user) setStorage(sessionStorage, "transcendence_user", user);
-		else removeStorage(localStorage, "transcendence_token");
+		else
+			setStorage(localStorage, "transcendence_conf", {
+				lang: configuration?.lang ?? "FR",
+			});
 	}
 
-	if (credentials?.token && getStorage(sessionStorage, "transcendence_user")) {
+	if (
+		configuration?.token &&
+		getStorage(sessionStorage, "transcendence_user")
+	) {
 		setter(getStorage(sessionStorage, "transcendence_user"));
 	}
 };
 
 export const handleDeconnexion = (setter: (toSet: {} | null) => void) => {
-	removeStorage(localStorage, "transcendence_token");
+	const configuration = getStorage(localStorage, "transcendence_conf");
+	setStorage(localStorage, "transcendence_conf", { lang: configuration.lang });
 	removeStorage(sessionStorage, "transcendence_user");
 	setter(null);
 };

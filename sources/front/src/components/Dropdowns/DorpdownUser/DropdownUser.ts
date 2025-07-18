@@ -13,6 +13,7 @@ import {
 	dropdown_default,
 	dropdown_user_img,
 } from "../style";
+import { useLanguage } from "#src/services/language.ts";
 
 const DropdownUser = (props: {
 	state: {
@@ -25,8 +26,8 @@ const DropdownUser = (props: {
 	let { state, attr, attrContent } = props;
 	let { user, setUser } = state;
 
-	const default_attr = { class: dropdown_default };
-	const default_attr_content = { class: dropdown_content };
+	const default_attr = { class: dropdown_default + " w-[220px]" };
+	const default_attr_content = { class: dropdown_content + " w-[220px]" };
 
 	attr = { ...default_attr, ...attr };
 	attrContent = { ...default_attr_content, ...attrContent };
@@ -44,25 +45,26 @@ const DropdownUser = (props: {
 					`${user?.name}`
 				),
 			},
+			attr,
 		},
 		Button,
-		List({}, Button, [
+		List({ attr: attrContent }, Button, [
 			{
-				children: "Account",
+				children: useLanguage("myacc"),
 				attr: {
 					class: btn_list + " rounded-t-[20px]",
 					onClick: () => navigateTo("/account"),
 				},
 			},
 			{
-				children: "Carreer",
+				children: useLanguage("career"),
 				attr: {
 					class: btn_list,
 					onClick: () => navigateTo("/stats"),
 				},
 			},
 			{
-				children: "Deconnexion",
+				children: useLanguage("logout"),
 				attr: {
 					class: btn_list + " rounded-b-[20px]",
 					onClick: () => {

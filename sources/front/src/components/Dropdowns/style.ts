@@ -1,11 +1,13 @@
 export const dropdown_default = `
+    relative
     flex
     flex-col
     gap-[10px]
-    w-fit
 `;
 
 export const dropdown_content = `
+    absolute
+    top-[110%]
     flex
     flex-col
     bg-orange-400
@@ -30,9 +32,10 @@ text-3xl
 border-3
 border-black
 bg-orange-400
-h-fit
+h-full
 w-full
 justify-center
+items-center
 rounded-[20px]
 hover:cursor-pointer
 `;

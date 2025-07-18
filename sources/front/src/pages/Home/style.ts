@@ -6,6 +6,13 @@ export const home_background = `
     sm:bg-[length:110%_160%]
     bg-[length:150%_180%]
     flex
+    flex-col
+`;
+
+export const menu_container = `
+    flex
+    w-full
+    h-full
     justify-center
     items-end
 `;
@@ -13,20 +20,7 @@ export const home_background = `
 export const btn_menu_container = `
     flex
     flex-col
-    gap-[15px]
-    p-10
-    w-100
-    mb-20
-`;
-
-export const btn_modal_container = `
-    absolute
-    top-[40px]
-    right-[40px]
-`;
-
-export const dropdown_container = `
-    absolute
-    top-[40px]
-    left-[40px]
+    w-[350px]
+    gap-[20px]
+    mb-[200px]
 `;
