@@ -95,8 +95,12 @@ export type SocketResponse = {
 	what: FriendRequestAction;
 };
 
-export type GoogleData = { 
+export type GoogleData = {
 	id: string;
 	email: string;
 	name: string;
-}
+};
+
+export type Players = {
+	ids: number[];
+};
