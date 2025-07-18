@@ -21,7 +21,7 @@ const LobbyCard = (props: LobbyCardProps) => {
           `${props.lobby.players.length}/${props.lobby.player_limit}`
         )
       ),
-      Button("Join", { class: style.join_button, onClick: () => props.handleJoinLobby(props.lobby) }),
+      Button({ children: "Join", attr: { class: style.join_button, onClick: () => props.handleJoinLobby(props.lobby) } }),
     )
   )
 };
