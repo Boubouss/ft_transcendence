@@ -1,4 +1,5 @@
 import {
+	API_GAME_ROUTES,
 	API_USER_ROUTES,
 	fetchAPI,
 	getStorage,
@@ -6,6 +7,7 @@ import {
 	setStorage,
 	useForm,
 } from "#src/services/data.ts";
+import type { Match } from "#src/types/match.ts";
 
 export const handleConnexion = async (
 	set2FA: (toSet: boolean) => void,
