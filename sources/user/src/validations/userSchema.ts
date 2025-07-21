@@ -79,12 +79,22 @@ export const auth2FASchema = {
 };
 
 export const fileSchema = {
-  file: {
-    type: 'object',
-    properties: {
-      filename: { type: 'string' },
-      mimetype: { type: 'string' }
-    },
-    required: ['filename', 'mimetype']
-  }
+	file: {
+		type: "object",
+		properties: {
+			filename: { type: "string" },
+			mimetype: { type: "string" },
+		},
+		required: ["filename", "mimetype"],
+	},
+};
+
+export const playersSchema = {
+	body: {
+		type: "object",
+		properties: {
+			ids: { type: "array", items: { type: "number" } },
+		},
+		required: ["ids"],
+	},
 };

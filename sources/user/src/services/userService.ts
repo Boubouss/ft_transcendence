@@ -1,5 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { Configuration, GoogleData, User, UserCreate, UserUpdate } from "../types/types";
+import {
+	Configuration,
+	GoogleData,
+	User,
+	UserCreate,
+	UserUpdate,
+} from "../types/types";
 import * as bcrypt from "bcrypt";
 
 const prisma: PrismaClient = new PrismaClient();
@@ -172,23 +178,26 @@ export async function deleteUser(id: number) {
 export async function googleSignIn(googleData: GoogleData) {
 	const user = await getUserByEmail(googleData.email);
 
-	if (user)
-		return { ...user };
+	if (user) return { ...user };
 
 	let name: string = googleData.name;
 
 	let userName = await getUserByName(name);
 	let index = 0;
 
-	while (userName)
-	{
+	while (userName) {
 		index++;
 		name = name + index;
 		userName = await getUserByName(name);
 	}
 
-
-	const userData: UserCreate = { email: googleData.email, name: name, password: "user" + googleData.id + "!", avatar: "", verify: true};
+	const userData: UserCreate = {
+		email: googleData.email,
+		name: name,
+		password: "user" + googleData.id + "!",
+		avatar: "",
+		verify: true,
+	};
 
 	const newUser: User = await createUser(userData);
 
@@ -205,5 +214,16 @@ export async function verifyUser(id: number) {
 			email: true,
 			avatar: true,
 		},
-	})
+	});
+}
+
+export async function getPlayers(ids: number[]) {
+	return await prisma.user.findMany({
+		where: { id: { in: ids } },
+		select: {
+			id: true,
+			name: true,
+			avatar: true,
+		},
+	});
 }

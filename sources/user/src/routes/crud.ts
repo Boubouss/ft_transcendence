@@ -1,12 +1,17 @@
 import { FastifyPluginAsync } from "fastify";
-import { UserCreate, UserUpdate } from "../types/types";
-import { createSchema, updateSchema } from "../validations/userSchema";
+import { Players, UserCreate, UserUpdate } from "../types/types";
+import {
+	createSchema,
+	playersSchema,
+	updateSchema,
+} from "../validations/userSchema";
 import {
 	getUsers,
 	getUserById,
 	createUser,
 	updateUser,
 	deleteUser,
+	getPlayers,
 } from "../services/userService";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
@@ -37,6 +42,15 @@ const crud: FastifyPluginAsync = async (fastify, opts) => {
 		const { id } = request.params as { id: string };
 		return deleteUser(parseInt(id));
 	});
+
+	fastify.post(
+		"/players",
+		{ schema: playersSchema },
+		async (request, reply) => {
+			const { ids } = request.body as Players;
+			return getPlayers(ids);
+		}
+	);
 };
 
 export default crud;

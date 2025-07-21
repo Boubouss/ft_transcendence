@@ -3,7 +3,6 @@ import {
 	createUser,
 	getUserById,
 	googleSignIn,
-	updateUser,
 	verifyUser,
 } from "../services/userService";
 
@@ -17,7 +16,6 @@ import {
 	UserCreate,
 	UserAuth,
 	GoogleData,
-	UserUpdate,
 } from "../types/types";
 
 import {
@@ -69,7 +67,8 @@ const auth: FastifyPluginAsync = async (fastify) => {
 
 			if (user) {
 				reply.redirect(
-					"http://localhost:5173/?token=" +
+					process.env.FRONT_URL +
+						"/?token=" +
 						fastify.jwt.sign({ email: user.email }) +
 						"&id=" +
 						user.id
