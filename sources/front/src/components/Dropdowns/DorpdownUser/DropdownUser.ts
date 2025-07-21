@@ -1,24 +1,27 @@
-import {
-	createElement,
-	navigateTo,
-	type ComponentAttr,
-} from "#core/framework.ts";
 import Button from "#components/Buttons/Button.ts";
 import List from "#components/Lists/List.ts";
 import Dropdown from "../Dropdown";
 import { handleDeconnexion } from "#requests/authRequest.ts";
 import { btn_list, btn_user } from "#components/Buttons/style.ts";
+import { useLanguage } from "#hooks/useLanguage.ts";
+import type { User } from "#types/user.ts";
+
 import {
 	dropdown_content,
 	dropdown_default,
 	dropdown_user_img,
 } from "../style";
-import { useLanguage } from "#hooks/useLanguage.ts";
+
+import {
+	createElement,
+	navigateTo,
+	type ComponentAttr,
+} from "#core/framework.ts";
 
 const DropdownUser = (props: {
 	state: {
-		user: {};
-		setUser: (toSet: {} | null) => void;
+		user: User | null;
+		setUser: (toSet: User | null) => void;
 	};
 	attr?: ComponentAttr;
 	attrContent?: ComponentAttr;

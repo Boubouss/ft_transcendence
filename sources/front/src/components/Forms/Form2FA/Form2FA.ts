@@ -3,13 +3,14 @@ import Input from "#components/Inputs/Input.ts";
 import Submit from "#components/Inputs/Submit.ts";
 import { handle2FA } from "#requests/authRequest.ts";
 import { form_default } from "../style";
+import type { User } from "#types/user.ts";
 
 const Form2FA = (props: {
-	setter: (toSet: {}) => void;
+	setterUser: (toSet: User | null) => void;
 	setterAuth: (toSet: boolean) => void;
 	setter2FA: (toSet: boolean) => void;
 }) => {
-	const { setter, setterAuth, setter2FA } = props;
+	const { setterUser, setterAuth, setter2FA } = props;
 
 	return Form(
 		{ attr: { class: form_default, id: "form_2FA" } },
@@ -18,7 +19,7 @@ const Form2FA = (props: {
 			text: "Envoyer",
 			attr: {
 				onClick: () => {
-					handle2FA(setter);
+					handle2FA(setterUser);
 					setter2FA(false);
 					setterAuth(false);
 				},
