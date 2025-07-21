@@ -1,7 +1,7 @@
 import Form from "../Form";
-import Input from "#src/components/Inputs/Input.ts";
-import Submit from "#src/components/Inputs/Submit.ts";
-import { handle2FA } from "#src/requests/authRequest.ts";
+import Input from "#components/Inputs/Input.ts";
+import Submit from "#components/Inputs/Submit.ts";
+import { handle2FA } from "#requests/authRequest.ts";
 import { form_default } from "../style";
 
 const Form2FA = (props: {

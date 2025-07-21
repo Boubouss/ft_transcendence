@@ -1,24 +1,30 @@
-import { routes } from "#src/routes.ts";
 import { resetEffects } from "./hooks/useEffect";
+import { routes } from "../routes.ts";
 import { reRender } from "./render";
+import { resetStates } from "./hooks/useState.ts";
 
 window.addEventListener("popstate", () => {
 	resetEffects();
+	resetStates();
 	reRender();
 });
 
 export function router() {
-	const path = window.location.pathname;
+	const route = routes[window.location.pathname];
 
-	if (!routes[path]) {
+	if (!route) {
 		return routes["/404"].component();
+	} else if (route.protected) {
+		// Check for auth in storage
 	}
 
-	return routes[path].component();
+	return route.component();
 }
 
 export function navigateTo(path: string) {
 	window.history.pushState({}, "", path);
+
 	resetEffects();
+	resetStates();
 	reRender();
 }

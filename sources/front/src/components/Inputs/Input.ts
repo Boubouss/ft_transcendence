@@ -1,4 +1,4 @@
-import { createElement, type ComponentAttr } from "#src/core/framework";
+import { createElement, type ComponentAttr } from "#core/framework";
 import { input_default, label_default } from "./style";
 
 const Input = (props: { attr: ComponentAttr; labelAttr?: ComponentAttr }) => {

@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "imports": {
-    "#src/*": "./src/*",
     "#core/*": "./src/core/*",
+    "#types/*": "./src/types/*",
+    "#services/*": "./src/services/*",
+    "#requests/*": "./src/requests/*",
     "#assets/*": "./src/assets/*",
-    "#hooks/*": "./src/hooks/*",
     "#components/*": "./src/components/*",
     "#pages/*": "./src/pages/*"
   },
@@ -17,6 +18,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",

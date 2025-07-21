@@ -15,8 +15,10 @@
 
     "baseUrl": ".",
     "paths": {
-      "#src/*": ["./src/*"],
       "#core/*": ["./src/core/*"],
+      "#types/*": ["./src/types/*"],
+      "#services/*": ["./src/services/*"],
+      "#requests/*": ["./src/requests/*"],
       "#assets/*": ["./src/assets/*"],
       "#components/*": ["./src/components/*"],
       "#pages/*": ["./src/pages/*"]
@@ -26,7 +28,6 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },

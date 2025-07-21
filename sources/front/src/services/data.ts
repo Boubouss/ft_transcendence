@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export enum API_USER_ROUTES {
 	REGISTER = "/auth/register",
 	LOGIN = "/auth/login",
@@ -29,7 +31,14 @@ export function getStorage(storage: Storage, key: string) {
 }
 
 export function setStorage(storage: Storage, key: string, data: {}) {
-	if (data) storage.setItem(key, JSON.stringify(data));
+	if (_.isEmpty(data)) return;
+
+	const storedData = getStorage(storage, key);
+	storage.setItem(key, JSON.stringify({ ...storedData, ...data }));
+}
+
+export function replaceStorage(storage: Storage, key: string, data: {}) {
+	if (!_.isEmpty(data)) storage.setItem(key, JSON.stringify(data));
 }
 
 export function removeStorage(storage: Storage, key: string) {

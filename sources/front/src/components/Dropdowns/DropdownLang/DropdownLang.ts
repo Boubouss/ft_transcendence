@@ -2,14 +2,14 @@ import {
 	useEffect,
 	useState,
 	type ComponentAttr,
-} from "#src/core/framework.ts";
-import Button from "#src/components/Buttons/Button.ts";
-import List from "#src/components/Lists/List.ts";
+} from "#core/framework.ts";
+import Button from "#components/Buttons/Button.ts";
+import List from "#components/Lists/List.ts";
 import Dropdown from "../Dropdown";
-import { btn_list } from "#src/components/Buttons/style.ts";
+import { btn_list } from "#components/Buttons/style.ts";
 import { dropdown_content, dropdown_default } from "../style";
-import { getStorage, setStorage } from "#src/services/data.ts";
-import { handleLang } from "#src/services/language.ts";
+import { getStorage, setStorage } from "#services/data.ts";
+import { handleLang } from "#services/language.ts";
 
 const DropdownLang = (props: {
 	attr?: ComponentAttr;

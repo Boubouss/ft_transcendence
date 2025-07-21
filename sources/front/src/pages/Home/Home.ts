@@ -3,17 +3,17 @@ import {
 	navigateTo,
 	useEffect,
 	useState,
-} from "#src/core/framework.ts";
-import Modal from "#src/components/Modals/Modal.ts";
-import FormAuth from "#src/components/Forms/FormAuth/FormAuth.ts";
-import Form2FA from "#src/components/Forms/Form2FA/Form2FA.ts";
-import Button from "#src/components/Buttons/Button.ts";
-import { handleAutoConnect } from "#src/requests/authRequest.ts";
+} from "#core/framework.ts";
+import Modal from "#components/Modals/Modal.ts";
+import FormAuth from "#components/Forms/FormAuth/FormAuth.ts";
+import Form2FA from "#components/Forms/Form2FA/Form2FA.ts";
+import Button from "#components/Buttons/Button.ts";
+import { handleAutoConnect } from "#requests/authRequest.ts";
 import { btn_menu_container, home_background, menu_container } from "./style";
-import { btn_nav } from "#src/components/Buttons/style.ts";
-import { getStorage, setStorage } from "#src/services/data.ts";
-import { useLanguage } from "#src/services/language.ts";
-import NavigationBar from "#src/components/NavigationBar/NavigationBar.ts";
+import { btn_nav } from "#components/Buttons/style.ts";
+import { getStorage, setStorage } from "#services/data.ts";
+import { useLanguage } from "#services/language.ts";
+import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 
 const Home = () => {
 	const [modalAuth, setModalAuth] = useState(false);
@@ -58,15 +58,15 @@ const Home = () => {
 					attr: { class: btn_nav, onClick: () => navigateTo("/lobby") },
 				}),
 				user &&
-					Button({
-						children: useLanguage("multiplayer"),
-						attr: { class: btn_nav, onClick: () => navigateTo("/lobby") },
-					})
-			)
+				Button({
+					children: useLanguage("multiplayer"),
+					attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
+				}),
+			),
 		),
 		Modal(
 			{ state: modalAuth, setter: setModalAuth },
-			FormAuth({ setModal: setModalAuth, set2FA: setModal2FA, setUser })
+			FormAuth({ setModal: setModalAuth, set2FA: setModal2FA, setUser }),
 		),
 		Modal(
 			{ state: modal2FA, setter: setModal2FA },
@@ -74,8 +74,8 @@ const Home = () => {
 				setter: setUser,
 				setterAuth: setModalAuth,
 				setter2FA: setModal2FA,
-			})
-		)
+			}),
+		),
 	);
 };
 

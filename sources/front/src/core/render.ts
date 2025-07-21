@@ -1,11 +1,11 @@
 import { handleEffects, resetEffectIndex } from "./hooks/useEffect";
-import type { Component, ComponentAttr } from "./framework";
-import App from "#src/App.ts";
+import type { Component, ComponentAttr, ComponentChildren } from "./framework";
+import App from "../App.ts";
 
 export function createElement(
 	type: string,
 	attr: ComponentAttr | null,
-	...children: (string | Component | false | null)[]
+	...children: ComponentChildren[]
 ) {
 	return { type, attr, children } as Component;
 }
@@ -41,9 +41,10 @@ function handleAttr(component: Component, element: HTMLElement) {
 
 function renderComponent(
 	component: Component,
-	container: HTMLElement | DocumentFragment
+	container: HTMLElement | DocumentFragment,
 ) {
 	if (!component) return;
+
 	if (typeof component === "string") {
 		container.appendChild(document.createTextNode(component));
 		return;

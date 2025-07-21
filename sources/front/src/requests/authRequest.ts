@@ -5,7 +5,7 @@ import {
 	removeStorage,
 	setStorage,
 	useForm,
-} from "#src/services/data.ts";
+} from "#services/data.ts";
 
 export const handleConnexion = async (
 	set2FA: (toSet: boolean) => void,

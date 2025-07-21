@@ -1,4 +1,4 @@
-import { createElement, type ComponentAttr } from "#src/core/framework";
+import { createElement, type ComponentAttr } from "#core/framework";
 import { submit_default } from "./style";
 
 const Submit = (props: { text: string; attr?: ComponentAttr }) => {
