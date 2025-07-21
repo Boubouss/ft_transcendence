@@ -28,9 +28,13 @@ export type LobbyPlayerAction = {
 };
 
 export const isLobbyPlayerAction = (data: LobbyPlayerAction) => {
-	return !_.isEmpty(data) && typeof data.target_id === "number" && typeof data.action === "string";
-}
+	return (
+		!_.isEmpty(data) &&
+		typeof data.target_id === "number" &&
+		typeof data.action === "string"
+	);
+};
 
 export const isLobbyCreate = (data: LobbyCreate) => {
 	return !_.isEmpty(data) && typeof data.player_limit === "number";
-}
+};

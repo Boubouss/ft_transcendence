@@ -1,9 +1,3 @@
-import {
-	createElement,
-	navigateTo,
-	useEffect,
-	useState,
-} from "#core/framework.ts";
 import Modal from "#components/Modals/Modal.ts";
 import FormAuth from "#components/Forms/FormAuth/FormAuth.ts";
 import Form2FA from "#components/Forms/Form2FA/Form2FA.ts";
@@ -14,11 +8,19 @@ import { btn_nav } from "#components/Buttons/style.ts";
 import { getStorage, setStorage } from "#services/data.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
+import type { User } from "#types/user.ts";
+
+import {
+	createElement,
+	navigateTo,
+	useEffect,
+	useState,
+} from "#core/framework.ts";
 
 const Home = () => {
 	const [modalAuth, setModalAuth] = useState(false);
 	const [modal2FA, setModal2FA] = useState(false);
-	const [user, setUser] = useState<{} | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -58,10 +60,10 @@ const Home = () => {
 					attr: { class: btn_nav, onClick: () => navigateTo("/local") },
 				}),
 				user &&
-					Button({
-						children: useLanguage("multiplayer"),
-						attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
-					})
+				Button({
+					children: useLanguage("multiplayer"),
+					attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
+				})
 			)
 		),
 		Modal(
@@ -71,7 +73,7 @@ const Home = () => {
 		Modal(
 			{ state: modal2FA, setter: setModal2FA },
 			Form2FA({
-				setter: setUser,
+				setterUser: setUser,
 				setterAuth: setModalAuth,
 				setter2FA: setModal2FA,
 			})
