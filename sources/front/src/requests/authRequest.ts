@@ -1,10 +1,12 @@
+import { navigateTo } from "#core/router.ts";
+import { useForm } from "#hooks/useForm.ts";
 import {
 	API_USER_ROUTES,
 	fetchAPI,
 	getStorage,
 	removeStorage,
+	replaceStorage,
 	setStorage,
-	useForm,
 } from "#services/data.ts";
 
 export const handleConnexion = async (
@@ -140,7 +142,10 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
 
 export const handleDeconnexion = (setter: (toSet: {} | null) => void) => {
 	const configuration = getStorage(localStorage, "transcendence_conf");
-	setStorage(localStorage, "transcendence_conf", { lang: configuration.lang });
+	replaceStorage(localStorage, "transcendence_conf", {
+		lang: configuration.lang,
+	});
 	removeStorage(sessionStorage, "transcendence_user");
 	setter(null);
+	navigateTo("/");
 };

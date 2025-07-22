@@ -32,6 +32,10 @@ function handleAttr(component: Component, element: HTMLElement) {
 			case "onClick":
 				element.onclick = () => (value as () => void)();
 				break;
+			case "ref":
+				const refsValue = value as { current: HTMLElement | null };
+				refsValue.current = element;
+				break;
 			default:
 				element.setAttribute(key, value as string);
 				break;
@@ -41,7 +45,7 @@ function handleAttr(component: Component, element: HTMLElement) {
 
 function renderComponent(
 	component: Component,
-	container: HTMLElement | DocumentFragment,
+	container: HTMLElement | DocumentFragment
 ) {
 	if (!component) return;
 
@@ -59,7 +63,7 @@ function renderComponent(
 		handleAttr(component, element);
 	}
 
-	component.children.forEach((child: any) => {
+	component.children?.forEach((child: any) => {
 		renderComponent(child, element);
 	});
 

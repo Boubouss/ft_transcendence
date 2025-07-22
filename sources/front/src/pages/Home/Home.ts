@@ -12,7 +12,7 @@ import { handleAutoConnect } from "#requests/authRequest.ts";
 import { btn_menu_container, home_background, menu_container } from "./style";
 import { btn_nav } from "#components/Buttons/style.ts";
 import { getStorage, setStorage } from "#services/data.ts";
-import { useLanguage } from "#services/language.ts";
+import { useLanguage } from "#hooks/useLanguage.ts";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 
 const Home = () => {
@@ -58,15 +58,15 @@ const Home = () => {
 					attr: { class: btn_nav, onClick: () => navigateTo("/lobby") },
 				}),
 				user &&
-				Button({
-					children: useLanguage("multiplayer"),
-					attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
-				}),
-			),
+					Button({
+						children: useLanguage("multiplayer"),
+						attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
+					})
+			)
 		),
 		Modal(
 			{ state: modalAuth, setter: setModalAuth },
-			FormAuth({ setModal: setModalAuth, set2FA: setModal2FA, setUser }),
+			FormAuth({ setModal: setModalAuth, set2FA: setModal2FA, setUser })
 		),
 		Modal(
 			{ state: modal2FA, setter: setModal2FA },
@@ -74,8 +74,8 @@ const Home = () => {
 				setter: setUser,
 				setterAuth: setModalAuth,
 				setter2FA: setModal2FA,
-			}),
-		),
+			})
+		)
 	);
 };
 
