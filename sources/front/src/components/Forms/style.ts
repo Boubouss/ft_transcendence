@@ -1,8 +1,6 @@
 export const form_default = ``;
 
 export const form_connexion = `
-    flex
-    flex-col
     justify-between
     h-full
     w-full
@@ -19,7 +17,7 @@ export const form_choice_container = `
 export const form_choice = `
     flex
     hover:cursor-pointer
-    justify-self-center 
+    justify-self-center
     p-2
     border
     border-2
@@ -30,7 +28,7 @@ export const form_choice = `
 export const form_choice_active = `
     flex
     hover:cursor-pointer
-    justify-self-center 
+    justify-self-center
     p-2
     border
     border-2

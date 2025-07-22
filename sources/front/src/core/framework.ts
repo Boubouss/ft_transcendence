@@ -11,6 +11,7 @@ export type ComponentAttr = {
 	type?: string;
 	placeholder?: string;
 	src?: string;
+	readonly?: boolean;
 };
 
 export type Component = {

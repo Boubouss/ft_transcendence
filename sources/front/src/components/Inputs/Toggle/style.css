@@ -1,0 +1,35 @@
+    .toggle-switch::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border-radius: 9999px;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-switch::after {
+      content: 'OFF';
+      position: absolute;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    input:checked + .toggle-switch {
+      background-color: #48bb78; /* vert */
+    }
+
+    input:checked + .toggle-switch::before {
+      transform: translateX(24px);
+    }
+
+    input:checked + .toggle-switch::after {
+      content: 'ON';
+    }
