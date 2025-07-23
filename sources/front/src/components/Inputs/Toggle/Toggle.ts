@@ -5,13 +5,14 @@ import Input from "../Input";
 import "./style.css";
 
 import { input_default, label_default, back_default } from "./style";
+import { KeysStorage } from "#src/types/user.ts";
 
 const Toggle = (props: {
   labelAttr?: ComponentAttr;
   InputAttr?: ComponentAttr;
   BackAttr?: ComponentAttr;
 }) => {
-  const user = getStorage(sessionStorage, "transcendence_user");
+  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   let { labelAttr, InputAttr, BackAttr } = props;
 
@@ -25,9 +26,6 @@ const Toggle = (props: {
   };
   const default_fdivattr = { class: back_default };
 
-  console.log(default_label_attr);
-  console.log(default_inputattr);
-  console.log(default_fdivattr);
 
 
   labelAttr = { ...default_label_attr, ...labelAttr };

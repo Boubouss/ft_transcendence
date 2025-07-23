@@ -14,6 +14,9 @@ import { btn_nav } from "#src/components/Buttons/style.ts";
 import { getStorage, setStorage } from "#src/services/data.ts";
 import { useLanguage } from "#src/services/language.ts";
 import NavigationBar from "#src/components/NavigationBar/NavigationBar.ts";
+import { KeysStorage } from "#src/types/user.ts";
+
+
 
 const Home = () => {
 	const [modalAuth, setModalAuth] = useState(false);
@@ -24,10 +27,10 @@ const Home = () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const token = urlParams.get("token");
 		const id = urlParams.get("id");
-		const configuration = getStorage(localStorage, "transcendence_conf");
+		const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
 
 		if (id && token) {
-			setStorage(localStorage, "transcendence_conf", {
+			setStorage(localStorage, KeysStorage.CONFTRANS, {
 				token,
 				id,
 				lang: configuration?.lang ?? "FR",

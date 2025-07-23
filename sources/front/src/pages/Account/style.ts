@@ -1,4 +1,4 @@
-import { input_default } from "#src/components/Inputs/style.ts";
+    import { input_default } from "#src/components/Inputs/style.ts";
 import { btn_default } from "#src/components/Buttons/style.ts";
 
 export const account_background = `
@@ -18,7 +18,7 @@ export const account_container = `
     flex flex-col
     items-center
     bg-orange-400
-    border-2 border-black
+    border-3 border-black
     rounded-[20px]
 `;
 
@@ -42,10 +42,8 @@ export const avatarxpwd_account = `
 
 export const avatar_button_change = `
     mt-[9px]
-    whitespace-nowrap
     text-[30px]
     p-[7px]
-    mr-[20px]
     border-3
     rounded-[10px]
     bg-[#FFFFFF99] `;

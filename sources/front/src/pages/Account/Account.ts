@@ -21,6 +21,7 @@ import { useLanguage } from "#src/services/language.ts";
 import { navigateTo, useState } from "#src/core/framework.ts";
 import Toggle from "#src/components/Inputs/Toggle/Toggle.ts";
 import { getStorage } from "#src/services/data.ts";
+import { KeysStorage } from "#src/types/user.ts";
 
 const Account = () => {
   const [isEditing, setEditing] = useState(false);
@@ -101,23 +102,20 @@ const Account = () => {
           { class: avatar_container },
           createElement("img", {
             src:
-              getStorage(sessionStorage, "transcendence_user").avatar ||
+              getStorage(sessionStorage, KeysStorage.USERTRANS).avatar ||
               "../../../../public/images/avatar_1.jpg",
             class: avatar,
           }),
-          createElement(
-            "div",
-            { class: avatarxpwd_account },
-            Button({
-              children: useLanguage("avatar"),
-              attr: {
-                class: avatar_button_change,
-                onClick: handleChangeAvatar,
-              },
-            })
-          )
+          Button({
+            children: useLanguage("avatar"),
+            attr: {
+              class: avatar_button_change,
+              onClick: handleChangeAvatar,
+            },
+          })
         )
       )
+      
     )
   );
 };
