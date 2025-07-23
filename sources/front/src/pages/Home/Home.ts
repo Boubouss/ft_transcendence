@@ -55,7 +55,7 @@ const Home = () => {
 				{ class: btn_menu_container },
 				Button({
 					children: useLanguage("local"),
-					attr: { class: btn_nav, onClick: () => navigateTo("/lobby") },
+					attr: { class: btn_nav, onClick: () => navigateTo("/local") },
 				}),
 				user &&
 					Button({
