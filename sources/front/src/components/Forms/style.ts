@@ -38,3 +38,8 @@ export const form_choice_active = `
     bg-[#FFFFFF99]
     rounded-[20px]
 `;
+
+export const form_friend = `
+    flex
+    gap-[10px]
+`;

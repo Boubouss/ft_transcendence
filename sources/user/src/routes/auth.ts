@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from "fastify";
 import {
 	createUser,
-	getUserById,
+	getUser,
 	googleSignIn,
 	verifyUser,
 } from "../services/userService";
@@ -103,7 +103,7 @@ const auth: FastifyPluginAsync = async (fastify) => {
 		const check: boolean = await authUser(password, userAuth);
 		if (!check) throw new Error("Invalid password");
 
-		const user = await getUserById(userAuth.id);
+		const user = await getUser({ id: userAuth.id });
 		if (!user) throw new Error("Couldn't find user.");
 
 		if (userAuth.configuration.is2FA) {
