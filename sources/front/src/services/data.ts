@@ -6,20 +6,25 @@ export enum API_USER_ROUTES {
 	AUTH_2FA = "/auth/2FA",
 	GOOGLE = "/auth/google",
 	CRUD_USER = "/crud/user",
+	CRUD_PLAYERS = "/crud/players",
+}
+
+export enum API_GAME_ROUTES {
+	MATCH = "/match",
 }
 
 export async function fetchAPI(path: string, options: RequestInit) {
 	return await fetch(path, options)
 		.then((response) => {
-			console.log(response);
-			if (!response.ok)
-				throw new Error(
-					`HTTP Error: ${response.status} ${response.statusText}`
-				);
+			// console.log(response);
+			if (!response.ok) console.log(response);
+			// throw new Error(
+			// 	`HTTP Error: ${response.status} ${response.statusText}`
+			// );
 			return response.json();
 		})
 		.then((data) => {
-			console.log(data);
+			// console.log(data);
 			return data;
 		})
 		.catch((error) => console.log(error));

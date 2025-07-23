@@ -21,3 +21,7 @@ body,
 .my-scrollbar {
   scrollbar-color: black #ff8904;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

@@ -7,6 +7,7 @@ import match from "#routes/match";
 import lobby from "#routes/lobby";
 import { checkEnv } from "./env";
 import * as dotenv from "dotenv";
+import cors from "@fastify/cors";
 import fs from "fs";
 
 dotenv.config({ path: ".env" });
@@ -20,6 +21,15 @@ const app = fastify({
 		cert: fs.readFileSync(process.env.HTTPS_CERT as string)
 	}
 });
+
+app.register(
+  cors, {
+    origin: "http://localhost:5173",
+    optionsSuccessStatus: 200,
+    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+    preflightContinue: false,
+  }
+);
 
 app.register(fastifyWebsocket);
 app.register(fastifyJwt, { secret: process.env.JWT_KEY as string });
