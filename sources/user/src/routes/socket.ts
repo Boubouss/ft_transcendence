@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from "fastify";
-import { authMiddleware } from "../middlewares/authMiddleware";
+import { socketAuthMiddleware } from "../middlewares/authMiddleware";
 import {
 	FriendList,
 	FriendRequestList,
@@ -17,13 +17,15 @@ import {
 } from "../services/friendService";
 
 const socket: FastifyPluginAsync = async (fastify, opts) => {
-	fastify.addHook("preHandler", authMiddleware);
+	// fastify.addHook("preHandler", socketAuthMiddleware);
 	const sockets: SocketList = {};
 
 	fastify.get("/friends/:id", { websocket: true }, async (socket, request) => {
 		const { id } = request.params as { id: string };
+		const { token } = request.query as { token: string };
+		const auth = await socketAuthMiddleware(token, fastify);
 
-		console.log("connection");
+		if (!auth) socket.close();
 
 		sockets[id] = socket;
 		const users: string[] = Object.keys(sockets);
