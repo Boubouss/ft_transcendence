@@ -1,35 +1,36 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
+	"compilerOptions": {
+		"target": "ES2022",
+		"useDefineForClassFields": true,
+		"module": "ESNext",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"skipLibCheck": true,
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"moduleDetection": "force",
+		"noEmit": true,
 
-    "baseUrl": ".",
-    "paths": {
-      "#core/*": ["./src/core/*"],
-      "#types/*": ["./src/types/*"],
-      "#services/*": ["./src/services/*"],
-      "#requests/*": ["./src/requests/*"],
-      "#assets/*": ["./src/assets/*"],
-      "#components/*": ["./src/components/*"],
-      "#pages/*": ["./src/pages/*"]
-    },
+		"baseUrl": ".",
+		"paths": {
+			"#core/*": ["./src/core/*"],
+			"#hooks/*": ["./src/hooks/*"],
+			"#types/*": ["./src/types/*"],
+			"#services/*": ["./src/services/*"],
+			"#requests/*": ["./src/requests/*"],
+			"#assets/*": ["./src/assets/*"],
+			"#components/*": ["./src/components/*"],
+			"#pages/*": ["./src/pages/*"]
+		},
 
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  },
-  "include": ["src"]
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true
+	},
+	"include": ["src"]
 }

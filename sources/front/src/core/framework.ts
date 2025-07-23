@@ -13,6 +13,8 @@ export type ComponentAttr = {
 	name?: string;
 	type?: string;
 	placeholder?: string;
+	ref?: { current: HTMLElement | null };
+	value?: string | number | null;
 };
 
 export type Component = {

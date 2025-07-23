@@ -1,15 +1,11 @@
-import {
-	useEffect,
-	useState,
-	type ComponentAttr,
-} from "#core/framework.ts";
+import { useEffect, useState, type ComponentAttr } from "#core/framework.ts";
 import Button from "#components/Buttons/Button.ts";
 import List from "#components/Lists/List.ts";
 import Dropdown from "../Dropdown";
 import { btn_list } from "#components/Buttons/style.ts";
 import { dropdown_content, dropdown_default } from "../style";
 import { getStorage, setStorage } from "#services/data.ts";
-import { handleLang } from "#services/language.ts";
+import { handleLang } from "#hooks/useLanguage.ts";
 
 const DropdownLang = (props: {
 	attr?: ComponentAttr;

@@ -13,7 +13,7 @@ import {
 	dropdown_default,
 	dropdown_user_img,
 } from "../style";
-import { useLanguage } from "#services/language.ts";
+import { useLanguage } from "#hooks/useLanguage.ts";
 
 const DropdownUser = (props: {
 	state: {
