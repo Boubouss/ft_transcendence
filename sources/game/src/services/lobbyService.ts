@@ -11,7 +11,7 @@ import {
 	Lobby,
 	LobbyCreate,
 	LobbyPlayer,
-	LobbyPlayerAction
+	LobbyPlayerAction,
 } from "#types/lobby";
 
 export const broadcastData = (data: string) => {
@@ -21,7 +21,7 @@ export const broadcastData = (data: string) => {
 
 		playerSocket.send(data);
 	});
-}
+};
 
 export const emitLobbyData = (lobby: Lobby, data: string) => {
 	lobby.players.forEach((player) => {
@@ -30,7 +30,7 @@ export const emitLobbyData = (lobby: Lobby, data: string) => {
 
 		playerSocket.send(data);
 	});
-}
+};
 
 export const whisperData = (player_ids: number[], data: string) => {
 	player_ids.forEach((id) => {
@@ -39,20 +39,26 @@ export const whisperData = (player_ids: number[], data: string) => {
 
 		playerSocket.send(data);
 	});
-}
+};
 
-export const getLobbyPlayer = async (user_id: string, socket: WebSocket, token?: string) => {
+export const getLobbyPlayer = async (
+	user_id: string,
+	socket: WebSocket,
+	token?: string,
+) => {
 	try {
 		const { data } = await axios.get(
 			`${process.env.API_USER}/crud/user/${user_id}`,
-			{ headers: { Authorization: token } }
-		)
+			{ headers: { Authorization: `Bearer ${token}` } },
+		);
 
 		delete data.email;
 		delete data.configuration;
 
 		players.push(data as LobbyPlayer);
-		return socket.send(JSON.stringify({ event: ClientEvent.LOBBY_LIST, data: lobbies }));
+		socket.send(
+			JSON.stringify({ event: ClientEvent.LOBBY_LIST, data: lobbies }),
+		);
 	} catch (err) {
 		let message: string;
 
@@ -62,12 +68,16 @@ export const getLobbyPlayer = async (user_id: string, socket: WebSocket, token?:
 			message = JSON.stringify(err);
 		}
 
-		return socket.send(JSON.stringify({
-			event: ClientEvent.ERROR,
-			data: { message }
-		}));
+		socket.send(
+			JSON.stringify({
+				event: ClientEvent.ERROR,
+				data: { message },
+			}),
+		);
+
+		socket.close();
 	}
-}
+};
 
 export const joinLobby = (lobby: Lobby, player: LobbyPlayer) => {
 	if (lobby.player_limit <= lobby.players.length) {
@@ -75,15 +85,18 @@ export const joinLobby = (lobby: Lobby, player: LobbyPlayer) => {
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "This lobby is full." }
-			})
+				data: { message: "This lobby is full." },
+			}),
 		);
 	}
 
 	lobby.players.push(player);
 
-	emitLobbyData(lobby, JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }));
-}
+	emitLobbyData(
+		lobby,
+		JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }),
+	);
+};
 
 export const leaveLobby = (lobby: Lobby, player: LobbyPlayer) => {
 	lobby.players = lobby.players.filter((p) => p.id !== player.id);
@@ -91,8 +104,11 @@ export const leaveLobby = (lobby: Lobby, player: LobbyPlayer) => {
 
 	if (lobby.id === player.id) return destroyLobby(lobby);
 
-	emitLobbyData(lobby, JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }));
-}
+	emitLobbyData(
+		lobby,
+		JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }),
+	);
+};
 
 export const launchGame = (lobby: Lobby, player: LobbyPlayer) => {
 	if (lobby.id !== player.id) {
@@ -100,16 +116,18 @@ export const launchGame = (lobby: Lobby, player: LobbyPlayer) => {
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "Only the owner can launch the game." }
-			})
+				data: { message: "Only the owner can launch the game." },
+			}),
 		);
 	} else if (lobby.ready_ids.length < lobby.player_limit) {
 		return whisperData(
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: `Only ${lobby.ready_ids.length}/${lobby.player_limit} are ready.` }
-			})
+				data: {
+					message: `Only ${lobby.ready_ids.length}/${lobby.player_limit} are ready.`,
+				},
+			}),
 		);
 	}
 
@@ -118,7 +136,7 @@ export const launchGame = (lobby: Lobby, player: LobbyPlayer) => {
 	} else {
 		initGameInstance(lobby);
 	}
-}
+};
 
 export const switchReady = (lobby: Lobby, player: LobbyPlayer) => {
 	const isReady = lobby.ready_ids.includes(player.id);
@@ -129,10 +147,17 @@ export const switchReady = (lobby: Lobby, player: LobbyPlayer) => {
 		lobby.ready_ids = lobby.ready_ids.filter((id) => id !== player.id);
 	}
 
-	emitLobbyData(lobby, JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }));
-}
+	emitLobbyData(
+		lobby,
+		JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }),
+	);
+};
 
-export const kickLobbyPlayer = (lobby: Lobby, owner: LobbyPlayer, targetId?: number) => {
+export const kickLobbyPlayer = (
+	lobby: Lobby,
+	owner: LobbyPlayer,
+	targetId?: number,
+) => {
 	const target = lobby.players.find((p) => p.id === targetId);
 
 	if (_.isEmpty(target)) {
@@ -140,22 +165,22 @@ export const kickLobbyPlayer = (lobby: Lobby, owner: LobbyPlayer, targetId?: num
 			[owner.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: `#${targetId} couldn't be found.` }
-			})
+				data: { message: `#${targetId} couldn't be found.` },
+			}),
 		);
 	} else if (lobby.id !== owner.id) {
 		return whisperData(
 			[owner.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "You can't kick players in this lobby." }
-			})
+				data: { message: "You can't kick players in this lobby." },
+			}),
 		);
 	}
 
 	leaveLobby(lobby, target);
 	whisperData([target.id], JSON.stringify({ event: ClientEvent.KICKED }));
-}
+};
 
 export const handleAction = (player: LobbyPlayer, data: LobbyPlayerAction) => {
 	if (!isLobbyPlayerAction(data)) {
@@ -163,8 +188,8 @@ export const handleAction = (player: LobbyPlayer, data: LobbyPlayerAction) => {
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "Expected format wasn't met." }
-			})
+				data: { message: "Expected format wasn't met." },
+			}),
 		);
 	}
 
@@ -174,8 +199,8 @@ export const handleAction = (player: LobbyPlayer, data: LobbyPlayerAction) => {
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "This lobby doesn't exist." }
-			})
+				data: { message: "This lobby doesn't exist." },
+			}),
 		);
 	}
 
@@ -195,11 +220,11 @@ export const handleAction = (player: LobbyPlayer, data: LobbyPlayerAction) => {
 				[player.id],
 				JSON.stringify({
 					event: ClientEvent.ERROR,
-					data: { message: "This action doesn't exist." }
-				})
+					data: { message: "This action doesn't exist." },
+				}),
 			);
 	}
-}
+};
 
 export const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
 	if (!isLobbyCreate(data)) {
@@ -207,8 +232,8 @@ export const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "Expected format wasn't met." }
-			})
+				data: { message: "Expected format wasn't met." },
+			}),
 		);
 	}
 
@@ -218,8 +243,8 @@ export const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "Player already own a lobby." }
-			})
+				data: { message: "Player already own a lobby." },
+			}),
 		);
 	}
 
@@ -228,8 +253,8 @@ export const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
 			[player.id],
 			JSON.stringify({
 				event: ClientEvent.ERROR,
-				data: { message: "Player limit must be a power of 2 for tournaments." }
-			})
+				data: { message: "Player limit must be a power of 2 for tournaments." },
+			}),
 		);
 	}
 
@@ -244,7 +269,9 @@ export const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
 
 	lobbies.push(lobby);
 
-	broadcastData(JSON.stringify({ event: ClientEvent.CREATE_LOBBY, data: lobby }));
+	broadcastData(
+		JSON.stringify({ event: ClientEvent.CREATE_LOBBY, data: lobby }),
+	);
 };
 
 export const destroyLobby = (lobby: Lobby) => {
@@ -255,7 +282,7 @@ export const destroyLobby = (lobby: Lobby) => {
 	broadcastData(
 		JSON.stringify({
 			event: ClientEvent.DELETE_LOBBY,
-			data: { target_id: lobby.id }
+			data: { target_id: lobby.id },
 		}),
 	);
-}
+};

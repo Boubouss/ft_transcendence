@@ -1,12 +1,9 @@
-import { authMiddleware } from "#middlewares/authMiddleware";
 import { findOrCreatePlayer, findOrCreatePlayers } from "#services/playerService";
 import { createTournament, getPlayerTournaments } from "#services/tournamentService";
 import { TournamentCreate } from "#types/tournament";
 import { FastifyPluginAsync } from "fastify";
 
 const tournament: FastifyPluginAsync = async (fastify, opts) => {
-	fastify.addHook("preHandler", authMiddleware);
-
 	fastify.get("/tournament/:userId", async (request, reply) => {
 		const { userId } = request.params as { userId: string };
 		const player = await findOrCreatePlayer(parseInt(userId));
