@@ -12,12 +12,12 @@ export function useState<T>(initialValue: T): [T, (toSet: T) => void] {
 	const currentIndex = index;
 
 	if (!states[currentIndex]) {
-		states[currentIndex] = initialValue;
+		states[currentIndex] = JSON.parse(JSON.stringify(initialValue));
 	}
 
 	const setState = (newValue: T) => {
 		// console.log("state: ", newValue);
-		states[currentIndex] = newValue;
+		states[currentIndex] = JSON.parse(JSON.stringify(newValue));
 		// console.log(states, currentIndex);
 		index = 0;
 		reRender();

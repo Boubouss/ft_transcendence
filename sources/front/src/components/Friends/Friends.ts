@@ -37,9 +37,9 @@ const Friends = () => {
 		"div",
 		{
 			onClick: () => {
-				// console.log(test);
+				console.log(test);
 				setTest(!test);
-				// console.log(test);
+				console.log(test);
 			},
 		},
 		"Friend List ..." + test
