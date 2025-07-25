@@ -6,29 +6,33 @@ import { useEffect } from "./hooks/useEffect.ts";
 export type ComponentChildren = string | Component | false | null;
 
 export type ComponentAttr = {
-	id?: string;
-	class?: string;
-	src?: string;
-	onClick?: () => void;
-	name?: string;
-	type?: string;
-	placeholder?: string;
-	ref?: { current: HTMLElement | null };
-	value?: string | number | null;
+  id?: string;
+  class?: string;
+  src?: string;
+  onClick?: () => void;
+  onChange?: () => void;
+  name?: string;
+  type?: string;
+  placeholder?: string;
+  ref?: { current: HTMLElement | null };
+  value?: string | number | null;
+  checked?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
 };
 
 export type Component = {
-	type: string;
-	attr: ComponentAttr | null;
-	children: ComponentChildren[];
+  type: string;
+  attr: ComponentAttr | null;
+  children: ComponentChildren[];
 };
 
 export {
-	render,
-	reRender,
-	createElement,
-	navigateTo,
-	router,
-	useState,
-	useEffect,
+  render,
+  reRender,
+  createElement,
+  navigateTo,
+  router,
+  useState,
+  useEffect,
 };

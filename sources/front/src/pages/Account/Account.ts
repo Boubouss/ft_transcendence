@@ -8,6 +8,7 @@ import {
   avatar_button_change,
   avatar_container,
   button_close,
+  edittoggle_default,
   form_account,
   form_container,
   image_button_close,
@@ -15,6 +16,11 @@ import {
   submit_account_default,
   title_container,
   title_page_account,
+  edit_container,
+  edit_message,
+  a2f_container,
+  a2f_title,
+  edit_btn,
 } from "./style";
 import Button from "#components/Buttons/Button.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
@@ -25,7 +31,8 @@ import { KeysStorage } from "#types/enums.ts";
 import { useForm } from "#hooks/useForm.ts";
 
 const Account = () => {
-  const [isEditing, setEditing] = useState(true);
+  const [isEditing, setEditing] = useState(false);
+  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   const handleClose = () => {
     navigateTo("/");
@@ -36,9 +43,9 @@ const Account = () => {
   };
 
   const handleSubmit = () => {
-    console.log("submi");
     const form = useForm("form-account");
     console.log(form);
+    setEditing(!isEditing);
   };
 
   return createElement(
@@ -72,6 +79,7 @@ const Account = () => {
             attr: {
               id: "form-account",
               class: form_account,
+              ...(!isEditing ? { readonly: true } : {}),
             },
           },
 
@@ -79,7 +87,8 @@ const Account = () => {
             attr: {
               type: "email",
               name: "email",
-              placeholder: "Email",
+              placeholder: isEditing ? user.email : "Email",
+              value: isEditing ? "" : user.email,
               class: input_account,
               ...(!isEditing ? { readonly: true } : {}),
             },
@@ -88,7 +97,8 @@ const Account = () => {
             attr: {
               type: "text",
               name: "name",
-              placeholder: useLanguage("username"),
+              value: isEditing ? "" : user.name,
+              placeholder: isEditing ? user.name : useLanguage("username"),
               class: input_account,
               ...(!isEditing ? { readonly: true } : {}),
             },
@@ -98,11 +108,25 @@ const Account = () => {
               type: "password",
               name: "password",
               placeholder: useLanguage("pw"),
+              value: isEditing ? "" : "**********",
               class: input_account,
               ...(!isEditing ? { readonly: true } : {}),
             },
           }),
-          Toggle({ ToggleName: "toggle2fa" })
+          createElement(
+            "div",
+            { name: "a2f_container", class: a2f_container },
+            createElement(
+              "h1",
+              { name: "a2f_title", class: a2f_title },
+              useLanguage("a2f")
+            ),
+            Toggle({
+              ToggleName: "toggle2fa",
+              isEdit: isEditing,
+              a2fMode: true,
+            })
+          )
         ),
         createElement(
           "div",
@@ -123,11 +147,39 @@ const Account = () => {
         )
       ),
       //faire un bouton qui change de couleur, edit avec un state
-      Toggle({ ToggleName: "toggleedit" }),
+      createElement(
+        "div",
+        { name: "edit_container", class: edit_container },
+        //createElement(
+        //  "h2",
+        //  { class: edit_message, name: "edit_message" },
+        //  useLanguage("editinfo")
+        //),
+        //Toggle({
+        //  InputAttr: {
+        //  },
+        //  ToggleAttr: {
+        //    class: edittoggle_default,
+        //  },
+        //})
+        Button({
+          children: useLanguage("editinfo"),
+          attr: {
+            class: edit_btn,
+            onClick: () => {
+              setEditing(!isEditing);
+            },
+          },
+        })
+      ),
 
       Button({
         children: "Submit",
-        attr: { class: submit_account_default, onClick: handleSubmit },
+        attr: {
+          class: submit_account_default,
+          onClick: handleSubmit,
+          ...(!isEditing ? { disabled: true } : {}),
+        },
       })
     )
   );

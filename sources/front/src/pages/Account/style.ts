@@ -33,7 +33,8 @@ export const input_account =
   input_default +
   `
     text-[25px]
-    cursor-not-allowed
+    read-only:cursor-not-allowed
+    cursor-pointer
 `;
 
 export const avatarxpwd_account = `
@@ -77,10 +78,26 @@ export const avatar = `
 
 `;
 
+export const a2f_container = `flex flex-col items-center`;
+
+export const a2f_title = `text-[25px]`;
+
+export const edittoggle_default = `relative w-[122px] h-[40px] bg-red-400 outline-none rounded-full border-3 peer peer-checked:after:translate-x-[70px] rtl:peer-checked:after:-translate-x-[70px] peer-checked:after:border-white after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-red-400 after:border after:rounded-full after:h-[30px] after:w-[40px] after:transition-[70px] peer-checked:bg-green-500 flex flex-row justify-around items-center`;
+
+export const edit_btn = `border-2 p-3 rounded-[20px]`;
+
+export const edit_container = `flex flex-col items-center m-[10px]`;
+
+export const edit_message = `text-[20px]`;
+
 export const submit_account_default = `
 flex
 items-center justify-center
 text-[60px]
+bg-orange-500
 border-3 rounded-[20px]
 pl-[15px]  pr-[15px]
-mb-[20px]`;
+mb-[20px]
+disabled:brightness-50
+disabled:cursor-not-allowed
+cursor-pointer`;
