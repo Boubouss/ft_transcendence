@@ -1,6 +1,6 @@
 import Form from "../Form";
 import Input from "#components/Inputs/Input.ts";
-import Submit from "#components/Inputs/Submit.ts";
+import Submit from "#components/Inputs/Submit/Submit.ts";
 import { handle2FA } from "#requests/authRequest.ts";
 import { form_default } from "../style";
 import type { User } from "#types/user.ts";

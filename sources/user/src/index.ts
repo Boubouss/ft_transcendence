@@ -34,8 +34,13 @@ const app = fastify({
 });
 
 app.register(fastifyStatic, {
-	root: path.join(path.dirname(__dirname), "storage"),
-	prefix: "/download/",
+  root: path.join(path.dirname(__dirname), "storage"),
+  prefix: "/download/",
+  setHeaders: (res, path, stat) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  }
 });
 
 app.register(cors, {

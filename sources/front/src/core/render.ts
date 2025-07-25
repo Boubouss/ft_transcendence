@@ -45,7 +45,7 @@ function handleAttr(component: Component, element: HTMLElement) {
 
 function renderComponent(
   component: Component,
-  container: HTMLElement | DocumentFragment,
+  container: HTMLElement | DocumentFragment
 ) {
   if (!component) return;
 

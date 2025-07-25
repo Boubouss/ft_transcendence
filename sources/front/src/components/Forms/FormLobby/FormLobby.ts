@@ -1,10 +1,10 @@
 import { lobby_form, lobby_form_content, lobby_form_header } from "./style";
 import { requestLobbyCreation } from "#sockets/lobby/requests.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import Submit from "#components/Inputs/Submit.ts";
 import Input from "#components/Inputs/Input.ts";
 import { createElement } from "#core/render.ts";
 import Form from "../Form";
+import Submit from "#components/Inputs/Submit/Submit.ts";
 
 type Props = {
   showModalState: [boolean, (value: boolean) => void];

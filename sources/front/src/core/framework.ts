@@ -9,10 +9,17 @@ export type ComponentAttr = {
   class?: string;
   src?: string;
   onClick?: () => void;
+  onChange?: () => void;
   name?: string;
   type?: string;
   placeholder?: string;
   ref?: { current: HTMLElement | null };
+  checked?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  for?: string;
+  style?: string;
+  accept?: string;
   value?: string | number | null;
   min?: number;
 };
