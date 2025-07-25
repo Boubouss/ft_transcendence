@@ -2,6 +2,7 @@ export const label_default = `
     flex
     flex-col
     gap-[5px]
+    peer
 `;
 
 export const input_default = `

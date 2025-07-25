@@ -21,3 +21,8 @@ export enum Action {
   KICK = "KICK",
   SWITCH_READY = "SWITCH_READY"
 }
+
+export enum KeysStorage {
+  CONFTRANS = "transcendence_conf",
+  USERTRANS = "transcendence_user",
+}

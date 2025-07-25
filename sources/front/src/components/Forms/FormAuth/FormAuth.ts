@@ -1,6 +1,6 @@
 import Form from "../Form";
 import Input from "#components/Inputs/Input.ts";
-import Submit from "#components/Inputs/Submit.ts";
+import Submit from "#components/Inputs/Submit/Submit.ts";
 import { useState } from "#core/hooks/useState.ts";
 import { createElement } from "#core/render.ts";
 import {
