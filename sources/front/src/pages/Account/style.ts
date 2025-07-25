@@ -101,3 +101,7 @@ mb-[20px]
 disabled:brightness-50
 disabled:cursor-not-allowed
 cursor-pointer`;
+
+export const eyes_container = `absolute border-2 w-[50px] h-[50px]`;
+
+export const eyes_img = ``;

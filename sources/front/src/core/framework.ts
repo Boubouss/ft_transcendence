@@ -10,7 +10,6 @@ export type ComponentAttr = {
   class?: string;
   src?: string;
   onClick?: () => void;
-  onChange?: () => void;
   name?: string;
   type?: string;
   placeholder?: string;

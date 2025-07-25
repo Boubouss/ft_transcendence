@@ -1,9 +1,10 @@
 export type User = {
-  id: number;
-  name: string;
-  email: string;
-  avatar?: string;
-  conf: Configuration;
+  id: number | FormDataEntryValue | null;
+  name?: string | FormDataEntryValue | null;
+  email?: string | FormDataEntryValue | null;
+  avatar?: string | FormDataEntryValue | null;
+  password?: string | FormDataEntryValue | null;
+  configuration: Configuration;
 };
 
 type Configuration = {

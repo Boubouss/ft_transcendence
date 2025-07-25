@@ -21,22 +21,24 @@ import {
   a2f_container,
   a2f_title,
   edit_btn,
+  eyes_container,
+  eyes_img,
 } from "./style";
 import Button from "#components/Buttons/Button.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import { navigateTo, useState } from "#core/framework.ts";
 import Toggle from "#components/Inputs/Toggle/Toggle.ts";
-import { getStorage } from "#services/data.ts";
+import { fetchAPI, getStorage } from "#services/data.ts";
 import { KeysStorage } from "#types/enums.ts";
 import { useForm } from "#hooks/useForm.ts";
+import type { User } from "#types/user.ts";
+import _ from "lodash";
 
 const Account = () => {
   const [isEditing, setEditing] = useState(false);
-  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
+  const [isView, setIsView] = useState(false);
 
-  const handleClose = () => {
-    navigateTo("/");
-  };
+  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   const handleChangeAvatar = () => {
     console.log("change avatar");
@@ -44,7 +46,27 @@ const Account = () => {
 
   const handleSubmit = () => {
     const form = useForm("form-account");
+    const newname = form?.get("name")?.toString().trim();
+    const newemail = form?.get("email")?.toString().trim();
+    const newpsw = form?.get("password")?.toString().trim();
+
+    const a2f = form?.get("toggle2fa");
+
     console.log(form);
+
+    const edituser: User = {
+      id: user.id,
+      configuration: user.configuration,
+    };
+
+    if (!_.isEmpty(newname)) edituser.name = newname;
+    if (!_.isEmpty(newemail)) {
+      edituser.email = newemail;
+    }
+    if (!_.isEmpty(newpsw)) edituser.password = newpsw;
+
+    console.log(edituser);
+
     setEditing(!isEditing);
   };
 
@@ -64,7 +86,12 @@ const Account = () => {
         ),
         createElement(
           "button",
-          { class: button_close, onClick: handleClose },
+          {
+            class: button_close,
+            onClick: () => {
+              navigateTo("/");
+            },
+          },
           createElement("img", {
             class: image_button_close,
             src: " ../../../../public/icons/close_icon.png",
@@ -103,16 +130,28 @@ const Account = () => {
               ...(!isEditing ? { readonly: true } : {}),
             },
           }),
-          Input({
-            attr: {
-              type: "password",
-              name: "password",
-              placeholder: useLanguage("pw"),
-              value: isEditing ? "" : "**********",
-              class: input_account,
-              ...(!isEditing ? { readonly: true } : {}),
+          Input(
+            {
+              attr: {
+                type: isView ? "text" : "password",
+                name: "password",
+                placeholder: useLanguage("pw"),
+                value: isEditing ? "" : "**********",
+                class: input_account,
+                ...(!isEditing ? { readonly: true } : {}),
+              },
             },
-          }),
+            createElement(
+              "div",
+              {
+                class: eyes_container,
+                onClick: () => {
+                  console.log("test");
+                },
+              },
+              createElement("img", { class: eyes_img })
+            )
+          ),
           createElement(
             "div",
             { name: "a2f_container", class: a2f_container },

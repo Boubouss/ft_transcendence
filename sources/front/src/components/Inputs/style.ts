@@ -1,17 +1,16 @@
 export const label_default = `
     flex
-    flex-col
     gap-[5px]
     peer
 `;
 
 export const input_default = `
+    relative
+    flex
     bg-[#FFFFFF99]
-    rounded-[10px]
+    rounded-[20px]
     p-3
-    border
     border-3
-    border-black
 `;
 
 export const submit_default = `

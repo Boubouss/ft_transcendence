@@ -37,8 +37,6 @@ const Toggle = (props: {
     class: toggle_default + (!isEdit ? toggle_forbidden : toggle_allowed),
     ...(!isEdit ? { disabled: true } : {}),
   };
-  console.log(isEdit);
-  console.log(!isEdit ? "readonly: true" : {}),
     (ToggleAttr = { ...default_toggleattr, ...ToggleAttr });
   InputAttr = { ...default_inputattr, ...InputAttr };
 
