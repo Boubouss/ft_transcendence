@@ -27,11 +27,15 @@ export const title_page_account = `text-[70px]`;
 
 export const form_container = `flex flex-row gap-10`;
 
-export const form_account = `gap-[20px] flex flex-col items-center h-full m-[30px]`;
+export const form_account = `relative gap-[20px] flex flex-col items-center h-full m-[30px]`;
 
-export const input_account =
-  input_default +
-  `
+export const input_account = `
+      relative
+    flex
+    bg-[#FFFFFF99]
+    rounded-[20px]
+    p-3
+    border-3
     text-[25px]
     read-only:cursor-not-allowed
     cursor-pointer
@@ -102,6 +106,6 @@ disabled:brightness-50
 disabled:cursor-not-allowed
 cursor-pointer`;
 
-export const eyes_container = `absolute border-2 w-[50px] h-[50px]`;
+export const eyes_container = `absolute right-[10px]  w-[50px] h-[50px]`;
 
 export const eyes_img = ``;

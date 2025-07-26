@@ -37,6 +37,7 @@ import _ from "lodash";
 const Account = () => {
   const [isEditing, setEditing] = useState(false);
   const [isView, setIsView] = useState(false);
+  const [currentPassword, setcurrentPassword] = useState("");
 
   const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
@@ -136,7 +137,7 @@ const Account = () => {
                 type: isView ? "text" : "password",
                 name: "password",
                 placeholder: useLanguage("pw"),
-                value: isEditing ? "" : "**********",
+                value: isEditing ? currentPassword : "**********",
                 class: input_account,
                 ...(!isEditing ? { readonly: true } : {}),
               },
@@ -146,10 +147,21 @@ const Account = () => {
               {
                 class: eyes_container,
                 onClick: () => {
-                  console.log("test");
+                  if (isEditing) {
+                    const form = useForm("form-account");
+                    const pw = form?.get("password")?.toString();
+
+                    if (pw) setcurrentPassword(pw);
+                    setIsView(!isView);
+                  }
                 },
               },
-              createElement("img", { class: eyes_img })
+              createElement("img", {
+                class: eyes_img,
+                src: isView
+                  ? "../../../public/icons/eye_opened.png"
+                  : "../../../public/icons/eye_closed.png",
+              })
             )
           ),
           createElement(

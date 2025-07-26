@@ -1,5 +1,7 @@
 export const label_default = `
-    flex
+relative
+flex
+    items-center
     gap-[5px]
     peer
 `;
