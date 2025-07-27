@@ -2,7 +2,10 @@ import FormAuth from "#components/Forms/FormAuth/FormAuth.ts";
 import Modal from "../Modal";
 
 const ModalAuth = (state: boolean, setter: () => void) => {
-	return Modal(state, setter, FormAuth());
+    return Modal(
+        { state, setter },
+        FormAuth({ setModal: setter, set2FA: () => {}, setUser: () => {} })
+    );
 };
 
 export default ModalAuth;
