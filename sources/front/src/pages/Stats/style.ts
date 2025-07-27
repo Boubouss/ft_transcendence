@@ -9,7 +9,8 @@ export const wrapper = `
 `;
 
 export const section_title = `
-    mx-10
+    mx-auto
     text-white
     text-4xl
+    text-center
 `;

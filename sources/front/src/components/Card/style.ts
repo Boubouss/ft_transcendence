@@ -69,5 +69,5 @@ export const player_score = `
 export const score_container = `
     flex
     justify-between
-    h-[120px]
+    h-[100px]
 `;
