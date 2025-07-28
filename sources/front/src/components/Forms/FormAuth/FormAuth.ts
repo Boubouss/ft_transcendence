@@ -13,7 +13,9 @@ import {
 	form_choice_active,
 	form_choice_container,
 	form_connexion,
+	img_google,
 } from "../style";
+import { useLanguage } from "#hooks/useLanguage.ts";
 
 const FormAuth = (props: {
 	setModal: (toSet: boolean) => void;
@@ -35,7 +37,7 @@ const FormAuth = (props: {
 					class: isConnexion ? form_choice_active : form_choice,
 					onClick: () => setIsConnexion(true),
 				},
-				"Sign In"
+				useLanguage("loginin")
 			),
 			createElement(
 				"div",
@@ -43,20 +45,20 @@ const FormAuth = (props: {
 					class: isConnexion ? form_choice : form_choice_active,
 					onClick: () => setIsConnexion(false),
 				},
-				"Sign Up"
+				useLanguage("signin")
 			),
 			createElement(
 				"div",
-				{ class: form_choice, onClick: () => handleGoogleSign() },
+				{ class: form_choice, onClick: () => handleGoogleSign() },createElement("img", {class: img_google,src: "../../../public/icons/google_icon.png"} ),
 				"Google"
 			)
 		),
 		isConnexion
 			? createElement("div", { class: `hidden` })
-			: Input({ attr: { type: "email", name: "email", placeholder: "email" } }),
-		Input({ attr: { type: "text", name: "name", placeholder: "name" } }),
+			: Input({ attr: { type: "email", name: "email", placeholder: "Email" } }),
+		Input({ attr: { type: "text", name: "name", placeholder: useLanguage("name") } }),
 		Input({
-			attr: { type: "password", name: "password", placeholder: "password" },
+			attr: { type: "password", name: "password", placeholder: useLanguage("pw") },
 		}),
 		isConnexion
 			? Submit({
@@ -69,7 +71,7 @@ const FormAuth = (props: {
 				},
 			})
 			: Submit({
-				text: "Inscription",
+				text: useLanguage("valid"),
 				attr: { onClick: () => handleRegister(set2FA) },
 			})
 	);

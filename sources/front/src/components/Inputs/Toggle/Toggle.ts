@@ -1,6 +1,5 @@
-import { useEffect, useState, type ComponentAttr } from "#core/framework.ts";
+import { type ComponentAttr } from "#core/framework.ts";
 import { createElement } from "#core/render.ts";
-import { getStorage } from "#services/data.ts";
 import Input from "../Input";
 
 import {
@@ -11,7 +10,6 @@ import {
   toggle_default,
   toggle_forbidden,
 } from "./style";
-import { KeysStorage } from "#types/enums.ts";
 
 const Toggle = (props: {
   InputAttr?: ComponentAttr;
@@ -19,18 +17,18 @@ const Toggle = (props: {
   ToggleName?: string;
   a2fMode?: boolean;
   isEdit?: boolean;
+  is2FA: boolean;
 }) => {
-  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
-  let is2fa = user.configuration.is2FA;
-  //let is2fa = user.configuration.is2FA;
+  let { InputAttr, ToggleAttr, ToggleName, a2fMode, isEdit, is2FA } = props;
 
-  let { InputAttr, ToggleAttr, ToggleName, a2fMode, isEdit } = props;
+  console.log(is2FA);
 
   const default_inputattr = {
     type: "checkbox",
     class: input_default,
+    onChange: () => {console.log("test")},
     name: ToggleName || "toggle_default",
-    ...(a2fMode && is2fa ? { checked: true } : {}),
+    ...((a2fMode && is2FA) ? { checked: is2FA } : {}),
     ...(!isEdit ? { disabled: true } : {}),
   };
 
@@ -38,7 +36,7 @@ const Toggle = (props: {
     class: toggle_default + (!isEdit ? toggle_forbidden : toggle_allowed),
     ...(!isEdit ? { disabled: true } : {}),
   };
-    (ToggleAttr = { ...default_toggleattr, ...ToggleAttr });
+  ToggleAttr = { ...default_toggleattr, ...ToggleAttr };
   InputAttr = { ...default_inputattr, ...InputAttr };
 
   return Input(

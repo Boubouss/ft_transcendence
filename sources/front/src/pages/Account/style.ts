@@ -8,6 +8,7 @@ export const account_background = `
     sm:bg-[length:110%_160%]
     bg-[length:150%_180%]
     flex
+    flex-col
     justify-center
     items-center
 `;
@@ -30,7 +31,7 @@ export const form_container = `flex flex-row gap-10`;
 export const form_account = `relative gap-[20px] flex flex-col items-center h-full m-[30px]`;
 
 export const input_account = `
-      relative
+    relative
     flex
     bg-[#FFFFFF99]
     rounded-[20px]
@@ -39,6 +40,7 @@ export const input_account = `
     text-[25px]
     read-only:cursor-not-allowed
     cursor-pointer
+    outline-none focus:outline-none
 `;
 
 export const avatarxpwd_account = `

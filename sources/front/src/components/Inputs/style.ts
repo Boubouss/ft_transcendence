@@ -9,6 +9,7 @@ flex
 export const input_default = `
     relative
     flex
+    w-full
     bg-[#FFFFFF99]
     rounded-[20px]
     p-3

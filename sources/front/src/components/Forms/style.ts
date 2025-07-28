@@ -5,6 +5,7 @@ export const form_connexion = `
     flex-col
     justify-between
     h-full
+    items-center
     w-full
     p-10
     gap-[20px]
@@ -19,18 +20,20 @@ export const form_choice_container = `
 export const form_choice = `
     flex
     hover:cursor-pointer
-    justify-self-center 
+    justify-center
+    items-center
     p-2
     border
     border-2
     border-black
     rounded-[20px]
+    gap-3
 `;
 
 export const form_choice_active = `
     flex
     hover:cursor-pointer
-    justify-self-center 
+    justify-self-center
     p-2
     border
     border-2
@@ -38,3 +41,5 @@ export const form_choice_active = `
     bg-[#FFFFFF99]
     rounded-[20px]
 `;
+
+export const img_google = `w-[30px] h-[30px]`;

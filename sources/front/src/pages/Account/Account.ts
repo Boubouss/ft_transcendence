@@ -25,7 +25,7 @@ import {
 } from "./style";
 import Button from "#components/Buttons/Button.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import { navigateTo, useState } from "#core/framework.ts";
+import { navigateTo, useEffect, useState } from "#core/framework.ts";
 import Toggle from "#components/Inputs/Toggle/Toggle.ts";
 import { getStorage } from "#services/data.ts";
 import { Form_ID, KeysStorage } from "#types/enums.ts";
@@ -33,6 +33,7 @@ import { useForm } from "#hooks/useForm.ts";
 import _ from "lodash";
 import { handleEditUser } from "#requests/userRequest.ts";
 import type { User, UserEditForm } from "#types/user.ts";
+import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 
 const Account = () => {
   const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
@@ -42,13 +43,18 @@ const Account = () => {
   const [isEditing, setEditing] = useState(false);
   const [isA2F, setA2F] = useState(user.configuration.is2FA);
   const [isView, setIsView] = useState(false);
+  const [isUser, setUserState] = useState(user);
   const [currentPassword, setcurrentPassword] = useState("");
 
   const handleChangeAvatar = () => {
     console.log("change avatar");
   };
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    console.log("voici a2f : ", isA2F);
+  }, [isA2F]);
+
+  const handleSubmit = async () => {
     const form = useForm("form-account");
     const newname = form?.get("name")?.toString().trim();
     const newemail = form?.get("email")?.toString().trim();
@@ -59,8 +65,6 @@ const Account = () => {
       id: user.id,
       configuration: _.cloneDeep(user.configuration),
     };
-
-    console.log("after edituser creating", edituser);
 
     if (!_.isEmpty(newname)) edituser.name = newname;
     if (!_.isEmpty(newemail)) {
@@ -74,9 +78,11 @@ const Account = () => {
     if (a2fisnull && a2f === true) {
       edituser.configuration.is2FA = false;
       setA2F(false);
-    } else if (!a2fisnull) {
-      if (a2f === false) edituser.configuration.is2FA = true;
+      console.log("is disabled");
+    } else if (!a2fisnull && a2f === false) {
+      edituser.configuration.is2FA = true;
       setA2F(true);
+      console.log("is enabled");
     }
 
     const compuser = {
@@ -84,18 +90,15 @@ const Account = () => {
       configuration: user.configuration,
     };
 
-    console.log("user: ", user);
-    console.log("edituser: ", edituser);
-
     if (JSON.stringify(edituser) === JSON.stringify(compuser)) return;
 
     handleEditUser(edituser);
-    setEditing(!isEditing);
   };
 
   return createElement(
     "div",
     { id: "account_background", class: account_background },
+    NavigationBar({ userState: { user, setUserState } }),
     createElement(
       "div",
       { id: "account_container", class: account_container },
@@ -105,7 +108,7 @@ const Account = () => {
         createElement(
           "h2",
           { name: "account_title", class: title_page_account },
-          "Votre Compte"
+          useLanguage("myacc")
         ),
         createElement(
           "button",
@@ -200,6 +203,7 @@ const Account = () => {
               ToggleName: Form_ID.A2F,
               isEdit: isEditing,
               a2fMode: true,
+              is2FA: isA2F,
             })
           )
         ),
@@ -237,10 +241,12 @@ const Account = () => {
       ),
 
       Button({
-        children: "Submit",
+        children: useLanguage("valid"),
         attr: {
           class: submit_account_default,
-          onClick: handleSubmit,
+          onClick: () => {
+            handleSubmit(), setEditing(!isEditing);
+          },
           ...(!isEditing ? { disabled: true } : {}),
         },
       })

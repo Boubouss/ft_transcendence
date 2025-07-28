@@ -32,14 +32,14 @@ export const handleConnexion = async (
   if (user) {
     const { token, ...userData } = user;
 
-    setStorage(sessionStorage, "transcendence_user", userData);
+    setStorage(sessionStorage, KeysStorage.USERTRANS, userData);
 
     if (token) {
       setStorage(localStorage, KeysStorage.CONFTRANS, {
         id: user.id,
         token: user.token,
       });
-      setUser(getStorage(sessionStorage, "transcendence_user"));
+      setUser(getStorage(sessionStorage, KeysStorage.USERTRANS));
     } else {
       setStorage(localStorage, KeysStorage.CONFTRANS, {
         id: user.id,
@@ -69,13 +69,13 @@ export const handleRegister = async (setter: (toSet: boolean) => void) => {
     setStorage(localStorage, KeysStorage.CONFTRANS, {
       id: user.id,
     });
-    setStorage(sessionStorage, "transcendence_user", user);
+    setStorage(sessionStorage, KeysStorage.USERTRANS, user);
     setter(true);
   }
 };
 
 export const handle2FA = async (setter: (toSet: boolean) => void) => {
-  const user = getStorage(sessionStorage, "transcendence_user");
+  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
   const form = useForm("form_2FA");
   const data = {
     code: form?.get("code"),
@@ -93,7 +93,7 @@ export const handle2FA = async (setter: (toSet: boolean) => void) => {
 
   if (token) {
     setStorage(localStorage, KeysStorage.CONFTRANS, { id: user.id, ...token });
-    setter(getStorage(sessionStorage, "transcendence_user"));
+    setter(getStorage(sessionStorage, KeysStorage.USERTRANS));
   }
 };
 
@@ -115,7 +115,7 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
   );
   if (
     configuration?.token &&
-    !getStorage(sessionStorage, "transcendence_user")
+    !getStorage(sessionStorage, KeysStorage.USERTRANS)
   ) {
     const user = await fetchAPI(
       import.meta.env.VITE_API_USER +
@@ -126,7 +126,7 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
         headers: { Authorization: `Bearer ` + configuration.token },
       }
     );
-    if (user) setStorage(sessionStorage, "transcendence_user", user);
+    if (user) setStorage(sessionStorage, KeysStorage.USERTRANS, user);
     else
       setStorage(localStorage, KeysStorage.CONFTRANS, {
         lang: configuration?.lang ?? "FR",
@@ -135,9 +135,9 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
 
   if (
     configuration?.token &&
-    getStorage(sessionStorage, "transcendence_user")
+    getStorage(sessionStorage, KeysStorage.USERTRANS)
   ) {
-    setter(getStorage(sessionStorage, "transcendence_user"));
+    setter(getStorage(sessionStorage, KeysStorage.USERTRANS));
   }
 };
 
@@ -146,7 +146,7 @@ export const handleDeconnexion = (setter: (toSet: {} | null) => void) => {
   replaceStorage(localStorage, KeysStorage.CONFTRANS, {
     lang: configuration.lang,
   });
-  removeStorage(sessionStorage, "transcendence_user");
+  removeStorage(sessionStorage, KeysStorage.USERTRANS);
   setter(null);
   navigateTo("/");
 };

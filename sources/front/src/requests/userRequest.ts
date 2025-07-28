@@ -11,8 +11,6 @@ import _ from "lodash";
 const localuser = getStorage(localStorage, KeysStorage.CONFTRANS);
 
 export const handleEditUser = async (edituser: UserEditForm) => {
-  console.log(edituser);
-
   try {
     const response = await fetchAPI(
       import.meta.env.VITE_API_USER +
