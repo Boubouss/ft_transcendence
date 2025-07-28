@@ -89,6 +89,7 @@ export const a2f_title = `text-[25px]`;
 export const edittoggle_default = `relative w-[122px] h-[40px] bg-red-400 outline-none rounded-full border-3 peer peer-checked:after:translate-x-[70px] rtl:peer-checked:after:-translate-x-[70px] peer-checked:after:border-white after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-red-400 after:border after:rounded-full after:h-[30px] after:w-[40px] after:transition-[70px] peer-checked:bg-green-500 flex flex-row justify-around items-center`;
 
 export const edit_btn = `border-2 p-3 rounded-[20px]`;
+export const edit_btn_enable = `border-2 p-3 rounded-[20px] bg-green-400`;
 
 export const edit_container = `flex flex-col items-center m-[10px]`;
 
@@ -106,6 +107,6 @@ disabled:brightness-50
 disabled:cursor-not-allowed
 cursor-pointer`;
 
-export const eyes_container = `absolute right-[10px]  w-[50px] h-[50px]`;
+export const eyes_container = `absolute disabled:cursor-not-allowed cursor-pointer right-[10px]  w-[50px] h-[50px]`;
 
 export const eyes_img = ``;

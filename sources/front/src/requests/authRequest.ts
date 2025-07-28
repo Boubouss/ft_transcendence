@@ -9,6 +9,7 @@ import {
   setStorage,
 } from "#services/data.ts";
 import { KeysStorage } from "#types/enums.ts";
+import type { ConfTrans } from "#types/user.ts";
 
 export const handleConnexion = async (
   set2FA: (toSet: boolean) => void,
@@ -108,11 +109,10 @@ export const handleGoogleSign = async () => {
 };
 
 export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
-  const configuration: {
-    id: string;
-    token: string;
-    lang?: string;
-  } = getStorage(localStorage, KeysStorage.CONFTRANS);
+  const configuration: ConfTrans = getStorage(
+    localStorage,
+    KeysStorage.CONFTRANS
+  );
   if (
     configuration?.token &&
     !getStorage(sessionStorage, "transcendence_user")

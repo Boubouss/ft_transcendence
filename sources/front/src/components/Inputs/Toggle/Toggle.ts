@@ -22,6 +22,7 @@ const Toggle = (props: {
 }) => {
   const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
   let is2fa = user.configuration.is2FA;
+  //let is2fa = user.configuration.is2FA;
 
   let { InputAttr, ToggleAttr, ToggleName, a2fMode, isEdit } = props;
 

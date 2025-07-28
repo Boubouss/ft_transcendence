@@ -17,3 +17,11 @@ export type ConfTrans = {
   lang: string;
   token?: string;
 };
+
+export type UserEditForm = {
+  id: number ;
+  name?: string ;
+  email?: string ;
+  password?: string ;
+  configuration: Configuration;
+};

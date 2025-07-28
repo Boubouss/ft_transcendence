@@ -8,7 +8,6 @@ import {
   avatar_button_change,
   avatar_container,
   button_close,
-  edittoggle_default,
   form_account,
   form_container,
   image_button_close,
@@ -17,29 +16,33 @@ import {
   title_container,
   title_page_account,
   edit_container,
-  edit_message,
   a2f_container,
   a2f_title,
   edit_btn,
   eyes_container,
   eyes_img,
+  edit_btn_enable,
 } from "./style";
 import Button from "#components/Buttons/Button.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import { navigateTo, useState } from "#core/framework.ts";
 import Toggle from "#components/Inputs/Toggle/Toggle.ts";
-import { fetchAPI, getStorage } from "#services/data.ts";
-import { KeysStorage } from "#types/enums.ts";
+import { getStorage } from "#services/data.ts";
+import { Form_ID, KeysStorage } from "#types/enums.ts";
 import { useForm } from "#hooks/useForm.ts";
-import type { User } from "#types/user.ts";
 import _ from "lodash";
+import { handleEditUser } from "#requests/userRequest.ts";
+import type { User, UserEditForm } from "#types/user.ts";
 
 const Account = () => {
+  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
+
+  // envoyer is2AF dans le toggle pour switch
+
   const [isEditing, setEditing] = useState(false);
+  const [isA2F, setA2F] = useState(user.configuration.is2FA);
   const [isView, setIsView] = useState(false);
   const [currentPassword, setcurrentPassword] = useState("");
-
-  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   const handleChangeAvatar = () => {
     console.log("change avatar");
@@ -50,15 +53,14 @@ const Account = () => {
     const newname = form?.get("name")?.toString().trim();
     const newemail = form?.get("email")?.toString().trim();
     const newpsw = form?.get("password")?.toString().trim();
-
-    const a2f = form?.get("toggle2fa");
-
     console.log(form);
 
-    const edituser: User = {
+    const edituser: UserEditForm = {
       id: user.id,
-      configuration: user.configuration,
+      configuration: _.cloneDeep(user.configuration),
     };
+
+    console.log("after edituser creating", edituser);
 
     if (!_.isEmpty(newname)) edituser.name = newname;
     if (!_.isEmpty(newemail)) {
@@ -66,8 +68,28 @@ const Account = () => {
     }
     if (!_.isEmpty(newpsw)) edituser.password = newpsw;
 
-    console.log(edituser);
+    const a2fisnull = _.isNull(form?.get(Form_ID.A2F));
+    const a2f = user.configuration.is2FA;
 
+    if (a2fisnull && a2f === true) {
+      edituser.configuration.is2FA = false;
+      setA2F(false);
+    } else if (!a2fisnull) {
+      if (a2f === false) edituser.configuration.is2FA = true;
+      setA2F(true);
+    }
+
+    const compuser = {
+      id: user.id,
+      configuration: user.configuration,
+    };
+
+    console.log("user: ", user);
+    console.log("edituser: ", edituser);
+
+    if (JSON.stringify(edituser) === JSON.stringify(compuser)) return;
+
+    handleEditUser(edituser);
     setEditing(!isEditing);
   };
 
@@ -145,6 +167,8 @@ const Account = () => {
             createElement(
               "div",
               {
+                ...(!isEditing ? { disabled: true } : {}),
+
                 class: eyes_container,
                 onClick: () => {
                   if (isEditing) {
@@ -173,7 +197,7 @@ const Account = () => {
               useLanguage("a2f")
             ),
             Toggle({
-              ToggleName: "toggle2fa",
+              ToggleName: Form_ID.A2F,
               isEdit: isEditing,
               a2fMode: true,
             })
@@ -201,22 +225,10 @@ const Account = () => {
       createElement(
         "div",
         { name: "edit_container", class: edit_container },
-        //createElement(
-        //  "h2",
-        //  { class: edit_message, name: "edit_message" },
-        //  useLanguage("editinfo")
-        //),
-        //Toggle({
-        //  InputAttr: {
-        //  },
-        //  ToggleAttr: {
-        //    class: edittoggle_default,
-        //  },
-        //})
         Button({
           children: useLanguage("editinfo"),
           attr: {
-            class: edit_btn,
+            class: !isEditing ? edit_btn : edit_btn_enable,
             onClick: () => {
               setEditing(!isEditing);
             },
