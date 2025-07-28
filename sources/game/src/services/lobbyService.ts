@@ -96,6 +96,14 @@ export const joinLobby = (lobby: Lobby, player: LobbyPlayer) => {
 		lobby,
 		JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }),
 	);
+
+	whisperData(
+		[player.id],
+		JSON.stringify({
+			event: ClientEvent.JOINED,
+			data: lobby,
+		}),
+	);
 };
 
 export const leaveLobby = (lobby: Lobby, player: LobbyPlayer) => {
@@ -108,6 +116,8 @@ export const leaveLobby = (lobby: Lobby, player: LobbyPlayer) => {
 		lobby,
 		JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }),
 	);
+
+	whisperData([player.id], JSON.stringify({ event: ClientEvent.LEFT }));
 };
 
 export const launchGame = (lobby: Lobby, player: LobbyPlayer) => {
@@ -271,6 +281,14 @@ export const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
 
 	broadcastData(
 		JSON.stringify({ event: ClientEvent.CREATE_LOBBY, data: lobby }),
+	);
+
+	whisperData(
+		[player.id],
+		JSON.stringify({
+			event: ClientEvent.JOINED,
+			data: lobby,
+		}),
 	);
 };
 
