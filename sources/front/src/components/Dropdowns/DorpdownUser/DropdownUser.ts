@@ -68,6 +68,7 @@ const DropdownUser = (props: {
         attr: {
           class: btn_list + " rounded-b-[20px]",
           onClick: () => {
+            navigateTo("/");
             handleDeconnexion(setUser);
           },
         },

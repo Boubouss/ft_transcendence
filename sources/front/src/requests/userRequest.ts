@@ -32,7 +32,6 @@ export const handleEditUser = async (edituser: UserEditForm) => {
         response
       );
     } else {
-      // Si tout est bon, mettez à jour le stockage
       if (response) setStorage(sessionStorage, KeysStorage.USERTRANS, response);
       console.log("Utilisateur mis à jour avec succès:", response);
     }

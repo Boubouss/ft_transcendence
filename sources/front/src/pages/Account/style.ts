@@ -9,9 +9,15 @@ export const account_background = `
     bg-[length:150%_180%]
     flex
     flex-col
-    justify-center
-    items-center
 `;
+
+export const account_page = `
+w-full
+h-screen
+flex
+flex-col
+items-center
+justify-center`;
 
 export const account_container = `
     relative

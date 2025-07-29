@@ -21,14 +21,11 @@ const Toggle = (props: {
 }) => {
   let { InputAttr, ToggleAttr, ToggleName, a2fMode, isEdit, is2FA } = props;
 
-  console.log(is2FA);
-
   const default_inputattr = {
     type: "checkbox",
     class: input_default,
-    onChange: () => {console.log("test")},
     name: ToggleName || "toggle_default",
-    ...((a2fMode && is2FA) ? { checked: is2FA } : {}),
+    ...(a2fMode && is2FA ? { checked: is2FA } : {}),
     ...(!isEdit ? { disabled: true } : {}),
   };
 
