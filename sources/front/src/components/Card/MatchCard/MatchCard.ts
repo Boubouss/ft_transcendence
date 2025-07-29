@@ -19,20 +19,27 @@ const MatchCard = (props: { match: Match; players: Player[] }) => {
         day: "numeric",
     });
 
+    let result_label = "uppercase";
+    let result = "";
+
+    if (winner) {
+        if (winner === user?.id) {
+            result_label += " text-green-600";
+            result = useLanguage("win");
+        } else {
+            result_label += " text-red-600";
+            result = useLanguage("loss");
+        }
+    } else {
+        result = useLanguage("ongoing");
+    }
+
     return Card(
         { class: match_card },
         createElement(
             "div",
             { class: "flex justify-between " },
-            createElement(
-                "span",
-                { class: `uppercase` },
-                winner
-                    ? winner == user?.id
-                        ? useLanguage("win")
-                        : useLanguage("loss")
-                    : useLanguage("ongoing")
-            ),
+            createElement("span", { class: result_label }, result),
             match.round_id
                 ? createElement(
                       "img",

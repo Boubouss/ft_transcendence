@@ -36,7 +36,8 @@
         "ongoing": "En cours",
         "send": "Envoyer",
         "friend_list": "Liste d'amis",
-        "timezone": "fr-FR"
+        "timezone": "fr-FR",
+        "no_match": "Aucun match trouvé"
     },
 
     "EN": {
@@ -76,7 +77,8 @@
         "ongoing": "Ongoing",
         "send": "Send",
         "friend_list": "Friends list",
-        "timezone": "en-US"
+        "timezone": "en-US",
+        "no_match": "No matches found"
     },
 
     "ES": {
@@ -116,6 +118,7 @@
         "ongoing": "En curso",
         "send": "Enviar",
         "friend_list": "Lista de amigos",
-        "timezone": "es-ES"
+        "timezone": "es-ES",
+        "no_match": "No se encontraron coincidencias"
     }
 }

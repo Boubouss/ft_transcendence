@@ -17,13 +17,11 @@ export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
         }
     );
 
-    //console.log(matches);
-
     if (matches) setMatches(matches);
 };
 
 export const getPlayers = async (
-    matches: Match[] | null,
+    matches: Match[],
     setPlayers: (toSet: Player[]) => void
 ) => {
     // console.log(matches);
