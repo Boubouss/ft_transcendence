@@ -7,3 +7,18 @@ export const list_default = `
     border-black
     rounded-[20px]
 `;
+
+export const list_friends = `
+    flex
+    flex-col
+    w-1/3
+    h-fit
+    rounded-[20px]
+    border-black
+    border-solid
+    border-3
+    bg-[#ff8904]
+    p-10
+    gap-10
+    items-center
+`;

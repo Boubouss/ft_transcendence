@@ -9,6 +9,7 @@
 		"#types/*": "./src/types/*",
 		"#services/*": "./src/services/*",
 		"#requests/*": "./src/requests/*",
+		"#sockets/*": "./src/sockets/*",
 		"#assets/*": "./src/assets/*",
 		"#components/*": "./src/components/*",
 		"#pages/*": "./src/pages/*"

@@ -1,0 +1,15 @@
+export enum ClientEvent {
+	SEND = "SEND",
+	ACCEPT = "ACCEPT",
+	DECLINE = "DECLINE",
+}
+
+export enum ServerEvent {
+	LIST = "LIST",
+	CONNECT = "CONNECT",
+	DECONNECT = "DECONNECT",
+	REQUEST = "REQUEST",
+	ACCEPTED = "ACCEPTED",
+	DECLINED = "DECLINED",
+	ERROR = "ERROR",
+}

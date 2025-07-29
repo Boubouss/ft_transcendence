@@ -27,45 +27,11 @@ export async function getUsers() {
 	});
 }
 
-export async function getUserById(id: number) {
+export async function getUser(
+	user: { id: number } | { name: string } | { email: string }
+) {
 	return await prisma.user.findUnique({
-		where: { id },
-		select: {
-			id: true,
-			name: true,
-			email: true,
-			avatar: true,
-			configuration: {
-				select: {
-					id: true,
-					is2FA: true,
-				},
-			},
-		},
-	});
-}
-
-export async function getUserByEmail(email: string) {
-	return await prisma.user.findUnique({
-		where: { email },
-		select: {
-			id: true,
-			name: true,
-			email: true,
-			avatar: true,
-			configuration: {
-				select: {
-					id: true,
-					is2FA: true,
-				},
-			},
-		},
-	});
-}
-
-export async function getUserByName(name: string) {
-	return await prisma.user.findUnique({
-		where: { name },
+		where: user,
 		select: {
 			id: true,
 			name: true,
@@ -176,19 +142,19 @@ export async function deleteUser(id: number) {
 }
 
 export async function googleSignIn(googleData: GoogleData) {
-	const user = await getUserByEmail(googleData.email);
+	const user = await getUser({ email: googleData.email });
 
 	if (user) return { ...user };
 
 	let name: string = googleData.name;
 
-	let userName = await getUserByName(name);
+	let userName = await getUser({ name });
 	let index = 0;
 
 	while (userName) {
 		index++;
 		name = name + index;
-		userName = await getUserByName(name);
+		userName = await getUser({ name });
 	}
 
 	const userData: UserCreate = {

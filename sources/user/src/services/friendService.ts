@@ -28,6 +28,13 @@ export async function getUserFriendRequests(id: number) {
 					avatar: true,
 				},
 			},
+			sender: {
+				select: {
+					id: true,
+					name: true,
+					avatar: true,
+				},
+			},
 		},
 	});
 }
@@ -57,7 +64,7 @@ export async function createFriendRequest(sender: number, receiver: number) {
 			},
 		});
 
-		return { from: { ...user }, what: "SEND" };
+		return user;
 	});
 
 	return result;
@@ -94,7 +101,7 @@ export async function acceptFriendRequest(sender: number, receiver: number) {
 			},
 		});
 
-		return { from: { ...user }, what: "ACCEPT" };
+		return user;
 	});
 
 	return result;
@@ -125,7 +132,7 @@ export async function declineFriendRequest(sender: number, receiver: number) {
 			},
 		});
 
-		return { from: { ...user }, what: "DECLINE" };
+		return user;
 	});
 
 	return result;

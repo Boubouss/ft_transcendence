@@ -31,9 +31,11 @@
 		"lobby_list": "Liste de lobby",
 		"no_lobby": "Aucun lobby n'a pu être trouvé...",
 		"history": "Historique des matchs",
-		"win" : "Gagné",
+		"win": "Gagné",
 		"loss": "Perdu",
-		"ongoing": "En cours"
+		"ongoing": "En cours",
+		"send": "Envoyer",
+		"friend_list": "Liste d'amis"
 	},
 
 	"EN": {
@@ -68,9 +70,11 @@
 		"lobby_list": "Lobby List",
 		"no_lobby": "No lobby could be found...",
 		"history": "Match history",
-		"win" : "Won",
+		"win": "Won",
 		"loss": "Lost",
-		"ongoing": "Ongoing"
+		"ongoing": "Ongoing",
+		"send": "Send",
+		"friend_list": "Friends list"
 	},
 
 	"ES": {
@@ -105,8 +109,10 @@
 		"lobby_list": "Lista de lobby",
 		"no_lobby": "No se pudo encontrar ningún lobby...",
 		"history": "Historial de partidos",
-		"win" : "Ganado",
+		"win": "Ganado",
 		"loss": "Perdido",
-		"ongoing": "En curso"
+		"ongoing": "En curso",
+		"send": "Enviar",
+		"friend_list": "Lista de amigos"
 	}
 }

@@ -1,4 +1,4 @@
-import { FastifyRequest, FastifyReply } from "fastify";
+import { FastifyRequest, FastifyReply, FastifyInstance } from "fastify";
 
 export const authMiddleware = async (
 	request: FastifyRequest,
@@ -8,5 +8,18 @@ export const authMiddleware = async (
 		await request.jwtVerify();
 	} catch (err) {
 		reply.send(err);
+	}
+};
+
+export const socketAuthMiddleware = async (
+	token: string | undefined,
+	api: FastifyInstance
+) => {
+	try {
+		if (!token) return false;
+		api.jwt.verify(token);
+		return true;
+	} catch (err) {
+		return false;
 	}
 };

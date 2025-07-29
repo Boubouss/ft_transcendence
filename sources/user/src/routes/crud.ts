@@ -7,11 +7,11 @@ import {
 } from "../validations/userSchema";
 import {
 	getUsers,
-	getUserById,
 	createUser,
 	updateUser,
 	deleteUser,
 	getPlayers,
+	getUser,
 } from "../services/userService";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
@@ -24,7 +24,7 @@ const crud: FastifyPluginAsync = async (fastify, opts) => {
 
 	fastify.get("/user/:id", async (request, reply) => {
 		const { id } = request.params as { id: string };
-		return getUserById(parseInt(id));
+		return getUser({ id: parseInt(id) });
 	});
 
 	fastify.post("/user", { schema: createSchema }, async (request, reply) => {

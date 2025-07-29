@@ -3,6 +3,7 @@ import {
 	type Component,
 	type ComponentAttr,
 } from "#core/framework";
+import _ from "lodash";
 import { list_default } from "./style";
 
 const List = (
@@ -18,7 +19,9 @@ const List = (
 
 	attr = { ...default_attr, ...attr };
 
-	return createElement("div", attr, ...childrens.map((child) => model(child)));
+	if (_.isEmpty(childrens)) return createElement("div", { class: "hidden" });
+
+	return createElement("div", attr, ...childrens?.map((child) => model(child)));
 };
 
 export default List;

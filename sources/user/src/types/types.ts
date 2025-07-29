@@ -73,26 +73,11 @@ export type FriendShip = {
 	online: Friend[];
 	offline: Friend[];
 	requests: Friend[];
+	sent: Friend[];
 };
 
 export type SocketList = {
 	[key: string]: WebSocket;
-};
-
-export enum FriendRequestAction {
-	SEND = "SEND",
-	ACCEPT = "ACCEPT",
-	DECLINE = "DECLINE",
-}
-
-export type SocketMessage = {
-	id: number;
-	action: FriendRequestAction;
-};
-
-export type SocketResponse = {
-	from: Friend;
-	what: FriendRequestAction;
 };
 
 export type GoogleData = {
