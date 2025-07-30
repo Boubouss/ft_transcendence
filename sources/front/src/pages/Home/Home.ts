@@ -15,11 +15,13 @@ import { getStorage, setStorage } from "#services/data.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 import { KeysStorage } from "#types/enums.ts";
+import type { User } from "#types/user.ts";
 
 const Home = () => {
   const [modalAuth, setModalAuth] = useState(false);
   const [modal2FA, setModal2FA] = useState(false);
   const [user, setUser] = useState<{} | null>(null);
+
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -35,7 +37,7 @@ const Home = () => {
       });
       window.history.replaceState({}, "", "/");
     }
-  }, []);
+  }, [user]);
 
   useEffect(async () => {
     await handleAutoConnect(setUser);

@@ -7,6 +7,7 @@ export enum API_USER_ROUTES {
 	GOOGLE = "/auth/google",
 	CRUD_USER = "/crud/user",
 	CRUD_PLAYERS = "/crud/players",
+	AVATAR_PLAYERS = "/avatar/upload",
 }
 
 export enum API_GAME_ROUTES {

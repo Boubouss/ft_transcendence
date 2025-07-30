@@ -2,7 +2,7 @@ export type User = {
   id: number | FormDataEntryValue | null;
   name?: string | FormDataEntryValue | null;
   email?: string | FormDataEntryValue | null;
-  avatar?: string | FormDataEntryValue | null;
+  avatar?: string | FormDataEntryValue | null | HTMLInputElement;
   password?: string | FormDataEntryValue | null;
   configuration: Configuration;
 };

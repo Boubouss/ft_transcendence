@@ -10,7 +10,7 @@ export type ComponentAttr = {
   class?: string;
   src?: string;
   onClick?: () => void;
-  onChange?: ()  => void;
+  onChange?: () => void;
   name?: string;
   type?: string;
   placeholder?: string;
@@ -19,6 +19,8 @@ export type ComponentAttr = {
   checked?: boolean;
   readonly?: boolean;
   disabled?: boolean;
+  for?: string;
+  accept?: string;
 };
 
 export type Component = {
