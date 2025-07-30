@@ -17,11 +17,11 @@ export function useState<T>(
 	const currentIndex = index;
 
 	if (!states[currentIndex]) {
-		states[currentIndex] = JSON.parse(JSON.stringify(initialValue));
+		states[currentIndex] = initialValue;
 	}
 
 	const setState = (newValue: T) => {
-		states[currentIndex] = JSON.parse(JSON.stringify(newValue));
+		states[currentIndex] = newValue;
 		index = 0;
 		reRender();
 	};

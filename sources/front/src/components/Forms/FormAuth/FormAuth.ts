@@ -3,11 +3,14 @@ import Input from "#components/Inputs/Input.ts";
 import Submit from "#components/Inputs/Submit.ts";
 import { useState } from "#core/hooks/useState.ts";
 import { createElement } from "#core/render.ts";
+import type { User } from "#types/user.ts";
+
 import {
 	handleConnexion,
 	handleGoogleSign,
 	handleRegister,
 } from "#requests/authRequest.ts";
+
 import {
 	form_choice,
 	form_choice_active,
@@ -18,7 +21,7 @@ import {
 const FormAuth = (props: {
 	setModal: (toSet: boolean) => void;
 	set2FA: (toSet: boolean) => void;
-	setUser: (toSet: {} | null) => void;
+	setUser: (toSet: User | null) => void;
 }) => {
 	const [isConnexion, setIsConnexion] = useState(false);
 

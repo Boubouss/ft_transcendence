@@ -1,4 +1,4 @@
-export const lobby_card = `
+export const player_card = `
     flex
     w-full
     h-[113px]
@@ -11,7 +11,7 @@ export const lobby_card = `
     gap-[20px]
 `;
 
-export const lobby_card_img = `
+export const player_card_img = `
     h-full
     rounded-[5px]
     border-black
@@ -19,7 +19,7 @@ export const lobby_card_img = `
     border-3
 `;
 
-export const lobby_card_action = `
+export const player_card_action = `
     flex 
     flex-col 
     justify-center 
@@ -27,15 +27,13 @@ export const lobby_card_action = `
     gap-[5px]
 `;
 
-export const join_button = `
+export const kick_button = `
     flex
     p-2
     text-1xl 
     border-3
     border-black
-    bg-green-500
-    h-fit
-    w-full
+    bg-yellow-400
     justify-center
     rounded-[10px]
     cursor-pointer

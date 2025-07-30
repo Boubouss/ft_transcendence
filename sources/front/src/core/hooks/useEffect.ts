@@ -39,12 +39,12 @@ export function useEffect(callback: () => void, dependencies: any[]) {
 
 	if (!effect) {
 		effects.push({
-			dependencies: JSON.parse(JSON.stringify(dependencies)),
+			dependencies: _.cloneDeep(dependencies),
 		});
 
 		callbacks.push(callback);
 	} else if (!isDependenciesSame(effect, dependencies)) {
-		effect.dependencies = JSON.parse(JSON.stringify(dependencies));
+		effect.dependencies = _.cloneDeep(dependencies);
 		callbacks.push(callback);
 	}
 
