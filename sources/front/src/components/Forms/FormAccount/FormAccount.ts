@@ -6,8 +6,8 @@ import { useEffect, useState } from "#core/framework.ts";
 import { createElement } from "#core/render.ts";
 import { useForm } from "#hooks/useForm.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import { handleSubmitAccount } from "#requests/userRequest.ts";
-import { getStorage } from "#services/data.ts";
+import { handleEditAccount } from "#requests/userRequest.ts";
+import { API_USER_ROUTES, getStorage } from "#services/data.ts";
 import { Form_ID, KeysStorage } from "#types/enums.ts";
 import Form from "../Form";
 import {
@@ -20,7 +20,6 @@ import {
   eyes_container,
   eyes_img,
   form_account,
-  form_part_avatar,
   form_part_inputs,
   input_account,
   submit_account_default,
@@ -32,11 +31,17 @@ const FormAccount = () => {
   const [isView, setIsView] = useState(false);
   const [isA2F, setA2F] = useState(false);
   const [currentPassword, setcurrentPassword] = useState("");
+  const [Avatar, setAvatar] = useState("");
   const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   useEffect(() => {
     setA2F(user.configuration.is2FA);
   }, []);
+
+  const bgUrl = `${
+    import.meta.env.VITE_API_USER + API_USER_ROUTES.DOWNLOAD_AVATAR
+  }/avatar_${user.id}.jpg`;
+  const bgClass = `bg-[url('${bgUrl}')]`;
 
   return Form(
     {
@@ -127,7 +132,9 @@ const FormAccount = () => {
         attr: {
           name: "avatar",
           type: "file",
-          class: avatar + ` bg-[url('../../../../public/images/avatar_1.jpg')]`,
+          class: avatar + `${bgClass}`,
+          style:
+            "background-image: url('https://localhost:3000/download/avatar_1.jpg');",
           accept: ".jpeg",
           ...(!isEditing ? { disabled: true } : {}),
         },
@@ -151,7 +158,7 @@ const FormAccount = () => {
         attr: {
           class: submit_account_default,
           onClick: () => {
-            handleSubmitAccount({ setA2F }), setEditing(!isEditing);
+            handleEditAccount({ setA2F }), setEditing(!isEditing);
           },
           ...(!isEditing ? { disabled: true } : {}),
         },

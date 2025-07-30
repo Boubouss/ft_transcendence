@@ -37,6 +37,7 @@ export const avatar = `
 	self-start
 	cursor-pointer
 	disabled:cursor-not-allowed
+    disabled:brightness-90
 
 `;
 

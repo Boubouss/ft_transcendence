@@ -21,6 +21,7 @@ export type ComponentAttr = {
   disabled?: boolean;
   for?: string;
   accept?: string;
+  style? : string;
 };
 
 export type Component = {

@@ -9,7 +9,9 @@ import { Form_ID, KeysStorage } from "#types/enums.ts";
 import type { UserEditForm } from "#types/user.ts";
 import _ from "lodash";
 
-export const handleSubmitAccount = (props: {setA2F: (toSet: boolean) => void}) => {
+export const handleEditAccount = (props: {
+  setA2F: (toSet: boolean) => void;
+}) => {
   const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   const form = useForm("form-account");
@@ -18,8 +20,7 @@ export const handleSubmitAccount = (props: {setA2F: (toSet: boolean) => void}) =
   const newpsw = form?.get("password")?.toString().trim();
   const newavatar = form?.get("avatar");
 
-
-  const {setA2F} = props;
+  const { setA2F } = props;
 
   console.log(form);
   console.log(newavatar);
@@ -32,9 +33,7 @@ export const handleSubmitAccount = (props: {setA2F: (toSet: boolean) => void}) =
   const compuser = _.cloneDeep(edituser);
 
   if (!_.isEmpty(newname)) edituser.name = newname;
-  if (!_.isEmpty(newemail)) {
-    edituser.email = newemail;
-  }
+  if (!_.isEmpty(newemail)) edituser.email = newemail;
   if (!_.isEmpty(newpsw)) edituser.password = newpsw;
 
   const a2fisnull_inform = _.isNull(form?.get(Form_ID.A2F));
@@ -48,13 +47,14 @@ export const handleSubmitAccount = (props: {setA2F: (toSet: boolean) => void}) =
     setA2F(true);
   }
 
+  if (newavatar?.type !== "application/octet-stream") handleEditAvatar(form);
+
   if (JSON.stringify(edituser) != JSON.stringify(compuser))
     handleEditUser(edituser);
-  if (newavatar?.type !== "application/octet-stream") handleEditAvatar(form);
   else return;
 };
 
-export const handleEditUser = async (edituser: UserEditForm) => {
+const handleEditUser = async (edituser: UserEditForm) => {
   try {
     const localuser = getStorage(localStorage, KeysStorage.CONFTRANS);
 
@@ -86,7 +86,7 @@ export const handleEditUser = async (edituser: UserEditForm) => {
   }
 };
 
-export const handleEditAvatar = async (avatar) => {
+const handleEditAvatar = async (avatar) => {
   try {
     const localuser = getStorage(localStorage, KeysStorage.CONFTRANS);
 
