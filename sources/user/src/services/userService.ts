@@ -202,13 +202,10 @@ export async function uploadAvatar(id: number, avatar: MultipartFile) {
 		const pump = promisify(pipeline);
 		const uploadDir = path.join(path.dirname(__dirname), "../storage");
 
-		// console.log("dir upload: ", uploadDir);
-
 		if (!fs.existsSync(uploadDir)) {
 			fs.mkdirSync(uploadDir);
 		}
 		const filePath = path.join(uploadDir, "avatar_" + id + ".jpg");
-		// console.log(filePath);
 		await pump(avatar.file, fs.createWriteStream(filePath));
 	} catch (err: any) {
 		return null;
