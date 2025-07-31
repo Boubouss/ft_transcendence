@@ -6,8 +6,16 @@ import {
   setStorage,
 } from "#services/data.ts";
 import { Form_ID, KeysStorage } from "#types/enums.ts";
-import type { UserEditForm } from "#types/user.ts";
+import type { User, UserEditForm } from "#types/user.ts";
 import _ from "lodash";
+
+export const avatar_img = (user: User) => {
+  return (
+    import.meta.env.VITE_API_USER +
+    API_USER_ROUTES.DOWNLOAD_AVATAR +
+    `/avatar_${user.id}.jpg`
+  );
+};
 
 export const handleEditAccount = (props: {
   setA2F: (toSet: boolean) => void;

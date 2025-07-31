@@ -14,6 +14,7 @@ import {
   dropdown_user_img,
 } from "../style";
 import { useLanguage } from "#hooks/useLanguage.ts";
+import { avatar_img } from "#requests/userRequest.ts";
 
 const DropdownUser = (props: {
   state: {
@@ -39,7 +40,7 @@ const DropdownUser = (props: {
           "span",
           { class: btn_user },
           createElement("img", {
-            src: "../../../../public/images/avatar_1.jpg",
+            src: avatar_img(user) || "../../../../public/images/avatar_1.jpg",
             class: dropdown_user_img,
           }),
           `${user?.name}`

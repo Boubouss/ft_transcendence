@@ -6,8 +6,8 @@ import { useEffect, useState } from "#core/framework.ts";
 import { createElement } from "#core/render.ts";
 import { useForm } from "#hooks/useForm.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import { handleEditAccount } from "#requests/userRequest.ts";
-import { API_USER_ROUTES, getStorage } from "#services/data.ts";
+import { avatar_img, handleEditAccount } from "#requests/userRequest.ts";
+import { getStorage } from "#services/data.ts";
 import { Form_ID, KeysStorage } from "#types/enums.ts";
 import Form from "../Form";
 import {
@@ -15,7 +15,6 @@ import {
   a2f_title,
   avatar,
   edit_btn,
-  edit_btn_enable,
   edit_container,
   eyes_container,
   eyes_img,
@@ -34,21 +33,16 @@ const FormAccount = () => {
   const [Avatar, setAvatar] = useState("");
   const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
+
   useEffect(() => {
     setA2F(user.configuration.is2FA);
   }, []);
-
-  const bgUrl = `${
-    import.meta.env.VITE_API_USER + API_USER_ROUTES.DOWNLOAD_AVATAR
-  }/avatar_${user.id}.jpg`;
-  const bgClass = `bg-[url('${bgUrl}')]`;
 
   return Form(
     {
       attr: {
         id: "form-account",
         class: form_account,
-        ...(!isEditing ? { readonly: true } : {}),
       },
     },
     createElement(
@@ -132,9 +126,8 @@ const FormAccount = () => {
         attr: {
           name: "avatar",
           type: "file",
-          class: avatar + `${bgClass}`,
-          style:
-            "background-image: url('https://localhost:3000/download/avatar_1.jpg');",
+          class: avatar,
+          style: `background-image: url(${avatar_img(user)});`,
           accept: ".jpeg",
           ...(!isEditing ? { disabled: true } : {}),
         },
@@ -146,7 +139,7 @@ const FormAccount = () => {
       Button({
         children: useLanguage("editinfo"),
         attr: {
-          class: !isEditing ? edit_btn : edit_btn_enable,
+          class: edit_btn(isEditing),
           onClick: () => {
             setEditing(!isEditing);
           },
@@ -156,7 +149,7 @@ const FormAccount = () => {
       Submit({
         text: useLanguage("valid"),
         attr: {
-          class: submit_account_default,
+          class: submit_account_default(isEditing),
           onClick: () => {
             handleEditAccount({ setA2F }), setEditing(!isEditing);
           },
