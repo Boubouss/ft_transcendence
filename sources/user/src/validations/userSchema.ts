@@ -28,24 +28,22 @@ export const configSchema = {
 };
 
 export const updateSchema = {
-	body: {
-		type: "object",
-		required: ["id", "configuration"],
-		properties: {
-			id: { type: "integer" },
-			name: { type: "string", minLength: 3, maxLength: 20 },
-			email: { type: "string", format: "email" },
-			avatar: { type: "string" },
-			password: {
-				type: "string",
-				minLength: 8,
-				pattern:
-					"^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-			},
-			configuration: configSchema,
+	type: "object",
+	required: [],
+	properties: {
+		id: { type: "integer" },
+		name: { type: "string", minLength: 3, maxLength: 20 },
+		email: { type: "string", format: "email" },
+		avatar: { type: "string" },
+		password: {
+			type: "string",
+			minLength: 8,
+			pattern:
+				"^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
 		},
-		additionalProperties: false,
+		configuration: configSchema,
 	},
+	additionalProperties: false,
 };
 
 export const authSchema = {

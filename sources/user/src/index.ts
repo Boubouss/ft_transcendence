@@ -13,10 +13,15 @@ import { errorHandler } from "./errors/errorHandler";
 import fastifyWebsocket from "@fastify/websocket";
 import cors from "@fastify/cors";
 import avatar from "./routes/avatar";
+import Ajv from "ajv";
+import ajvFormats from "ajv-formats";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 checkEnv();
+
+export const ajv = new Ajv();
+ajvFormats(ajv);
 
 const app = fastify({
 	https: {
