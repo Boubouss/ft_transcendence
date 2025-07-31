@@ -39,14 +39,11 @@ const crud: FastifyPluginAsync = async (fastify, opts) => {
 
 		try {
 			const { id } = request.params as { id: string };
-			// const user: UserUpdate = request.body as UserUpdate;
 
 			const data = request.parts();
 			const user: UserData = {};
-			// console.log(request);
 
 			for await (const part of data) {
-				// console.log(part);
 				if (
 					part.type === "file" &&
 					part.mimetype !== "application/octet-stream"
@@ -67,7 +64,7 @@ const crud: FastifyPluginAsync = async (fastify, opts) => {
 							if (value.length > 0) user.password = value;
 							break;
 						case "isA2F":
-							user.configuration = { is2FA: true };
+							user.configuration = { is2FA: value === "true" };
 							break;
 						default:
 							break;
@@ -75,18 +72,18 @@ const crud: FastifyPluginAsync = async (fastify, opts) => {
 				}
 			}
 
-			console.log(user);
+			if (validate(user)) {
+				const response = await updateUser(parseInt(id), user);
+				return reply.send({ event: "UPDATE", data: response });
+			}
 
-			if (validate(user)) return updateUser(parseInt(id), user);
-			else console.log("nop");
-
-			console.log("fin boucle");
+			return reply.send({
+				event: "ERROR",
+				errors: validate.errors?.shift()?.instancePath,
+			});
 		} catch (error) {
-			reply.send({ message: error });
+			reply.send({ error });
 		}
-
-		// return updateUser(parseInt(id), user);
-		reply.send({ message: "ok" });
 	});
 
 	fastify.delete("/user/:id", async (request, reply) => {
