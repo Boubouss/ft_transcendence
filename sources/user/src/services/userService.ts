@@ -7,6 +7,11 @@ import {
 	UserUpdate,
 } from "../types/types";
 import * as bcrypt from "bcrypt";
+import { pipeline } from "stream";
+import { promisify } from "util";
+import path from "path";
+import fs from "fs";
+import { MultipartFile } from "@fastify/multipart";
 
 const prisma: PrismaClient = new PrismaClient();
 
@@ -86,15 +91,13 @@ export async function updateUser(id: number, data: UserUpdate) {
 		data.password = await bcrypt.hash(data.password, saltRounds);
 	}
 
-	const { id: userId, configuration: config, ...userData } = data;
-	const { id: configId, ...configData } = config;
+	const { configuration: configurationData, ...userData } = data;
 
 	const result = await prisma.$transaction(async (prisma) => {
 		const user: User = await prisma.user.update({
 			where: { id },
 			data: userData,
 			select: {
-				id: true,
 				name: true,
 				email: true,
 				avatar: true,
@@ -103,9 +106,8 @@ export async function updateUser(id: number, data: UserUpdate) {
 
 		const configuration: Configuration = await prisma.configuration.update({
 			where: { userId: id },
-			data: configData,
+			data: configurationData ?? {},
 			select: {
-				id: true,
 				is2FA: true,
 			},
 		});
@@ -192,4 +194,21 @@ export async function getPlayers(ids: number[]) {
 			avatar: true,
 		},
 	});
+}
+
+export async function uploadAvatar(id: number, avatar: MultipartFile) {
+	try {
+		if (!avatar) throw new Error("No file =(");
+		const pump = promisify(pipeline);
+		const uploadDir = path.join(path.dirname(__dirname), "../storage");
+
+		if (!fs.existsSync(uploadDir)) {
+			fs.mkdirSync(uploadDir);
+		}
+		const filePath = path.join(uploadDir, "avatar_" + id + ".jpg");
+		await pump(avatar.file, fs.createWriteStream(filePath));
+	} catch (err: any) {
+		return null;
+	}
+	return "avatar_" + id + ".jpg";
 }

@@ -1,7 +1,7 @@
 import { WebSocket } from "@fastify/websocket";
 
 export type Configuration = {
-	id: number;
+	id?: number;
 	is2FA: boolean;
 };
 
@@ -10,7 +10,7 @@ export type ConfigAuth = Configuration & {
 };
 
 export type User = {
-	id: number;
+	id?: number;
 	name: string;
 	email: string;
 	avatar: string;
@@ -27,13 +27,14 @@ export type UserCreate = {
 };
 
 export type UserUpdate = {
-	id: number;
 	name?: string;
 	email?: string;
 	avatar?: string;
 	password?: string;
 	verify?: boolean;
-	configuration: Configuration;
+	configuration?: {
+		is2FA?: boolean;
+	};
 };
 
 export type UserAuth = {
@@ -41,6 +42,16 @@ export type UserAuth = {
 	email: string;
 	password: string;
 	configuration: ConfigAuth;
+};
+
+export type UserData = {
+	name?: string;
+	email?: string;
+	password?: string;
+	avatar?: string;
+	configuration?: {
+		is2FA?: boolean;
+	};
 };
 
 export type Credential = {
