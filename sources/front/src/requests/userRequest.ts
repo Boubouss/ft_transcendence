@@ -7,7 +7,7 @@ import {
 } from "#services/data.ts";
 import { Form_ID, KeysStorage } from "#types/enums.ts";
 import type { User, UserEditForm } from "#types/user.ts";
-import _ from "lodash";
+import _, { keysIn } from "lodash";
 
 export const avatar_img = (user: User) => {
   return (
@@ -58,14 +58,18 @@ export const handleEditAccount = (props: {
   if (newavatar?.type !== "application/octet-stream") handleEditAvatar(form);
 
   if (JSON.stringify(edituser) != JSON.stringify(compuser))
-    handleEditUser(edituser);
+    handleEditUser(edituser, setA2F);
   else return;
 };
 
-const handleEditUser = async (edituser: UserEditForm) => {
-  try {
-    const localuser = getStorage(localStorage, KeysStorage.CONFTRANS);
+const handleEditUser = async (
+  edituser: UserEditForm,
+  setA2F: (toSet: boolean) => void
+) => {
+  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
+  const localuser = getStorage(localStorage, KeysStorage.CONFTRANS);
 
+  try {
     const response = await fetchAPI(
       import.meta.env.VITE_API_USER +
         API_USER_ROUTES.CRUD_USER +
@@ -81,6 +85,8 @@ const handleEditUser = async (edituser: UserEditForm) => {
     );
 
     if (response.error) {
+      setA2F(user.configuration.is2FA);
+
       console.error(
         "Erreur lors de la mise à jour de l'utilisateur:",
         response
