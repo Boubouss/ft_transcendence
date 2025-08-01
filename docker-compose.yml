@@ -1,6 +1,6 @@
-version: "3.8"
 services:
     nginx:
+        image: nginx:user
         build: ./nginx
         ports:
             - "80:80"
@@ -16,6 +16,7 @@ services:
             - transcendence
         restart: always
     front:
+        image: front:user
         build: ./front
         expose:
             - "80"
@@ -27,17 +28,19 @@ services:
             - transcendence
         restart: always
     user:
-        build: ./user
+        image: user:user
+        build: ./sources/user
         ports:
             - "3000:3000"
         volumes:
             - .ssl:/usr/src/app/ssl:ro
         env_file:
-            - .env
+            - ./sources/user/.env.user
         networks:
             - transcendence
-        restart: always
+        restart: unless-stopped
     game:
+        image: game:user
         build: ./game
         ports:
             - "3001:3000"
@@ -47,8 +50,9 @@ services:
             - .env
         networks:
             - transcendence
-        restart: always
+        restart: unless-stopped
     logic:
+        image: logic:user
         build: ./logic
         ports:
             - "3002:3000"
@@ -58,7 +62,7 @@ services:
             - .env
         networks:
             - transcendence
-        restart: always
+        restart: unless-stopped
 
 networks:
     transcendence:
