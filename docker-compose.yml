@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+    nginx:
+        build: ./nginx
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - front
+            - user
+            - game
+            - logic
+        env_file:
+            - .env
+        networks:
+            - transcendence
+        restart: always
+    front:
+        build: ./front
+        expose:
+            - "80"
+        volumes:
+            - .ssl:/usr/src/app/ssl:ro #read-only
+        env_file:
+            - .env
+        networks:
+            - transcendence
+        restart: always
+    user:
+        build: ./user
+        ports:
+            - "3000:3000"
+        volumes:
+            - .ssl:/usr/src/app/ssl:ro
+        env_file:
+            - .env
+        networks:
+            - transcendence
+        restart: always
+    game:
+        build: ./game
+        ports:
+            - "3001:3000"
+        volumes:
+            - .ssl:/usr/src/app/ssl:ro
+        env_file:
+            - .env
+        networks:
+            - transcendence
+        restart: always
+    logic:
+        build: ./logic
+        ports:
+            - "3002:3000"
+        volumes:
+            - .ssl:/usr/src/app/ssl:ro
+        env_file:
+            - .env
+        networks:
+            - transcendence
+        restart: always
+
+networks:
+    transcendence:
+        name: transcendence
