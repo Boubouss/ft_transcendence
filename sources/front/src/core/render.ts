@@ -30,7 +30,10 @@ function handleAttr(component: Component, element: HTMLElement) {
   for (const [key, value] of Object.entries(component.attr)) {
     switch (key) {
       case "onClick":
-        element.onclick = () => (value as () => void)();
+        element.onclick = (event) => (value as (event?: Event) => void)(event);
+        break;
+      case "onInput":
+        element.oninput = (event) => (value as (event?: Event) => void)(event);
         break;
       case "ref":
         const refsValue = value as { current: HTMLElement | null };
