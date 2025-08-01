@@ -46,24 +46,24 @@ const LobbyInfos = ({ user, currentLobby, lobbySocket }: Props) => {
       }),
     ),
     !_.isEmpty(user) &&
-      createElement(
-        "div",
-        { class: style.lobby_infos_container },
-        List(
-          { attr: { class: style.lobby_infos_container } },
-          PlayerCard,
-          currentLobby.players.map((player) => {
-            return {
-              player,
-              lobbySocket,
-              currentLobby,
-              isReady: currentLobby.ready_ids.includes(player.id),
-              isAdmin: player.id === user.id,
-              isKickable: currentLobby.id !== player.id,
-            };
-          }),
-        ),
+    createElement(
+      "div",
+      { class: style.lobby_infos_container },
+      List(
+        { attr: { class: style.lobby_infos_container } },
+        PlayerCard,
+        currentLobby.players.map((player) => {
+          return {
+            player,
+            lobbySocket,
+            currentLobby,
+            isReady: currentLobby.ready_ids.includes(player.id),
+            isAdmin: player.id === user.id,
+            isKickable: currentLobby.id !== player.id,
+          };
+        }),
       ),
+    ),
     createElement(
       "div",
       { class: "flex w-full h-auto justify-center" },

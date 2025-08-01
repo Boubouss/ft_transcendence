@@ -36,20 +36,29 @@ const PlayerCard = ({
         class: style.player_card_img,
         src: "/images/avatar_1.jpg",
       }),
-      createElement("p", { class: "flex-1 text-4xl truncate" }, player.name),
+      createElement(
+        "p",
+        { class: "flex-1 text-4xl truncate" },
+        isAdmin &&
+        createElement("img", {
+          class: "w-[10px] h-[10px]",
+          src: "/icon/crown.png",
+        }),
+        createElement("span", null, player.name),
+      ),
     ),
     createElement(
       "div",
       { class: "flex items-center gap-[5px]" },
       !isAdmin &&
-        isKickable &&
-        Button({
-          children: useLanguage("kick"),
-          attr: {
-            class: style.kick_button,
-            onClick: handleKick,
-          },
-        }),
+      isKickable &&
+      Button({
+        children: useLanguage("kick"),
+        attr: {
+          class: style.kick_button,
+          onClick: handleKick,
+        },
+      }),
       createElement(
         "div",
         { class: "flex items-center gap-[5px]" },
