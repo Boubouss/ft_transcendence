@@ -8,8 +8,9 @@ export type ComponentAttr = {
   id?: string;
   class?: string;
   src?: string;
-  onClick?: () => void;
-  onChange?: () => void;
+  onClick?: (event?: Event) => void;
+  onInput?: (event?: Event) => void;
+  onChange?: (event?: Event) => void;
   name?: string;
   type?: string;
   placeholder?: string;
@@ -23,6 +24,7 @@ export type ComponentAttr = {
   value?: string | number | null;
   min?: number;
   enctype?: string;
+  max?: number;
 };
 
 type Self = {
