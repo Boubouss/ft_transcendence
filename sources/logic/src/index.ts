@@ -1,7 +1,8 @@
+import cors from "@fastify/cors";
 import fastify from "fastify";
 import websocketPlugin from "@fastify/websocket";
-import { Game } from "./game/Game";
 import { CreateGameRequestBody, DeleteGameRequestBody } from "./type/Interface";
+import { Game } from "./game/Game";
 import { GameState, HttpCode, WebSocketCode } from "./type/Enum";
 import {
   schemaCreateGame,
@@ -9,17 +10,22 @@ import {
   schemaGetGame,
   schemaWebSocket,
   schemaWebSocketInput,
-
 } from "./type/Schema";
 
 //todo: remove the placeholders and constants
 const FPS: 30 | 60 = 60;
-const PORT: number = 3000;
+const PORT: number = 3001;
 const TIMEOUT_GAME_DELETION = 30; //time in second
 
 let games = new Map<string, Game>();
 const app = fastify();
 app.register(websocketPlugin);
+app.register(cors, {
+  origin: "http://localhost:5173", //todo:replace the hardcoded value
+  optionsSuccessStatus: 200,
+  methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+  preflightContinue: false,
+});
 
 app.register(() => {
   app.get(
