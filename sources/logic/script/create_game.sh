@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 config="config.json"
-gameId="${1:-100}"
+gameId="${1:-0}"
 port=3001
 
 data="$(jq .gameId="${gameId}" "${config}")"

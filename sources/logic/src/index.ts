@@ -132,6 +132,7 @@ app.listen({ port: PORT }, (err) => {
 
 setInterval(() => {
   games.forEach((game, gameId) => {
+    console.log(game);
     game.update();
     game.broadcast(JSON.stringify(game.toJson()));
 
