@@ -1,5 +1,5 @@
 import LobbyCard from "#components/Card/LobbyCard/LobbyCard.ts";
-import { requestAction } from "#sockets/lobby/requests.ts";
+import { requestAction } from "#sockets/Lobby/requests.ts";
 import { Action, type Lobby } from "#types/lobby.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import Button from "#components/Buttons/Button.ts";
@@ -29,7 +29,7 @@ const LobbyList = ({ user, lobbies, showModalState, lobbySocket }: Props) => {
     { class: style.lobby_container },
     createElement(
       "div",
-      { class: "flex w-full" },
+      { class: "flex flex-initial" },
       createElement(
         "h1",
         { class: "underline text-4xl m-auto" },
@@ -43,23 +43,27 @@ const LobbyList = ({ user, lobbies, showModalState, lobbySocket }: Props) => {
         },
       })
     ),
-    !_.isEmpty(lobbies)
-      ? List(
-          { attr: { class: style.lobby_list_container } },
-          LobbyCard,
-          Array.from(lobbies).map(([_, lobby]) => {
-            return { lobby, handleJoinLobby };
-          })
-        )
-      : createElement(
-          "div",
-          { class: style.lobby_list_container },
-          createElement(
-            "p",
-            { class: "m-auto text-3xl" },
-            useLanguage("no_lobby")
+    createElement(
+      "div",
+      { class: "relative w-full h-full" },
+      !_.isEmpty(lobbies)
+        ? List(
+            { attr: { class: style.lobby_list_container } },
+            LobbyCard,
+            Array.from(lobbies).map(([_, lobby]) => {
+              return { lobby, handleJoinLobby };
+            })
           )
-        )
+        : createElement(
+            "div",
+            { class: style.lobby_list_container },
+            createElement(
+              "p",
+              { class: "m-auto text-3xl" },
+              useLanguage("no_lobby")
+            )
+          )
+    )
   );
 };
 

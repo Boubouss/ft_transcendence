@@ -21,7 +21,7 @@ const FriendCard = (props: {
     },
     createElement("img", {
       src: _.isEmpty(avatar)
-        ? "../../../../public/images/avatar_1.jpg"
+        ? "/images/avatar_1.jpg"
         : avatar,
       class: "h-[50px] w-[50px] rounded-[50px]",
     }),

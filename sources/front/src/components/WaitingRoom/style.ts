@@ -1,4 +1,4 @@
-export const lobby_container = `
+export const waiting_room_container = `
     flex
     flex-col
     flex-auto
@@ -14,25 +14,14 @@ export const lobby_container = `
     gap-10
 `;
 
-export const lobby_list_container = `
-    absolute
-    inset-px
-    flex
-    flex-col
-    gap-[5px]
-    overflow-y-auto
-    pr-2
-    my-scrollbar
-`;
-
-export const create_lobby_button = `
+export const leave_button = `
     flex
     p-2
     mr-2
     group
     border-3
     border-black
-    bg-green-500
+    bg-red-500
     text-3xl
     justify-center
     rounded-[10px]
@@ -41,4 +30,15 @@ export const create_lobby_button = `
     hover:brightness-150
     cursor-pointer
     duration-300
+`;
+
+export const next_opponents_container = `
+    absolute
+    inset-px
+    flex
+    flex-col
+    gap-[5px]
+    overflow-y-auto
+    pr-2
+    my-scrollbar
 `;

@@ -1,6 +1,6 @@
 import { handleTournamentLeave } from "#services/tournamentService";
 import { ClientEvent, ServerEvent } from "#types/enums";
-import { Lobby, LobbyPlayer } from "#types/lobby";
+import { Instance, Lobby, LobbyPlayer } from "#types/lobby";
 import { Tournament } from "#types/tournament";
 import { FastifyPluginAsync } from "fastify";
 import _ from "lodash";
@@ -12,11 +12,13 @@ import {
   leaveLobby,
   whisperData,
 } from "#services/lobbyService";
+import { handlePlayerInstance } from "#services/playerService";
 
 export const sockets: Map<number, WebSocket> = new Map();
 export const lobbies: Lobby[] = [];
 export const players: LobbyPlayer[] = [];
-export const tournaments: Tournament[] = [];
+export const playerInstance: Map<number, Instance> = new Map();
+export const tournaments: Map<number, Tournament> = new Map();
 
 const playerTimeout: Map<number, ReturnType<typeof setTimeout>> = new Map();
 
@@ -33,7 +35,8 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
         await getLobbyPlayer(
           user_id,
           socket,
-          request.headers["sec-websocket-protocol"],
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvbGlkQHRlc3QuY29tIiwiaWF0IjoxNzU0NTY5NjI1fQ.TQFVs4cAQrGvOkqYwD5jWcmos5ZP71DdORL7Xvkn2Tk",
+          // request.headers["sec-websocket-protocol"],
         );
       } else {
         const timeout = playerTimeout.get(player_id);
@@ -59,6 +62,8 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
               data: { target_id: currentLobby.id },
             }),
           );
+
+          handlePlayerInstance(player_id);
         }
       }
 

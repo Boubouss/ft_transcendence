@@ -1,10 +1,20 @@
 import { FastifyPluginAsync } from "fastify";
 import { matchCreateSchema, matchUpdateSchema } from "#validations/matchSchema";
-import { findOrCreatePlayer, findOrCreatePlayers } from "#services/playerService";
-import { createMatch, getPlayerMatches, updateMatch } from "#services/matchService";
 import { handleTournamentMatch } from "#services/tournamentService";
 import { MatchCreate, MatchUpdate } from "#types/match";
+import { playerInstance } from "./lobby";
 import _ from "lodash";
+
+import {
+  findOrCreatePlayer,
+  findOrCreatePlayers,
+} from "#services/playerService";
+
+import {
+  createMatch,
+  getPlayerMatches,
+  updateMatch,
+} from "#services/matchService";
 
 const match: FastifyPluginAsync = async (fastify, opts) => {
   fastify.get("/match/:userId", async (request, reply) => {
@@ -15,24 +25,39 @@ const match: FastifyPluginAsync = async (fastify, opts) => {
     return reply.send(matches);
   });
 
-  fastify.post("/match/start", { schema: matchCreateSchema }, async (request, reply) => {
-    const data = request.body as MatchCreate;
-    const players = await findOrCreatePlayers(data.user_ids);
-    const match = await createMatch(players);
+  fastify.post(
+    "/match/start",
+    { schema: matchCreateSchema },
+    async (request, reply) => {
+      const data = request.body as MatchCreate;
+      const players = await findOrCreatePlayers(data.user_ids);
+      const match = await createMatch(players);
 
-    return reply.send(match);
-  });
+      return reply.send(match);
+    },
+  );
 
-  fastify.put("/match/end/:id", { schema: matchUpdateSchema }, async (request, reply) => {
-    const { id } = request.params as { id: string };
-    const match = await updateMatch(parseInt(id), request.body as MatchUpdate);
+  fastify.put(
+    "/match/end/:id",
+    { schema: matchUpdateSchema },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+      const match = await updateMatch(
+        parseInt(id),
+        request.body as MatchUpdate,
+      );
 
-    if (!_.isEmpty(match) && !_.isEmpty(match.round)) {
-      await handleTournamentMatch(match, match.round, _.first(match.players));
-    }
+      for (const matchPlayer of match.players) {
+        playerInstance.delete(matchPlayer.player_id);
+      }
 
-    return reply.send(match);
-  });
+      if (!_.isEmpty(match) && !_.isEmpty(match.round)) {
+        await handleTournamentMatch(match, match.round, _.first(match.players));
+      }
+
+      return reply.send(match);
+    },
+  );
 };
 
 export default match;

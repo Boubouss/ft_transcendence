@@ -1,27 +1,3 @@
-export enum GameClientEvent {
-  ERROR = "ERROR",
-  KICKED = "KICKED",
-  LOBBY_LIST = "LOBBY_LIST",
-  CREATE_LOBBY = "CREATE_LOBBY",
-  UPDATE_LOBBY = "UPDATE_LOBBY",
-  DELETE_LOBBY = "DELETE_LOBBY",
-  GAME_CREATED = "GAME_CREATED",
-  WAITING_OPPONENTS = "WAITING_OPPONENTS",
-}
-
-export enum GameServerEvent {
-  CREATE = "CREATE",
-  ACTION = "ACTION",
-}
-
-export enum Action {
-  JOIN = "JOIN",
-  LEAVE = "LEAVE",
-  LAUNCH = "LAUNCH",
-  KICK = "KICK",
-  SWITCH_READY = "SWITCH_READY",
-}
-
 export enum UserClientEvent {
   SEND = "SEND",
   ACCEPT = "ACCEPT",

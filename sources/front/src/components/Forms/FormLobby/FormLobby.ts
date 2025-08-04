@@ -1,5 +1,5 @@
 import { lobby_form, lobby_form_content, lobby_form_header } from "./style";
-import { requestLobbyCreation } from "#sockets/lobby/requests.ts";
+import { requestLobbyCreation } from "#sockets/Lobby/requests.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import Input from "#components/Inputs/Input.ts";
 import { createElement } from "#core/render.ts";
