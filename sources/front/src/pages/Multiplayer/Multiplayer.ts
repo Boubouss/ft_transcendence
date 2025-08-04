@@ -1,19 +1,34 @@
+import ModalGameResult from "#components/Modals/ModalGameResult/ModalGameResult.ts";
 import { createElement, useEffect, useRef, useState } from "#core/framework.ts";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 import ModalLobby from "#components/Modals/ModalLobby/ModalLobby.ts";
-import { lobbyResponseHandlers } from "#sockets/lobby/responses.ts";
+import { lobbyResponseHandlers } from "#sockets/Lobby/responses.ts";
 import LobbyList from "#components/Lists/LobbyList/LobbyList.ts";
+import WaitingRoom from "#components/WaitingRoom/WaitingRoom.ts";
+import GameWrapper from "#components/GameWrapper/GameWrapper.ts";
 import LobbyInfos from "#components/LobbyInfos/LobbyInfos.ts";
+import { requestAction } from "#sockets/Lobby/requests.ts";
+import type { GamePlayer } from "#components/Game/Game.ts";
+import { Action, type Lobby } from "#types/lobby.ts";
 import { handleSocket } from "#services/socket.ts";
 import { getStorage } from "#services/data.ts";
-import type { Lobby } from "#types/lobby.ts";
+import type { Match, Player } from "#types/match.ts";
+import { KeysStorage } from "#types/enums.ts";
 import type { User } from "#types/user.ts";
 import * as style from "./style";
 import _ from "lodash";
-import { KeysStorage } from "#types/enums.ts";
 
 export type UserState = [User | null, (value: User | null) => void];
 export type CurrentLobbyIdState = [number, (value: number) => void];
+export type GameUrlState = [string | null, (value: string | null) => void];
+export type NextOpponentsState = [Player[], (value: Player[]) => void];
+export type ScoresState = [number[], (value: number[]) => void];
+export type MatchState = [Match | null, (value: Match | null) => void];
+
+export type PlayerState = [
+  GamePlayer | null,
+  (value: GamePlayer | null) => void,
+];
 
 export type LobbiesState = [
   Map<number, Lobby>,
@@ -21,11 +36,18 @@ export type LobbiesState = [
 ];
 
 const Multiplayer = () => {
-  const socketRef = useRef<WebSocket | null>(null);
+  const lobbySocketRef = useRef<WebSocket | null>(null);
+  const gameSocketRef = useRef<WebSocket | null>(null);
+
   const [user, setUser] = useState<User | null>(null);
   const [lobbies, setLobbies] = useState<Map<number, Lobby>>(new Map());
+  const [gameUrl, setGameUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [currentLobbyId, setCurrentLobbyId] = useState(-1);
+  const [nextOpponents, setNextOpponents] = useState<Player[]>([]);
+  const [scores, setScores] = useState<number[]>([0, 0]);
+  const [player, setPlayer] = useState<GamePlayer | null>(null);
+  const [match, setMatch] = useState<Match | null>(null);
 
   useEffect(() => {
     const storedUser = getStorage(sessionStorage, KeysStorage.USERTRANS);
@@ -37,31 +59,74 @@ const Multiplayer = () => {
     if (_.isEmpty(user)) return;
 
     const configuration = getStorage(localStorage, "transcendence_conf");
-    socketRef.current = new WebSocket(
+    lobbySocketRef.current = new WebSocket(
       `${import.meta.env.VITE_LOBBY_WSS}/${user.id}`,
       [configuration.token]
     );
 
-    socketRef.current.onclose = () => console.log("CLOSE");
+    lobbySocketRef.current.onclose = () => handleSocketClose();
   }, [user]);
 
   useEffect(() => {
-    if (!socketRef.current) return;
+    if (!lobbySocketRef.current) return;
 
-    socketRef.current.onmessage = (event) => {
+    lobbySocketRef.current.onmessage = (event) => {
       handleSocket(event, lobbyResponseHandlers, {
         USER_STATE: [user, setUser],
         LOBBIES_STATE: [lobbies, setLobbies],
+        GAME_URL_STATE: [gameUrl, setGameUrl],
         CURRENT_LOBBY_ID_STATE: [currentLobbyId, setCurrentLobbyId],
+        NEXT_OPPONENTS_STATE: [nextOpponents, setNextOpponents],
+        MATCH_STATE: [match, setMatch],
       });
     };
 
     return () => {
-      if (!socketRef.current) return;
+      if (!lobbySocketRef.current) return;
 
-      socketRef.current.close();
+      lobbySocketRef.current.close();
     };
-  }, [lobbies, socketRef]);
+  }, [user, lobbies, gameUrl, currentLobbyId, nextOpponents, lobbySocketRef]);
+
+  const handleLeave = () => {
+    requestAction(lobbySocketRef.current, Action.LEAVE, currentLobbyId);
+  };
+
+  const handleSocketClose = () => {
+    lobbySocketRef.current = null;
+  };
+
+  const getMainContent = () => {
+    if (_.isEmpty(user)) return false;
+
+    if (gameUrl) {
+      return GameWrapper({
+        userId: user.id as number,
+        currentLobbyId,
+        lobbySocketRef,
+        gameSocketRef,
+        gameUrlState: [gameUrl, setGameUrl],
+        scoresState: [scores, setScores],
+        playerState: [player, setPlayer],
+      });
+    } else if (_.isEmpty(gameUrl) && !_.isEmpty(nextOpponents)) {
+      return WaitingRoom({ nextOpponents, handleLeave });
+    } else if (_.isEmpty(gameUrl) && lobbies.has(currentLobbyId)) {
+      return LobbyInfos({
+        user,
+        currentLobby: lobbies.get(currentLobbyId)!,
+        lobbySocket: lobbySocketRef.current,
+        handleLeave,
+      });
+    }
+
+    return LobbyList({
+      user,
+      lobbies,
+      showModalState: [showModal, setShowModal],
+      lobbySocket: lobbySocketRef.current,
+    });
+  };
 
   return createElement(
     "div",
@@ -69,23 +134,16 @@ const Multiplayer = () => {
     NavigationBar({}),
     createElement(
       "div",
-      { class: "w-full h-full px-[50px] pb-[50px]" },
-      !lobbies.has(currentLobbyId)
-        ? LobbyList({
-            user,
-            lobbies,
-            showModalState: [showModal, setShowModal],
-            lobbySocket: socketRef.current,
-          })
-        : LobbyInfos({
-            user,
-            currentLobby: lobbies.get(currentLobbyId)!,
-            lobbySocket: socketRef.current,
-          })
+      { class: "flex flex-auto px-[50px] pb-[50px]" },
+      getMainContent()
     ),
     ModalLobby({
       showModalState: [showModal, setShowModal],
-      lobbySocket: socketRef.current,
+      lobbySocket: lobbySocketRef.current,
+    }),
+    ModalGameResult({
+      user,
+      matchState: [match, setMatch],
     })
   );
 };

@@ -1,14 +1,16 @@
 export enum LobbyClientEvent {
-  // ERROR = "ERROR",
+  ERROR = "ERROR",
   JOINED = "JOINED",
   LEFT = "LEFT",
-  // KICKED = "KICKED",
+  KICKED = "KICKED",
   LOBBY_LIST = "LOBBY_LIST",
   CREATE_LOBBY = "CREATE_LOBBY",
   UPDATE_LOBBY = "UPDATE_LOBBY",
   DELETE_LOBBY = "DELETE_LOBBY",
-  // GAME_CREATED = "GAME_CREATED",
-  // WAITING_OPPONENTS = "WAITING_OPPONENTS",
+  TRANSFER_OWNER = "TRANSFER_OWNER",
+  GAME_CREATED = "GAME_CREATED",
+  GAME_RESULT = "GAME_RESULT",
+  WAITING_OPPONENTS = "WAITING_OPPONENTS",
 }
 
 export enum LobbyServerEvent {
@@ -27,7 +29,10 @@ export enum Action {
 export enum SocketLobbyState {
   USER_STATE = "USER_STATE",
   LOBBIES_STATE = "LOBBIES_STATE",
+  GAME_URL_STATE = "GAME_URL_STATE",
   CURRENT_LOBBY_ID_STATE = "CURRENT_LOBBY_ID_STATE",
+  NEXT_OPPONENTS_STATE = "NEXT_OPPONENTS_STATE",
+  MATCH_STATE = "MATCH_STATE",
 }
 
 export type LobbyPlayer = {
@@ -40,14 +45,17 @@ export type Lobby = {
   id: number;
   name: string;
   player_limit: number;
+  score_max: number;
   is_tournament: boolean;
   players: LobbyPlayer[];
   ready_ids: number[];
 };
 
 export type LobbyCreate = {
+  name: string;
   player_limit: number;
-  is_tournament?: boolean;
+  score_max: number;
+  is_tournament: boolean;
 };
 
 export type LobbyPlayerAction = {

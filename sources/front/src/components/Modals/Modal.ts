@@ -19,7 +19,7 @@ const Modal = (
   const default_attr = { class: modal_default };
   const default_attr_bckg = {
     class: modal_background,
-    onClick: () => setter(!state),
+    onClick: () => setter(false),
   };
 
   attr = { ...default_attr, ...attr };

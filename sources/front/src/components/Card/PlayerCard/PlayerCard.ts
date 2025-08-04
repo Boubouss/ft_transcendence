@@ -1,17 +1,22 @@
 import { createElement } from "#core/render.ts";
 import { Action, type Lobby, type LobbyPlayer } from "#types/lobby.ts";
-import { requestAction } from "#sockets/lobby/requests.ts";
+import { requestAction } from "#sockets/Lobby/requests.ts";
 import Button from "#components/Buttons/Button.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import * as style from "./style.ts";
 import Card from "../Card";
+import _ from "lodash";
 
 type Props = {
   player: LobbyPlayer;
   lobbySocket: WebSocket | null;
-  currentLobby: Lobby;
-  isReady: boolean;
-  isAdmin: boolean;
+  currentLobby?: Lobby;
+  isReady?: boolean;
+  isPlayerAdmin?: boolean;
+  isUserAdmin?: boolean;
+  isWaitingRoom?: boolean;
+  isWinner?: boolean;
+  score?: number;
 };
 
 const PlayerCard = ({
@@ -19,11 +24,55 @@ const PlayerCard = ({
   lobbySocket,
   currentLobby,
   isReady,
-  isAdmin,
-  canKick,
+  isPlayerAdmin,
+  isUserAdmin,
+  isWaitingRoom,
+  isWinner,
+  score,
 }: Props) => {
   const handleKick = () => {
+    if (_.isEmpty(currentLobby)) {
+      return console.error("Error: no current lobby.");
+    }
+
     requestAction(lobbySocket, Action.KICK, currentLobby.id, player.id);
+  };
+
+  const getEndContent = () => {
+    if (typeof score !== "undefined") {
+      return createElement(
+        "div",
+        { class: style.score_container({ isWinner }) },
+        score.toString()
+      );
+    } else if (!isWaitingRoom) {
+      return createElement(
+        "template",
+        null,
+        !isPlayerAdmin &&
+          isUserAdmin &&
+          Button({
+            children: useLanguage("kick"),
+            attr: {
+              class: style.kick_button,
+              onClick: handleKick,
+            },
+          }),
+        createElement(
+          "div",
+          { class: "flex items-center gap-[5px]" },
+          createElement("img", {
+            src: `/icons/${isReady ? "ready" : "not_ready"}.png`,
+            class: "w-[20px] h-[20px]",
+          }),
+          createElement(
+            "p",
+            { class: "text-2xl" },
+            `${isReady ? useLanguage("ready") : useLanguage("not_ready")}`
+          )
+        )
+      );
+    }
   };
 
   return Card(
@@ -38,7 +87,7 @@ const PlayerCard = ({
       createElement(
         "p",
         { class: "flex flex-1 items-center gap-[10px] text-4xl truncate" },
-        isAdmin &&
+        isPlayerAdmin &&
           createElement("img", {
             class: "w-[20px] h-[20px]",
             src: "/icons/crown.png",
@@ -49,28 +98,7 @@ const PlayerCard = ({
     createElement(
       "div",
       { class: "flex items-center gap-[5px]" },
-      !isAdmin &&
-        canKick &&
-        Button({
-          children: useLanguage("kick"),
-          attr: {
-            class: style.kick_button,
-            onClick: handleKick,
-          },
-        }),
-      createElement(
-        "div",
-        { class: "flex items-center gap-[5px]" },
-        createElement("img", {
-          src: `/icons/${isReady ? "ready" : "not_ready"}.png`,
-          class: "w-[20px] h-[20px]",
-        }),
-        createElement(
-          "p",
-          { class: "text-2xl" },
-          `${isReady ? useLanguage("ready") : useLanguage("not_ready")}`
-        )
-      )
+      getEndContent()
     )
   );
 };

@@ -23,15 +23,9 @@ export function resetEffects() {
 }
 
 function isDependenciesSame(effect: Effect, dependencies: any[]) {
-  if (dependencies.length !== effect.dependencies.length) {
-    return false;
-  } else if (
-    JSON.stringify(dependencies) !== JSON.stringify(effect.dependencies)
-  ) {
-    return false;
-  }
+  if (dependencies.length !== effect.dependencies.length) return false;
 
-  return true;
+  return _.isEqual(dependencies, effect.dependencies);
 }
 
 export function useEffect(callback: () => void, dependencies: any[]) {

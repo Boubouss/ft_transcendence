@@ -5,13 +5,14 @@ import {
 } from "./style";
 import { useState } from "#core/hooks/useState.ts";
 import { createElement } from "#core/render.ts";
+import _ from "lodash";
 
 const Selector = (props: {
   values: number[];
   value: number;
   setValue: (toSet: number) => void;
 }) => {
-  const [index, setIndex] = useState(
+  const [_index, setIndex] = useState(
     Math.max(0, props.values.indexOf(props.value))
   );
 
@@ -33,8 +34,8 @@ const Selector = (props: {
       type: `button`,
       value: `<`,
       onClick: () => {
-        const newIndex = Math.max(0, index - 1);
-        props.setValue(props.values[newIndex]);
+        const newIndex = _.findLastIndex(props.values, (v) => v < props.value);
+        props.setValue(props.values[Math.max(0, newIndex)]);
         setIndex(newIndex);
       },
     }),
@@ -44,8 +45,12 @@ const Selector = (props: {
       type: `button`,
       value: `>`,
       onClick: () => {
-        const newIndex = Math.min(props.values.length - 1, index + 1);
-        props.setValue(props.values[newIndex]);
+        const newIndex = _.findIndex(props.values, (v) => v > props.value);
+        const min = Math.min(props.values.length - 1, newIndex);
+
+        props.setValue(
+          props.values[min === -1 ? props.values.length - 1 : min]
+        );
         setIndex(newIndex);
       },
     }),

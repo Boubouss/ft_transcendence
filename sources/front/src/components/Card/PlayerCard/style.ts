@@ -27,6 +27,18 @@ export const player_card_action = `
     gap-[5px]
 `;
 
+export const score_container = (props: { isWinner?: boolean }) => `
+   text-2xl 
+   border-solid
+   border-3
+   border-black
+   rounded-[10px]
+   px-[18px]
+   py-[9px]
+   m-1
+   bg-${props.isWinner ? "green-500" : "red-500"}
+`;
+
 export const kick_button = `
     flex
     p-2

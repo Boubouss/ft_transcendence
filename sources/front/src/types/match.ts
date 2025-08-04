@@ -1,4 +1,5 @@
 export interface MatchPlayer {
+  player: Player;
   match_id: number;
   player_id: number;
   score: number;

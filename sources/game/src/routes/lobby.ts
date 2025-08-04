@@ -1,6 +1,7 @@
 import { handleTournamentLeave } from "#services/tournamentService";
+import { handlePlayerInstance } from "#services/playerService";
+import { Instance, Lobby, LobbyPlayer } from "#types/lobby";
 import { ClientEvent, ServerEvent } from "#types/enums";
-import { Lobby, LobbyPlayer } from "#types/lobby";
 import { Tournament } from "#types/tournament";
 import { FastifyPluginAsync } from "fastify";
 import _ from "lodash";
@@ -16,7 +17,8 @@ import {
 export const sockets: Map<number, WebSocket> = new Map();
 export const lobbies: Lobby[] = [];
 export const players: LobbyPlayer[] = [];
-export const tournaments: Tournament[] = [];
+export const playerInstance: Map<number, Instance> = new Map();
+export const tournaments: Map<number, Tournament> = new Map();
 
 const playerTimeout: Map<number, ReturnType<typeof setTimeout>> = new Map();
 
@@ -59,6 +61,8 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
               data: { target_id: currentLobby.id },
             }),
           );
+
+          handlePlayerInstance(player_id);
         }
       }
 
@@ -70,7 +74,7 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
           return socket.send(
             JSON.stringify({
               event: ClientEvent.ERROR,
-              data: { message: "This player doesn't exist." },
+              data: { message: "resource_not_found" },
             }),
           );
         }
@@ -114,7 +118,7 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
 
           players.splice(playerIndex, 1);
           sockets.delete(player_id);
-        }, 10000);
+        }, 15000);
 
         playerTimeout.set(player_id, timeout);
       });

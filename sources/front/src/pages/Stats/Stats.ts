@@ -31,7 +31,7 @@ const Stats = () => {
       MatchCard,
       matches.map((match) => {
         return { match, players };
-      }) 
+      })
     )
   );
 };

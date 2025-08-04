@@ -1,8 +1,9 @@
 export const label_default = `
-relative
-flex
+    relative
+    flex
     items-center
-    gap-[5px]
+    gap-[10px]
+    whitespace-nowrap
     peer
 `;
 

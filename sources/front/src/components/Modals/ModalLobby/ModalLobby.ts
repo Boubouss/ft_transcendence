@@ -1,5 +1,6 @@
 import FormLobby from "#components/Forms/FormLobby/FormLobby.ts";
 import Modal from "../Modal";
+import { modal_lobby } from "./style";
 
 type Props = {
   showModalState: [boolean, (value: boolean) => void];
@@ -10,7 +11,7 @@ const ModalLobby = ({ showModalState, lobbySocket }: Props) => {
   const [showModal, setShowModal] = showModalState;
 
   return Modal(
-    { state: showModal, setter: setShowModal },
+    { attr: { class: modal_lobby }, state: showModal, setter: setShowModal },
     FormLobby({ showModalState, lobbySocket })
   );
 };

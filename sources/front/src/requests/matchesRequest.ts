@@ -20,7 +20,7 @@ export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
 
   //console.log(matches);
 
-  if (matches) setMatches(matches);
+  if (matches) setMatches(matches.reverse());
 };
 
 export const getPlayers = async (

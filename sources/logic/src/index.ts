@@ -4,6 +4,12 @@ import websocketPlugin from "@fastify/websocket";
 import { CreateGameRequestBody, DeleteGameRequestBody } from "./type/Interface";
 import { Game } from "./game/Game";
 import { GameState, HttpCode, WebSocketCode } from "./type/Enum";
+import { PlayerScore } from "./type/Type";
+import { requestGameDelete, requestGameEnd } from "./services/gameService";
+import * as dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
+
 import {
   schemaCreateGame,
   schemaDeleteGame,
@@ -12,22 +18,38 @@ import {
   schemaWebSocketInput,
 } from "./type/Schema";
 
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
 //todo: remove the placeholders and constants
 const FPS: 30 | 60 = 60;
-const PORT: number = 3001;
-const TIMEOUT_GAME_DELETION = 30; //time in second
+const PORT: number = 3002;
+const playerTimeout: Map<string, ReturnType<typeof setTimeout>> = new Map();
+export const gameTimeout: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
 let games = new Map<string, Game>();
-const app = fastify();
+
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+
+const app = fastify({
+  https: {
+    key: fs.readFileSync(
+      path.resolve(__dirname, process.env.HTTPS_KEY as string),
+    ),
+    cert: fs.readFileSync(
+      path.resolve(__dirname, process.env.HTTPS_CERT as string),
+    ),
+  },
+});
+
 app.register(websocketPlugin);
 app.register(cors, {
-  origin: "http://localhost:5173", //todo:replace the hardcoded value
+  origin: "http://localhost:5173",
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   preflightContinue: false,
 });
 
-app.register(() => {
+app.register(async () => {
   app.get(
     "/ws/:gameId/:playerId",
     { schema: schemaWebSocket, websocket: true },
@@ -37,6 +59,11 @@ app.register(() => {
       const playerId = params.playerId;
       const game = games.get(gameId);
 
+      if (playerTimeout.has(playerId)) {
+        const timeout = playerTimeout.get(playerId);
+        clearTimeout(timeout);
+      }
+
       if (!game) {
         connection.close(WebSocketCode.UNDEFINED, `Game not found`);
         return;
@@ -45,14 +72,8 @@ app.register(() => {
         connection.close(WebSocketCode.UNDEFINED, `Player not expected`);
         return;
       }
-      if (game.playersConnected.has(playerId)) {
-        connection.close(WebSocketCode.UNDEFINED, `Player already connected`);
-        return;
-      }
 
       game.setPlayerConnection(playerId, connection);
-      if (game.gameState !== GameState.Init)
-        game.setPlayerPause(playerId, "pause");
 
       connection.on("message", (message: string) => {
         try {
@@ -72,18 +93,21 @@ app.register(() => {
       connection.on("close", () => {
         const game = games.get(gameId);
         if (!game) return;
+
         game.setPlayerConnection(playerId, null);
         game.setPlayerInput(playerId, null);
 
-        if (game.gameState !== GameState.Init && game.isEmpty()) {
-          setTimeout(() => {
-            const game = games.get(gameId);
-            if (!game || !game.isEmpty()) return;
-            game.players.forEach((player) => player.socket?.close());
-            games.delete(gameId);
-            //todo: make a request to the game API, inside a try catch
-          }, TIMEOUT_GAME_DELETION * 1000);
-        }
+        const timeout = setTimeout(() => {
+          const game = games.get(gameId);
+          if (!game) return;
+
+          const players = [...game.playersConnected.values()];
+          if (players.length === 1) {
+            game.setWinnerId(parseInt(players[0]));
+          }
+        }, 10000);
+
+        playerTimeout.set(playerId, timeout);
       });
     },
   );
@@ -106,7 +130,20 @@ app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
     response.code(HttpCode.CONFLICT).send(); //todo: add a body?
     return;
   }
+
   games.set(String(body.gameId), new Game(body, FPS));
+
+  const timeout = setTimeout(() => {
+    const game = games.get(body.gameId);
+    if (!game) return;
+
+    requestGameDelete(body.gameId);
+
+    games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
+    games.delete(body.gameId);
+  }, 10000)
+
+  gameTimeout.set(body.gameId, timeout);
 });
 
 app.delete(
@@ -146,12 +183,22 @@ function mainLoop() {
     if (isLocalGameOver(game, gameId)) {
       game.players.forEach((p) => p.socket?.close());
       games.delete(gameId);
+      return;
     }
 
     if (game.gameState === GameState.Over) {
-      game.players.forEach((p) => p.socket?.close());
+      const playerScores: PlayerScore[] = [];
+
+      for (const player of game.players.values()) {
+        playerScores.push({
+          player_id: parseInt(player.id),
+          score: player.point,
+        });
+      }
+
+      requestGameEnd(gameId, game.winnerId, playerScores);
+      games.get(gameId)?.players.forEach((player) => player.socket?.close());
       games.delete(gameId);
-      //todo: make a request to the game API, inside a try catch
     }
   });
   setTimeout(mainLoop, 1000 / FPS);

@@ -1,8 +1,7 @@
 export const lobby_container = `
     flex
     flex-col
-    w-full
-    h-full
+    flex-auto
     rounded-[20px]
     border-black
     border-solid
@@ -16,59 +15,14 @@ export const lobby_container = `
 `;
 
 export const lobby_list_container = `
+    absolute
+    inset-px
     flex
     flex-col
-    w-full
-    h-full
     gap-[5px]
     overflow-y-auto
     pr-2
     my-scrollbar
-`;
-
-export const lobby_card = `
-    flex
-    w-full
-    h-[113px]
-    border-black
-    border-3
-    bg-[#f54900]
-    justify-between
-    rounded-[10px]
-    p-[10px]
-    gap-[20px]
-`;
-
-export const lobby_card_img = `
-    h-full
-    rounded-[5px]
-    border-black
-    border-solid
-    border-3
-`;
-
-export const lobby_card_action = `
-    flex 
-    flex-col 
-    justify-center 
-    flex-initial 
-    gap-[5px]
-`;
-
-export const join_button = `
-    flex
-    p-2
-    text-1xl 
-    border-3
-    border-black
-    bg-green-500
-    h-fit
-    w-full
-    justify-center
-    rounded-[10px]
-    cursor-pointer
-    hover:brightness-150
-    duration-300
 `;
 
 export const create_lobby_button = `
@@ -78,7 +32,7 @@ export const create_lobby_button = `
     group
     border-3
     border-black
-    bg-blue-500
+    bg-green-500
     text-3xl
     justify-center
     rounded-[10px]
