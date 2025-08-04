@@ -73,10 +73,10 @@ export const a2f_container = `flex flex-col items-center`;
 export const a2f_title = `text-[25px]`;
 
 export const edit_btn = (isEditing: boolean) => {
-	return (
-		`border-2 p-3 rounded-[20px] cursor-pointer` +
-		(isEditing ? ` bg-green-400` : ``)
-	);
+  return (
+    `border-2 p-3 rounded-[20px] cursor-pointer` +
+    (isEditing ? ` bg-green-400` : ``)
+  );
 };
 
 export const edit_container = `flex flex-col items-center m-[10px] gap-[10px]`;
@@ -84,8 +84,8 @@ export const edit_container = `flex flex-col items-center m-[10px] gap-[10px]`;
 export const edit_message = `text-[20px]`;
 
 export const submit_account_default = (isEditing: boolean) => {
-	return (
-		`
+  return (
+    `
 flex
 items-center justify-center
 text-[60px]
@@ -94,5 +94,5 @@ border-3 rounded-[20px]
 pl-[15px]  pr-[15px]
 mb-[20px]
 cursor-pointer` + (!isEditing ? " brightness-50 cursor-not-allowed" : "")
-	);
+  );
 };

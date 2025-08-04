@@ -1,44 +1,61 @@
+import { dropdown_default } from "#components/Dropdowns/style.ts";
+import Friends from "#components/Friends/Friends.ts";
 import { createElement, type ComponentAttr } from "#core/framework.ts";
-import { useLanguage } from "#hooks/useLanguage";
-import type { User } from "#types/user.ts";
+import { getStorage } from "#services/data.ts";
+import { KeysStorage } from "#types/enums.ts";
+import { useLanguage } from "../../hooks/useLanguage";
 import Button from "../Buttons/Button";
 import { btn_modal } from "../Buttons/style";
 import DropdownUser from "../Dropdowns/DorpdownUser/DropdownUser";
 import DropdownLang from "../Dropdowns/DropdownLang/DropdownLang";
+import FriendsBar from "./FriendsBar/FriendsBar";
 import { navbar_default } from "./style";
 
 const NavigationBar = (props: {
-	userState: { user: User | null; setUser: (toSet: User | null) => void };
-	modalState?: { modalAuth: boolean; setModalAuth: (toSet: boolean) => void };
-	attr?: ComponentAttr;
+  modalState?: { modalAuth: boolean; setModalAuth: (toSet: boolean) => void };
+  attr?: ComponentAttr;
 }) => {
-	let { userState, modalState, attr } = props;
-	let { user, setUser } = userState;
-	const { modalAuth, setModalAuth } = modalState ?? {
-		modalAuth: false,
-		setModalAuth: (toSet: boolean) => {
-			return toSet;
-		},
-	};
+  let { modalState, attr } = props;
+  const { modalAuth, setModalAuth } = modalState ?? {
+    modalAuth: false,
+    setModalAuth: (toSet: boolean) => {
+      return toSet;
+    },
+  };
 
-	const default_attr = { class: navbar_default };
+  const default_attr = { class: navbar_default };
 
-	attr = { ...default_attr, ...attr };
+  attr = { ...default_attr, ...attr };
 
-	return createElement(
-		"div",
-		attr,
-		DropdownLang({}),
-		user
-			? DropdownUser({ state: { user, setUser } })
-			: Button({
-					children: useLanguage("signin") + " / " + useLanguage("loginin"),
-					attr: {
-						class: btn_modal,
-						onClick: () => setModalAuth(!modalAuth),
-					},
-				})
-	);
+  return createElement(
+    "div",
+    attr,
+    DropdownLang({}),
+    createElement(
+      "div",
+      {
+        class: getStorage(sessionStorage, KeysStorage.USERTRANS)
+          ? "flex gap-10"
+          : "hidden",
+      },
+      Friends(FriendsBar),
+      DropdownUser({
+        attr: {
+          class: dropdown_default + " w-[220px]",
+        },
+      })
+    ),
+
+    Button({
+      children: useLanguage("signin") + " / " + useLanguage("loginin"),
+      attr: {
+        class: !getStorage(sessionStorage, KeysStorage.USERTRANS)
+          ? btn_modal
+          : "hidden",
+        onClick: () => setModalAuth(!modalAuth),
+      },
+    })
+  );
 };
 
 export default NavigationBar;

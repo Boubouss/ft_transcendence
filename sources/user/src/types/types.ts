@@ -80,7 +80,6 @@ export type FriendRequestList = {
 };
 
 export type FriendShip = {
-	userId: number;
 	online: Friend[];
 	offline: Friend[];
 	requests: Friend[];
