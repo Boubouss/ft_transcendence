@@ -1,5 +1,6 @@
 import { createElement, type ComponentAttr } from "#core/framework.ts";
-import { useLanguage } from "../../hooks/useLanguage";
+import { useLanguage } from "#hooks/useLanguage";
+import type { User } from "#types/user.ts";
 import Button from "../Buttons/Button";
 import { btn_modal } from "../Buttons/style";
 import DropdownUser from "../Dropdowns/DorpdownUser/DropdownUser";
@@ -7,7 +8,7 @@ import DropdownLang from "../Dropdowns/DropdownLang/DropdownLang";
 import { navbar_default } from "./style";
 
 const NavigationBar = (props: {
-	userState: { user: {} | null; setUser: (toSet: {} | null) => void };
+	userState: { user: User | null; setUser: (toSet: User | null) => void };
 	modalState?: { modalAuth: boolean; setModalAuth: (toSet: boolean) => void };
 	attr?: ComponentAttr;
 }) => {
@@ -31,12 +32,12 @@ const NavigationBar = (props: {
 		user
 			? DropdownUser({ state: { user, setUser } })
 			: Button({
-					children: useLanguage("signin") + " / " + useLanguage("loginin"),
-					attr: {
-						class: btn_modal,
-						onClick: () => setModalAuth(!modalAuth),
-					},
-			  })
+				children: useLanguage("signin") + " / " + useLanguage("loginin"),
+				attr: {
+					class: btn_modal,
+					onClick: () => setModalAuth(!modalAuth),
+				},
+			})
 	);
 };
 

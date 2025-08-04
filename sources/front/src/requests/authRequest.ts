@@ -1,5 +1,7 @@
 import { navigateTo } from "#core/router.ts";
 import { useForm } from "#hooks/useForm.ts";
+import type { User } from "#types/user.ts";
+
 import {
 	API_USER_ROUTES,
 	fetchAPI,
@@ -11,7 +13,7 @@ import {
 
 export const handleConnexion = async (
 	set2FA: (toSet: boolean) => void,
-	setUser: (toSet: {} | null) => void
+	setUser: (toSet: User | null) => void
 ) => {
 	const form = useForm("form_auth");
 	const data = {
@@ -72,7 +74,7 @@ export const handleRegister = async (setter: (toSet: boolean) => void) => {
 	}
 };
 
-export const handle2FA = async (setter: (toSet: boolean) => void) => {
+export const handle2FA = async (setter: (toSet: User | null) => void) => {
 	const user = getStorage(sessionStorage, "transcendence_user");
 	const form = useForm("form_2FA");
 	const data = {
@@ -106,7 +108,7 @@ export const handleGoogleSign = async () => {
 	window.location.href = google.url;
 };
 
-export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
+export const handleAutoConnect = async (setter: (toSet: User | null) => void) => {
 	const configuration: {
 		id: string;
 		token: string;
@@ -118,8 +120,8 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
 	) {
 		const user = await fetchAPI(
 			import.meta.env.VITE_API_USER +
-				API_USER_ROUTES.CRUD_USER +
-				`/${configuration.id}`,
+			API_USER_ROUTES.CRUD_USER +
+			`/${configuration.id}`,
 			{
 				method: "GET",
 				headers: { Authorization: `Bearer ` + configuration.token },
@@ -140,7 +142,7 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
 	}
 };
 
-export const handleDeconnexion = (setter: (toSet: {} | null) => void) => {
+export const handleDeconnexion = (setter: (toSet: User | null) => void) => {
 	const configuration = getStorage(localStorage, "transcendence_conf");
 	replaceStorage(localStorage, "transcendence_conf", {
 		lang: configuration.lang,

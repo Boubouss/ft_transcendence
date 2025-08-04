@@ -43,6 +43,23 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
         socket.send(
           JSON.stringify({ event: ClientEvent.LOBBY_LIST, data: lobbies }),
         );
+
+        const currentLobby = lobbies.find((lobby) => {
+          const player = lobby.players.find((p) => {
+            return p.id === player_id;
+          });
+
+          return !_.isEmpty(player);
+        });
+
+        if (!_.isEmpty(currentLobby)) {
+          socket.send(
+            JSON.stringify({
+              event: ClientEvent.JOINED,
+              data: { target_id: currentLobby.id },
+            }),
+          );
+        }
       }
 
       socket.on("message", async (message: string) => {
