@@ -5,23 +5,23 @@ services:
         ports:
             - "80:80"
             - "443:443"
+        volumes:
+            - frontend:/usr/share/nginx/html:ro
+            - ssl-certs:/etc/nginx/ssl:ro
         depends_on:
             - front
             - user
             - game
             - logic
-        env_file:
-            - .env
         networks:
             - transcendence
         restart: always
     front:
         image: front:user
-        build: ./front
-        expose:
-            - "80"
+        build: ./sources/front
         volumes:
-            - .ssl:/usr/src/app/ssl:ro #read-only
+            - frontend:/usr/src/app/dist
+            - ssl-certs:/usr/src/app/ssl:ro
         env_file:
             - .env
         networks:
@@ -30,10 +30,10 @@ services:
     user:
         image: user:user
         build: ./sources/user
-        ports:
-            - "3000:3000"
+        expose:
+            - "3000"
         volumes:
-            - .ssl:/usr/src/app/ssl:ro
+            - ssl-certs:/usr/src/app/ssl:ro
         env_file:
             - ./sources/user/.env.user
         networks:
@@ -41,11 +41,11 @@ services:
         restart: unless-stopped
     game:
         image: game:user
-        build: ./game
-        ports:
-            - "3001:3000"
+        build: ./sources/game
+        expose:
+            - "3000"
         volumes:
-            - .ssl:/usr/src/app/ssl:ro
+            - ssl-certs:/usr/src/app/ssl:ro
         env_file:
             - .env
         networks:
@@ -53,11 +53,11 @@ services:
         restart: unless-stopped
     logic:
         image: logic:user
-        build: ./logic
-        ports:
-            - "3002:3000"
+        build: ./sources/logic
+        expose:
+            - "3000"
         volumes:
-            - .ssl:/usr/src/app/ssl:ro
+            - ssl-certs:/usr/src/app/ssl:ro
         env_file:
             - .env
         networks:
@@ -67,3 +67,12 @@ services:
 networks:
     transcendence:
         name: transcendence
+
+volumes:
+    ssl-certs:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ./ssl
+    frontend:

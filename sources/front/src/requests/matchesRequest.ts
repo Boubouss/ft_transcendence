@@ -10,7 +10,7 @@ export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
     const conf = getStorage(localStorage, "transcendence_conf");
 
     const matches: Match[] = await fetchAPI(
-        import.meta.env.VITE_API_GAME + API_GAME_ROUTES.MATCH + `/${conf?.id}`,
+        "/api/game" + API_GAME_ROUTES.MATCH + `/${conf?.id}`,
         {
             method: "GET",
             headers: { Authorization: `Bearer ` + conf?.token },
@@ -24,7 +24,6 @@ export const getPlayers = async (
     matches: Match[],
     setPlayers: (toSet: Player[]) => void
 ) => {
-    // console.log(matches);
     if (!matches) return;
 
     const ids: Set<number> = new Set();
@@ -48,8 +47,6 @@ export const getPlayers = async (
             body: JSON.stringify(data),
         }
     );
-
-    // console.log(players);
     if (players) setPlayers(players);
 };
 
@@ -59,16 +56,11 @@ export const getTournaments = async (
     const conf = getStorage(localStorage, "transcendence_conf");
 
     const tournaments: Tournament[] = await fetchAPI(
-        import.meta.env.VITE_API_GAME +
-            API_GAME_ROUTES.TOURNAMENT +
-            `/${conf?.id}`,
+        "/api/game" + API_GAME_ROUTES.TOURNAMENT + `/${conf?.id}`,
         {
             method: "GET",
             headers: { Authorization: `Bearer ` + conf?.token },
         }
     );
-
-    //console.log(tournaments);
-
     if (tournaments) setTournaments(tournaments);
 };
