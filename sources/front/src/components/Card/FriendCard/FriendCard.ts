@@ -5,19 +5,25 @@ import _ from "lodash";
 import { friend_card, friend_card_active, friend_card_inactive } from "./style";
 
 export type FriendCardType = Friend & {
-	active?: boolean;
+    active?: boolean;
 };
 
 const FriendCard = (props: FriendCardType) => {
-	const { id, name, avatar, active } = props;
-	return Card(
-		{ class: friend_card + active ? friend_card_active : friend_card_inactive },
-		createElement("img", {
-			src: _.isEmpty(avatar) ? "" : avatar,
-			class: "rounded",
-		}),
-		createElement("span", {}, name)
-	);
+    const { id, name, avatar, active } = props;
+    void id;
+    return Card(
+        {
+            class:
+                friend_card + active
+                    ? friend_card_active
+                    : friend_card_inactive,
+        },
+        createElement("img", {
+            src: _.isEmpty(avatar) ? "" : avatar,
+            class: "rounded",
+        }),
+        createElement("span", {}, name)
+    );
 };
 
 export default FriendCard;
