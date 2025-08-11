@@ -1,21 +1,34 @@
-FROM node:22-alpine
+# Multi-stage build pour la prod
+
+# FROM node:24-alpine AS build
+
+# RUN npm install -g npm@latest
+# WORKDIR /app
+# COPY . .
+# RUN npm ci && npm run build
+
+# FROM node:24-alpine
+
+# WORKDIR /usr/src/app
+# ENV NODE_ENV=production
+# COPY package*.json ./
+# RUN npm ci
+# COPY --from=build /app/dist ./dist
+# COPY --from=build /app/.env .env
+# USER node
+
+# CMD ["npm", "start"]
+
+# Version ghetto pour dev
+
+FROM node:24-alpine
 
 WORKDIR /usr/src/app
 
-RUN npm install -g npm@latest
-
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev
-    # npm ci for clean install
+COPY package*.json ./
+RUN npm ci --omit=dev
 
 COPY . .
-
 RUN npx prisma generate
 
-USER node
-
-EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

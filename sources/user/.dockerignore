@@ -1,6 +1,4 @@
 **/.gitignore
 **/Dockerfile*
 **/node_modules
-/compose.yaml
 .env.exemple
-ssl/
