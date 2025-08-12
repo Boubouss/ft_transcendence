@@ -9,14 +9,6 @@
         "start": "node dist/index.js",
         "startClean": "rm prisma/dev.db* && npx prisma migrate dev && tsx src/index.ts"
     },
-    "type": "module",
-    "imports": {
-        "#routes/*": "./src/routes/*",
-        "#services/*": "./src/services/*",
-        "#validations/*": "./src/validations/*",
-        "#middlewares/*": "./src/middlewares/*",
-        "#types/*": "./src/types/*"
-    },
     "keywords": [],
     "author": "",
     "license": "ISC",

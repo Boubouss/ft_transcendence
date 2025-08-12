@@ -34,6 +34,7 @@ services:
             - "3000"
         volumes:
             - ssl-certs:/usr/src/app/ssl:ro
+            - user-db:/usr/src/app/prisma
         env_file:
             - ./sources/user/.env.user
         networks:
@@ -46,6 +47,7 @@ services:
             - "3000"
         volumes:
             - ssl-certs:/usr/src/app/ssl:ro
+            - game-db:/usr/src/app/prisma
         env_file:
             - .env
         networks:
@@ -76,3 +78,5 @@ volumes:
             o: bind
             device: ./ssl
     frontend:
+    game-db:
+    user-db:
