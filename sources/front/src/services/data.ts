@@ -8,7 +8,7 @@ export enum API_USER_ROUTES {
 	CRUD_USER = "/crud/user",
 	CRUD_PLAYERS = "/crud/players",
 	AVATAR_PLAYERS = "/avatar/upload",
-	DOWNLOAD_AVATAR = "/download"
+	DOWNLOAD_AVATAR = "/download",
 }
 
 export enum API_GAME_ROUTES {

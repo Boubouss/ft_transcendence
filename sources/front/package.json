@@ -17,6 +17,7 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
+		"format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
 		"preview": "vite preview"
 	},
 	"devDependencies": {
@@ -30,6 +31,7 @@
 	"dependencies": {
 		"@tailwindcss/vite": "^4.1.11",
 		"@types/lodash": "^4.17.20",
-		"lodash": "^4.17.21"
+		"lodash": "^4.17.21",
+		"prettier": "^3.6.2"
 	}
 }

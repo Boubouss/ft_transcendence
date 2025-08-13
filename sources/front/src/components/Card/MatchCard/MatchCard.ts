@@ -35,12 +35,12 @@ const MatchCard = (props: { match: Match; players: Player[] }) => {
 							src: "/icons/tournament_icon.png",
 						},
 						"tournament"
-				  )
+					)
 				: createElement(
 						"img",
 						{ class: label, src: "/icons/dual_icon.png" },
 						"duel"
-				  )
+					)
 		),
 		Score({ match, players, userID: user?.id })
 	);

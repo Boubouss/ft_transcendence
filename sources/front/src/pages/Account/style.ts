@@ -41,5 +41,3 @@ export const button_close = `
     `;
 
 export const image_button_close = ``;
-
-

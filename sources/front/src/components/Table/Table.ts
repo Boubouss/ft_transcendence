@@ -17,8 +17,8 @@ const Table = (props: TableProps) => {
 				{ class: styles.tr },
 				...Object.keys(props.content).map((col) => {
 					return createElement("th", { class: styles.th }, col);
-				}),
-			),
+				})
+			)
 		),
 		createElement(
 			"tbody",
@@ -29,10 +29,10 @@ const Table = (props: TableProps) => {
 					{ class: styles.tr },
 					...rows.map((row) => {
 						return createElement("td", { class: styles.td }, row);
-					}),
+					})
 				);
-			}),
-		),
+			})
+		)
 	);
 };
 

@@ -35,5 +35,5 @@ export function useState<T>(
 	const state = states[currentIndex];
 	index++;
 
-  return [state, setState];
+	return [state, setState];
 }
