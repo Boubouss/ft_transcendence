@@ -2,10 +2,10 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# COPY package*.json ./
+# COPY package.json tsconfig.json ./
 COPY . .
 
-RUN npm ci
+RUN npm i
 
 RUN npm run build
 

@@ -1,45 +1,46 @@
-# Multi-stage build plus adaptee la prod
+# # Multi-stage build plus adaptee la prod
 
-FROM node:24-alpine AS build
+# FROM node:24-alpine AS build
 
-RUN npm install -g pnpm@latest-10
-WORKDIR /app
+# RUN npm install -g pnpm@latest-10
+# WORKDIR /app
 
-COPY package.json pnpm-lock.yaml tsconfig.json ./
-RUN pnpm i
+# COPY package.json tsconfig.json ./
+# RUN pnpm i
 
-COPY src ./src
-COPY .env ./
-COPY prisma ./prisma
+# COPY src ./src
+# COPY .env ./
+# COPY prisma ./prisma
 
-RUN npx prisma generate && pnpm run build
-
-FROM node:24-alpine
-
-RUN npm install -g pnpm@latest-10
-WORKDIR /usr/src/app
-
-ENV NODE_ENV=production
-
-COPY --from=build /app/node_modules ./node_modules
-COPY package.json ./
-
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/.env .env
-COPY --from=build /app/prisma ./prisma
-
-CMD ["npm", "start"]
-
-# # Version ghetto pour dev
+# RUN npx prisma generate
+# RUN pnpm run build
 
 # FROM node:24-alpine
 
+# RUN npm install -g pnpm@latest-10
 # WORKDIR /usr/src/app
 
-# COPY package*.json ./
-# RUN npm ci --omit=dev
+# ENV NODE_ENV=production
 
-# COPY . .
-# RUN npx prisma generate
+# COPY --from=build /app/node_modules ./node_modules
+# COPY package.json ./
 
-# CMD ["npm", "run", "dev"]
+# COPY --from=build /app/dist ./dist
+# COPY --from=build /app/.env .env
+# COPY --from=build /app/prisma ./prisma
+
+# CMD ["npm", "start"]
+
+# Version ghetto pour dev
+
+FROM node:24-alpine
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY . .
+RUN npx prisma generate
+
+CMD ["npm", "run", "dev"]
