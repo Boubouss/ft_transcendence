@@ -43,7 +43,7 @@ const Score = (props: { match: Match; players: Player[]; userID: number }) => {
 								};
 							})
 					),
-			  ]
+				]
 			: [
 					List(
 						{ attr: { class: "w-full flex flex-row" } },
@@ -61,7 +61,7 @@ const Score = (props: { match: Match; players: Player[]; userID: number }) => {
 							};
 						})
 					),
-			  ])
+				])
 	);
 };
 

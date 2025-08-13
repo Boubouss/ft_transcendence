@@ -6,6 +6,7 @@ import { btn_list } from "#components/Buttons/style.ts";
 import { dropdown_content, dropdown_default } from "../style";
 import { getStorage, setStorage } from "#services/data.ts";
 import { handleLang } from "#hooks/useLanguage.ts";
+import { KeysStorage } from "#types/enums.ts";
 
 const DropdownLang = (props: {
 	attr?: ComponentAttr;
@@ -22,10 +23,10 @@ const DropdownLang = (props: {
 	attrContent = { ...default_attr_content, ...attrContent };
 
 	useEffect(() => {
-		const configuration = getStorage(localStorage, "transcendence_conf");
+		const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
 		if (configuration?.lang) setLanguage(configuration.lang);
 		else {
-			setStorage(localStorage, "transcendence_conf", {
+			setStorage(localStorage, KeysStorage.CONFTRANS, {
 				lang: "FR",
 				...configuration,
 			});

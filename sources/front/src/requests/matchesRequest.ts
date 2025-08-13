@@ -4,10 +4,11 @@ import {
 	fetchAPI,
 	getStorage,
 } from "#services/data.ts";
+import { KeysStorage } from "#types/enums.ts";
 import type { Match, Player } from "#types/match.ts";
 
 export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
-	const conf = getStorage(localStorage, "transcendence_conf");
+	const conf = getStorage(localStorage, KeysStorage.CONFTRANS);
 
 	const matches: Match[] = await fetchAPI(
 		import.meta.env.VITE_API_GAME + API_GAME_ROUTES.MATCH + `/${conf?.id}`,
@@ -38,7 +39,7 @@ export const getPlayers = async (
 		ids: Array.from(ids),
 	};
 
-	const conf = getStorage(localStorage, "transcendence_conf");
+	const conf = getStorage(localStorage, KeysStorage.CONFTRANS);
 	const players: Player[] = await fetchAPI(
 		import.meta.env.VITE_API_USER + API_USER_ROUTES.CRUD_PLAYERS,
 		{

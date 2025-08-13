@@ -10,6 +10,7 @@ import {
 	replaceStorage,
 	setStorage,
 } from "#services/data.ts";
+import { KeysStorage } from "#types/enums.ts";
 
 export const handleConnexion = async (
 	set2FA: (toSet: boolean) => void,
@@ -32,16 +33,16 @@ export const handleConnexion = async (
 	if (user) {
 		const { token, ...userData } = user;
 
-		setStorage(sessionStorage, "transcendence_user", userData);
+		setStorage(sessionStorage, KeysStorage.USERTRANS, userData);
 
 		if (token) {
-			setStorage(localStorage, "transcendence_conf", {
+			setStorage(localStorage, KeysStorage.CONFTRANS, {
 				id: user.id,
 				token: user.token,
 			});
-			setUser(getStorage(sessionStorage, "transcendence_user"));
+			setUser(getStorage(sessionStorage, KeysStorage.USERTRANS));
 		} else {
-			setStorage(localStorage, "transcendence_conf", {
+			setStorage(localStorage, KeysStorage.CONFTRANS, {
 				id: user.id,
 			});
 			set2FA(true);
@@ -66,16 +67,16 @@ export const handleRegister = async (setter: (toSet: boolean) => void) => {
 	);
 
 	if (user) {
-		setStorage(localStorage, "transcendence_conf", {
+		setStorage(localStorage, KeysStorage.CONFTRANS, {
 			id: user.id,
 		});
-		setStorage(sessionStorage, "transcendence_user", user);
+		setStorage(sessionStorage, KeysStorage.USERTRANS, user);
 		setter(true);
 	}
 };
 
 export const handle2FA = async (setter: (toSet: User | null) => void) => {
-	const user = getStorage(sessionStorage, "transcendence_user");
+	const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 	const form = useForm("form_2FA");
 	const data = {
 		code: form?.get("code"),
@@ -92,8 +93,8 @@ export const handle2FA = async (setter: (toSet: User | null) => void) => {
 	);
 
 	if (token) {
-		setStorage(localStorage, "transcendence_conf", { id: user.id, ...token });
-		setter(getStorage(sessionStorage, "transcendence_user"));
+		setStorage(localStorage, KeysStorage.CONFTRANS, { id: user.id, ...token });
+		setter(getStorage(sessionStorage, KeysStorage.USERTRANS));
 	}
 };
 
@@ -108,46 +109,48 @@ export const handleGoogleSign = async () => {
 	window.location.href = google.url;
 };
 
-export const handleAutoConnect = async (setter: (toSet: User | null) => void) => {
+export const handleAutoConnect = async (
+	setter: (toSet: User | null) => void
+) => {
 	const configuration: {
 		id: string;
 		token: string;
 		lang?: string;
-	} = getStorage(localStorage, "transcendence_conf");
+	} = getStorage(localStorage, KeysStorage.CONFTRANS);
 	if (
 		configuration?.token &&
-		!getStorage(sessionStorage, "transcendence_user")
+		!getStorage(sessionStorage, KeysStorage.USERTRANS)
 	) {
 		const user = await fetchAPI(
 			import.meta.env.VITE_API_USER +
-			API_USER_ROUTES.CRUD_USER +
-			`/${configuration.id}`,
+				API_USER_ROUTES.CRUD_USER +
+				`/${configuration.id}`,
 			{
 				method: "GET",
 				headers: { Authorization: `Bearer ` + configuration.token },
 			}
 		);
-		if (user) setStorage(sessionStorage, "transcendence_user", user);
+		if (user) setStorage(sessionStorage, KeysStorage.USERTRANS, user);
 		else
-			setStorage(localStorage, "transcendence_conf", {
+			setStorage(localStorage, KeysStorage.CONFTRANS, {
 				lang: configuration?.lang ?? "FR",
 			});
 	}
 
 	if (
 		configuration?.token &&
-		getStorage(sessionStorage, "transcendence_user")
+		getStorage(sessionStorage, KeysStorage.USERTRANS)
 	) {
-		setter(getStorage(sessionStorage, "transcendence_user"));
+		setter(getStorage(sessionStorage, KeysStorage.USERTRANS));
 	}
 };
 
 export const handleDeconnexion = (setter: (toSet: User | null) => void) => {
-	const configuration = getStorage(localStorage, "transcendence_conf");
-	replaceStorage(localStorage, "transcendence_conf", {
+	const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
+	replaceStorage(localStorage, KeysStorage.CONFTRANS, {
 		lang: configuration.lang,
 	});
-	removeStorage(sessionStorage, "transcendence_user");
+	removeStorage(sessionStorage, KeysStorage.USERTRANS);
 	setter(null);
 	navigateTo("/");
 };

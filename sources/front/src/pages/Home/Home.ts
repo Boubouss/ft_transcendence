@@ -16,6 +16,7 @@ import {
 	useEffect,
 	useState,
 } from "#core/framework.ts";
+import { KeysStorage } from "#types/enums.ts";
 
 const Home = () => {
 	const [modalAuth, setModalAuth] = useState(false);
@@ -26,17 +27,17 @@ const Home = () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const token = urlParams.get("token");
 		const id = urlParams.get("id");
-		const configuration = getStorage(localStorage, "transcendence_conf");
+		const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
 
 		if (id && token) {
-			setStorage(localStorage, "transcendence_conf", {
+			setStorage(localStorage, KeysStorage.CONFTRANS, {
 				token,
 				id,
 				lang: configuration?.lang ?? "FR",
 			});
 			window.history.replaceState({}, "", "/");
 		}
-	}, []);
+	}, [user]);
 
 	useEffect(async () => {
 		await handleAutoConnect(setUser);
@@ -60,10 +61,10 @@ const Home = () => {
 					attr: { class: btn_nav, onClick: () => navigateTo("/local") },
 				}),
 				user &&
-				Button({
-					children: useLanguage("multiplayer"),
-					attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
-				})
+					Button({
+						children: useLanguage("multiplayer"),
+						attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
+					})
 			)
 		),
 		Modal(

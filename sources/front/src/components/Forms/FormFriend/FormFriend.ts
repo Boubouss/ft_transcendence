@@ -1,11 +1,11 @@
 import Form from "../Form";
 import Input from "#components/Inputs/Input.ts";
-import Submit from "#components/Inputs/Submit.ts";
 import { form_friend } from "../style";
 import type { Friendship } from "#types/user.ts";
 import { handleSendFriendRequest } from "#sockets/Friends/request.ts";
 import { useForm } from "#hooks/useForm.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
+import Submit from "#components/Inputs/Submit/Submit.ts";
 
 const FormFriend = (props: {
 	getter: Friendship | null;

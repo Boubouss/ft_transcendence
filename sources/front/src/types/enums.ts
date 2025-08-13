@@ -37,3 +37,12 @@ export enum UserServerEvent {
 	DECLINED = "DECLINED",
 	ERROR = "ERROR",
 }
+
+export enum KeysStorage {
+	CONFTRANS = "transcendence_conf",
+	USERTRANS = "transcendence_user",
+}
+
+export enum Form_ID {
+	A2F = "is2FA",
+}

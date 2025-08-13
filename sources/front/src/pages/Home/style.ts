@@ -22,5 +22,5 @@ export const btn_menu_container = `
     flex-col
     w-[350px]
     gap-[20px]
-    mb-[200px]
+    mb-[125px]
 `;

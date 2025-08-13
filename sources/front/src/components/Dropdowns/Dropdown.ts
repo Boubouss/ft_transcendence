@@ -19,7 +19,7 @@ const Dropdown = (
 		children: string | Component;
 		attr?: ComponentAttr;
 	}) => Component,
-	content: Component,
+	content: Component
 ) => {
 	const [dropdown, setDropdown] = useState(false, true);
 
@@ -39,7 +39,7 @@ const Dropdown = (
 		"div",
 		attr,
 		button({ children, attr: attrButton }),
-		dropdown ? content : createElement("div", { class: `hidden` }),
+		dropdown ? content : createElement("div", { class: `hidden` })
 	);
 };
 

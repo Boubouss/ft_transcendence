@@ -4,6 +4,7 @@ import Stats from "./pages/Stats/Stats";
 import NotFound from "./pages/NotFound/NotFound";
 import Multiplayer from "#pages/Multiplayer/Multiplayer.ts";
 import Local from "#pages/Local/Local.ts";
+import Account from "#pages/Account/Account.ts";
 
 type Routes = Record<
 	string,
@@ -15,5 +16,6 @@ export const routes: Routes = {
 	"/local": { component: Local },
 	"/multiplayer": { component: Multiplayer, protected: true },
 	"/stats": { component: Stats, protected: true },
+	"/account": { component: Account, protected: true },
 	"/404": { component: NotFound },
 };

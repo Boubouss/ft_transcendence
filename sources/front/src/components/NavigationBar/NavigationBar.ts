@@ -32,12 +32,12 @@ const NavigationBar = (props: {
 		user
 			? DropdownUser({ state: { user, setUser } })
 			: Button({
-				children: useLanguage("signin") + " / " + useLanguage("loginin"),
-				attr: {
-					class: btn_modal,
-					onClick: () => setModalAuth(!modalAuth),
-				},
-			})
+					children: useLanguage("signin") + " / " + useLanguage("loginin"),
+					attr: {
+						class: btn_modal,
+						onClick: () => setModalAuth(!modalAuth),
+					},
+				})
 	);
 };
 

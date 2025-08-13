@@ -11,16 +11,32 @@ export type Friendship = {
 	sent: Friend[];
 };
 
-export type Configuration = {
-  id: number;
-  is2FA: boolean;
+export type User = {
+	id: number | FormDataEntryValue | null;
+	name?: string | FormDataEntryValue | null;
+	email?: string | FormDataEntryValue | null;
+	verify?: boolean;
+	avatar?: string | FormDataEntryValue | null | HTMLInputElement;
+	password?: string | FormDataEntryValue | null;
+	configuration: Configuration;
+	conf: Configuration;
 };
 
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  avatar: string;
-  verify?: boolean;
-  configuration?: Configuration;
+export type Configuration = {
+	is2FA: boolean;
+};
+
+export type ConfTrans = {
+	id?: number;
+	lang: string;
+	token?: string;
+};
+
+export type UserEditForm = {
+	id: number;
+	name?: string;
+	email?: string;
+	password?: string;
+	avatar?: string | FormDataEntryValue | null | HTMLInputElement;
+	configuration: Configuration;
 };

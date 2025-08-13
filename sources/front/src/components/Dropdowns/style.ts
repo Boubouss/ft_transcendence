@@ -28,7 +28,7 @@ export const dropdown_btn = `
 text-white
 flex
 p-5
-text-3xl 
+text-3xl
 border-3
 border-black
 bg-orange-400

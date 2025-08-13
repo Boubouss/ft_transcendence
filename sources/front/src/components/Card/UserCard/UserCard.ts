@@ -23,9 +23,7 @@ const UserCard = (props: {
 			"div",
 			{ class: player_info },
 			createElement("img", {
-				src: _.isEmpty(avatar)
-					? "../../../../public/images/avatar_1.jpg"
-					: avatar,
+				src: _.isEmpty(avatar) ? "/images/avatar_1.jpg" : avatar,
 				class: dropdown_user_img,
 			}),
 			createElement("span", {}, name)

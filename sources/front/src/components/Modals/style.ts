@@ -12,8 +12,8 @@ export const modal_default = `
     absolute
     bg-orange-400
     opacity-100
-    w-2/5
-    h-2/3
+    w-[400px]
+    h-[450px]
     top-[50%]
     left-[50%]
     translate-[-50%]

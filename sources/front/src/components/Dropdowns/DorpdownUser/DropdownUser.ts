@@ -17,6 +17,7 @@ import {
 	navigateTo,
 	type ComponentAttr,
 } from "#core/framework.ts";
+import { useAvatar } from "#hooks/useAvatar.ts";
 
 const DropdownUser = (props: {
 	state: {
@@ -42,7 +43,7 @@ const DropdownUser = (props: {
 					"span",
 					{ class: btn_user },
 					createElement("img", {
-						src: "../../../../public/images/avatar_1.jpg",
+						src: useAvatar(user),
 						class: dropdown_user_img,
 					}),
 					`${user?.name}`
@@ -71,6 +72,7 @@ const DropdownUser = (props: {
 				attr: {
 					class: btn_list + " rounded-b-[20px]",
 					onClick: () => {
+						navigateTo("/");
 						handleDeconnexion(setUser);
 					},
 				},
