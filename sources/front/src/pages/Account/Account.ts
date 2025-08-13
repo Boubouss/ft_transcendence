@@ -39,19 +39,6 @@ const Account = () => {
 						{ name: "account_title", class: title_page_account },
 						useLanguage("myacc")
 					),
-					createElement(
-						"button",
-						{
-							class: button_close,
-							onClick: () => {
-								navigateTo("/");
-							},
-						},
-						createElement("img", {
-							class: image_button_close,
-							src: "/icons/close_icon.png",
-						})
-					)
 				),
 				FormAccount()
 			)

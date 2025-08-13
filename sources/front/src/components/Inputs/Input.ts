@@ -1,7 +1,7 @@
 import {
 	createElement,
+	type Component,
 	type ComponentAttr,
-	type ComponentChildren,
 } from "#core/framework";
 import { useRef } from "#core/hooks/useRef.ts";
 import _ from "lodash";
@@ -9,7 +9,7 @@ import { input_default, label_default } from "./style";
 
 const Input = (
 	props: { attr: ComponentAttr; labelAttr?: ComponentAttr },
-	...children: ComponentChildren[]
+	...children: Component[]
 ) => {
 	let { attr, labelAttr } = props;
 

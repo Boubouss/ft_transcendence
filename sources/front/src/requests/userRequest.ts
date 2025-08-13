@@ -17,17 +17,12 @@ export const handleEditUser = async (
 
 	const form = useForm("form-account");
 
-	console.log(form);
-
-	console.log(form?.get("is2FA"));
-
 	if (form?.has("is2FA")) {
 		form.set("is2FA", "true");
 	} else {
 		form?.set("is2FA", "false");
 	}
 
-	console.log(form);
 
 	try {
 		const response = await fetchAPI(
