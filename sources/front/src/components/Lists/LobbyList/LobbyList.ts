@@ -10,57 +10,57 @@ import List from "../List";
 import _ from "lodash";
 
 type Props = {
-	user: User | null;
-	lobbies: Map<number, Lobby>;
-	showModalState: [boolean, (value: boolean) => void];
-	lobbySocket: WebSocket | null;
+  user: User | null;
+  lobbies: Map<number, Lobby>;
+  showModalState: [boolean, (value: boolean) => void];
+  lobbySocket: WebSocket | null;
 };
 
 const LobbyList = ({ user, lobbies, showModalState, lobbySocket }: Props) => {
-	const [, setShowModal] = showModalState;
+  const [, setShowModal] = showModalState;
 
-	const handleJoinLobby = (lobbyId: number) => {
-		if (_.isEmpty(user)) return console.error("Error: user is empty.");
-		requestAction(lobbySocket, Action.JOIN, lobbyId);
-	};
+  const handleJoinLobby = (lobbyId: number) => {
+    if (_.isEmpty(user)) return console.error("Error: user is empty.");
+    requestAction(lobbySocket, Action.JOIN, lobbyId);
+  };
 
-	return createElement(
-		"div",
-		{ class: style.lobby_container },
-		createElement(
-			"div",
-			{ class: "flex w-full" },
-			createElement(
-				"h1",
-				{ class: "underline text-4xl m-auto" },
-				useLanguage("lobby_list")
-			),
-			Button({
-				children: `${useLanguage("create_new_lobby")} +`,
-				attr: {
-					class: style.create_lobby_button,
-					onClick: () => setShowModal(true),
-				},
-			})
-		),
-		!_.isEmpty(lobbies)
-			? List(
-					{ attr: { class: style.lobby_list_container } },
-					LobbyCard,
-					Array.from(lobbies).map(([_, lobby]) => {
-						return { lobby, handleJoinLobby };
-					})
-				)
-			: createElement(
-					"div",
-					{ class: style.lobby_list_container },
-					createElement(
-						"p",
-						{ class: "m-auto text-3xl" },
-						useLanguage("no_lobby")
-					)
-				)
-	);
+  return createElement(
+    "div",
+    { class: style.lobby_container },
+    createElement(
+      "div",
+      { class: "flex w-full" },
+      createElement(
+        "h1",
+        { class: "underline text-4xl m-auto" },
+        useLanguage("lobby_list")
+      ),
+      Button({
+        children: `${useLanguage("create_new_lobby")} +`,
+        attr: {
+          class: style.create_lobby_button,
+          onClick: () => setShowModal(true),
+        },
+      })
+    ),
+    !_.isEmpty(lobbies)
+      ? List(
+          { attr: { class: style.lobby_list_container } },
+          LobbyCard,
+          Array.from(lobbies).map(([_, lobby]) => {
+            return { lobby, handleJoinLobby };
+          })
+        )
+      : createElement(
+          "div",
+          { class: style.lobby_list_container },
+          createElement(
+            "p",
+            { class: "m-auto text-3xl" },
+            useLanguage("no_lobby")
+          )
+        )
+  );
 };
 
 export default LobbyList;

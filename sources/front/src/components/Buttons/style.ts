@@ -6,7 +6,7 @@ border-3
 border-black
 bg-orange-400
 h-fit
-w-full
+w-fit
 justify-center
 rounded-[20px]
 hover:cursor-pointer

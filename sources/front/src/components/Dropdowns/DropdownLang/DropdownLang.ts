@@ -9,58 +9,58 @@ import { handleLang } from "#hooks/useLanguage.ts";
 import { KeysStorage } from "#types/enums.ts";
 
 const DropdownLang = (props: {
-	attr?: ComponentAttr;
-	attrContent?: ComponentAttr;
+  attr?: ComponentAttr;
+  attrContent?: ComponentAttr;
 }) => {
-	const [language, setLanguage] = useState("FR");
+  const [language, setLanguage] = useState("FR");
 
-	let { attr, attrContent } = props;
+  let { attr, attrContent } = props;
 
-	const default_attr = { class: dropdown_default + " w-[96px]" };
-	const default_attr_content = { class: dropdown_content + " w-[96px]" };
+  const default_attr = { class: dropdown_default + " w-[96px]" };
+  const default_attr_content = { class: dropdown_content + " w-[96px]" };
 
-	attr = { ...default_attr, ...attr };
-	attrContent = { ...default_attr_content, ...attrContent };
+  attr = { ...default_attr, ...attr };
+  attrContent = { ...default_attr_content, ...attrContent };
 
-	useEffect(() => {
-		const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
-		if (configuration?.lang) setLanguage(configuration.lang);
-		else {
-			setStorage(localStorage, KeysStorage.CONFTRANS, {
-				lang: "FR",
-				...configuration,
-			});
-			setLanguage("FR");
-		}
-	}, []);
+  useEffect(() => {
+    const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
+    if (configuration?.lang) setLanguage(configuration.lang);
+    else {
+      setStorage(localStorage, KeysStorage.CONFTRANS, {
+        lang: "FR",
+        ...configuration,
+      });
+      setLanguage("FR");
+    }
+  }, []);
 
-	return Dropdown(
-		{ btn: { children: language }, attr },
-		Button,
-		List({ attr: attrContent }, Button, [
-			{
-				children: "FR",
-				attr: {
-					class: btn_list + " rounded-t-[20px]",
-					onClick: () => handleLang("FR", setLanguage),
-				},
-			},
-			{
-				children: "EN",
-				attr: {
-					class: btn_list,
-					onClick: () => handleLang("EN", setLanguage),
-				},
-			},
-			{
-				children: "ES",
-				attr: {
-					class: btn_list + " rounded-b-[20px]",
-					onClick: () => handleLang("ES", setLanguage),
-				},
-			},
-		])
-	);
+  return Dropdown(
+    { btn: { children: language }, attr },
+    Button,
+    List({ attr: attrContent }, Button, [
+      {
+        children: "FR",
+        attr: {
+          class: btn_list + " rounded-t-[20px]",
+          onClick: () => handleLang("FR", setLanguage),
+        },
+      },
+      {
+        children: "EN",
+        attr: {
+          class: btn_list,
+          onClick: () => handleLang("EN", setLanguage),
+        },
+      },
+      {
+        children: "ES",
+        attr: {
+          class: btn_list + " rounded-b-[20px]",
+          onClick: () => handleLang("ES", setLanguage),
+        },
+      },
+    ])
+  );
 };
 
 export default DropdownLang;

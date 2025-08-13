@@ -1,30 +1,25 @@
 import { FastifyPluginAsync } from "fastify";
 import { socketAuthMiddleware } from "../middlewares/authMiddleware";
-import {
-	FriendList,
-	FriendRequestList,
-	FriendShip,
-	SocketList,
-} from "../types/types";
+import { FriendList, FriendShip, SocketList } from "../types/types";
 import {
 	getUserFriends,
-	getUserFriendRequests,
 	createFriendRequest,
 	acceptFriendRequest,
 	declineFriendRequest,
+	deleteFriend,
+	getFriendShip,
 } from "../services/friendService";
 import { ClientEvent, ServerEvent } from "../types/enums";
 import { getUser } from "../services/userService";
 
 const socket: FastifyPluginAsync = async (fastify, opts) => {
-	// fastify.addHook("preHandler", socketAuthMiddleware);
 	const sockets: SocketList = {};
 
 	fastify.get("/friends/:id", { websocket: true }, async (socket, request) => {
 		const { id } = request.params as { id: string };
 		const auth = await socketAuthMiddleware(
 			request.headers["sec-websocket-protocol"],
-			fastify
+			fastify,
 		);
 
 		if (!auth) {
@@ -33,34 +28,21 @@ const socket: FastifyPluginAsync = async (fastify, opts) => {
 		}
 
 		sockets[id] = socket;
-		const users: string[] = Object.keys(sockets);
-		const friends: FriendList = (await getUserFriends(
-			parseInt(id)
-		)) as FriendList;
-		const friendRequests = await getUserFriendRequests(parseInt(id));
-		const friendShip: FriendShip = {
-			userId: parseInt(id),
-			online: [],
-			offline: friends.friends,
-			requests: friendRequests ? friendRequests.receiver : [],
-			sent: friendRequests ? friendRequests.sender : [],
-		};
-		friendShip.online = friendShip.offline.filter((user) =>
-			users.includes(user.id.toString())
-		);
-		friendShip.offline = friendShip.offline.filter(
-			(user) => friendShip.online.includes(user) == false
-		);
-		friendShip.online.forEach((user) =>
+		let users: string[] = Object.keys(sockets);
+
+		const friendShip: FriendShip = await getFriendShip(parseInt(id), users);
+
+		friendShip.online.forEach(async (user) => {
+			const update = await getFriendShip(user.id, users);
 			sockets[user.id.toString()].send(
 				JSON.stringify({
-					event: ServerEvent.CONNECT,
-					data: { newOnline: parseInt(id) },
-				})
-			)
-		);
+					event: ServerEvent.UPDATE,
+					data: update,
+				}),
+			);
+		});
 		socket.send(
-			JSON.stringify({ event: ServerEvent.LIST, data: { ...friendShip } })
+			JSON.stringify({ event: ServerEvent.UPDATE, data: { ...friendShip } }),
 		);
 
 		socket.on("message", async (message: string) => {
@@ -74,52 +56,74 @@ const socket: FastifyPluginAsync = async (fastify, opts) => {
 					JSON.stringify({
 						event: ServerEvent.ERROR,
 						data: { message: "Does not exist" },
-					})
+					}),
 				);
 
 			switch (event) {
 				case ClientEvent.SEND:
-					const created = await createFriendRequest(parseInt(id), user.id);
-					sockets[target]?.send(
-						JSON.stringify({ event: ServerEvent.REQUEST, data: created })
+					const created = await createFriendRequest(
+						parseInt(id),
+						user.id,
+						users,
+					);
+					sockets[user.id.toString()]?.send(
+						JSON.stringify({ event: ServerEvent.UPDATE, data: created }),
 					);
 					break;
 				case ClientEvent.ACCEPT:
-					const accepted = await acceptFriendRequest(parseInt(id), user.id);
-					sockets[target]?.send(
-						JSON.stringify({ event: ServerEvent.ACCEPTED, data: accepted })
+					const accepted = await acceptFriendRequest(
+						parseInt(id),
+						user.id,
+						users,
+					);
+					sockets[user.id.toString()]?.send(
+						JSON.stringify({ event: ServerEvent.UPDATE, data: accepted }),
 					);
 					break;
 				case ClientEvent.DECLINE:
-					const declined = await declineFriendRequest(parseInt(id), user.id);
-					sockets[target]?.send(
-						JSON.stringify({ event: ServerEvent.DECLINED, data: declined })
+					const declined = await declineFriendRequest(
+						parseInt(id),
+						user.id,
+						users,
+					);
+					sockets[user.id.toString()]?.send(
+						JSON.stringify({ event: ServerEvent.UPDATE, data: declined }),
+					);
+					break;
+				case ClientEvent.DELETE:
+					const deleted = await deleteFriend(parseInt(id), user.id, users);
+					sockets[user.id.toString()]?.send(
+						JSON.stringify({ event: ServerEvent.UPDATE, data: deleted }),
 					);
 					break;
 				default:
 					socket.send(
-						JSON.stringify({ event: ServerEvent.ERROR, data: { code: "404" } })
+						JSON.stringify({ event: ServerEvent.ERROR, data: { code: "404" } }),
 					);
 			}
+
+			const update = await getFriendShip(parseInt(id), users);
+			socket.send(JSON.stringify({ event: ServerEvent.UPDATE, data: update }));
 		});
 
 		socket.on("close", async () => {
-			console.log("close");
-			const users: string[] = Object.keys(sockets);
+			users = users.filter((u) => u !== id);
 			const friends: FriendList = (await getUserFriends(
-				parseInt(id)
+				parseInt(id),
 			)) as FriendList;
 			const online = friends.friends.filter((user) =>
-				users.includes(user.id.toString())
+				users.includes(user.id.toString()),
 			);
-			online.forEach((user) =>
-				sockets[user.id.toString()].send(
+			online.forEach(async (user) => {
+				const update = await getFriendShip(user.id, users);
+
+				sockets[user.id.toString()]?.send(
 					JSON.stringify({
-						event: ServerEvent.DECONNECT,
-						data: { newOffline: parseInt(id) },
-					})
-				)
-			);
+						event: ServerEvent.UPDATE,
+						data: update,
+					}),
+				);
+			});
 			delete sockets[id];
 		});
 

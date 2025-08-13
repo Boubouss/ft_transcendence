@@ -8,31 +8,31 @@ import { useLanguage } from "#hooks/useLanguage.ts";
 import Submit from "#components/Inputs/Submit/Submit.ts";
 
 const FormFriend = (props: {
-	getter: Friendship | null;
-	setter: (toSet: Friendship | null) => void;
-	socket?: WebSocket | null;
+  getter: Friendship | null;
+  setter: (toSet: Friendship | null) => void;
+  socket?: WebSocket | null;
 }) => {
-	return Form(
-		{
-			attr: {
-				class: form_friend,
-				id: "form_friend",
-			},
-		},
-		Input({
-			attr: {
-				type: "text",
-				name: "name",
-				placeholder: useLanguage("username"),
-			},
-		}),
-		Submit({
-			text: useLanguage("send"),
-			attr: {
-				onClick: () => handleSendFriendRequest(props, useForm("form_friend")),
-			},
-		})
-	);
+  return Form(
+    {
+      attr: {
+        class: form_friend,
+        id: "form_friend",
+      },
+    },
+    Input({
+      attr: {
+        type: "text",
+        name: "name",
+        placeholder: useLanguage("username"),
+      },
+    }),
+    Submit({
+      text: useLanguage("send"),
+      attr: {
+        onClick: () => handleSendFriendRequest(props, useForm("form_friend")),
+      },
+    })
+  );
 };
 
 export default FormFriend;
