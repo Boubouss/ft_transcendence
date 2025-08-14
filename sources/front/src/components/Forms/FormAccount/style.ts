@@ -1,8 +1,8 @@
 import { isUndefined } from "lodash";
 
-export const form_account = `relative flex flex-col items-center`;
+export const form_account = `flex flex-col items-center `;
 
-export const form_part_inputs = `relative gap-[20px] flex flex-col items-center h-full m-[30px]`;
+export const form_part_inputs = `gap-[20px] flex flex-col items-cenmb-[20px]ter h-full m-[30px]`;
 
 export const input_account = `
     relative
@@ -40,7 +40,6 @@ export const avatar_img_class = `
     h-[200px]
     object-cover
     rounded-full
-    z-0
 `;
 
 export const avatar_class = `

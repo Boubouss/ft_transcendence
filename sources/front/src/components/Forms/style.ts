@@ -47,3 +47,14 @@ export const form_friend = `
     gap-[10px]
 `;
 export const img_google = `w-[30px] h-[30px]`;
+
+export const form_A2F = `
+    flex
+    flex-col
+    justify-between
+    h-full
+    items-center
+    w-full
+    p-10
+    gap-[20px]
+`;

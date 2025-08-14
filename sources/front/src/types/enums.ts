@@ -6,6 +6,7 @@ export enum UserClientEvent {
 }
 
 export enum UserServerEvent {
+  SENT = "SENT",
   UPDATE = "UPDATE",
   ERROR = "ERROR",
 }

@@ -19,7 +19,7 @@ export async function fetchAPI(path: string, options: RequestInit) {
   return await fetch(path, options)
     .then((response) => {
       // console.log(response);
-      if (!response.ok) console.log(response);
+      //if (!response.ok) console.log(response);
       // throw new Error(
       // 	`HTTP Error: ${response.status} ${response.statusText}`
       // );

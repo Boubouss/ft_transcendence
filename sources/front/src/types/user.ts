@@ -12,14 +12,22 @@ export type Friendship = {
 };
 
 export type User = {
-  id: number | FormDataEntryValue | null;
-  name?: string | FormDataEntryValue | null;
-  email?: string | FormDataEntryValue | null;
-  verify?: boolean;
-  avatar?: string | FormDataEntryValue | null | HTMLInputElement;
-  password?: string | FormDataEntryValue | null;
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+  password?: string;
   configuration: Configuration;
-  conf: Configuration;
+};
+
+export type UserForm = {
+  id: FormDataEntryValue | null;
+  name?: FormDataEntryValue | null;
+  email?: FormDataEntryValue | null;
+  verify?: boolean;
+  avatar?: FormDataEntryValue | null | HTMLInputElement;
+  password?: FormDataEntryValue | null;
+  configuration: Configuration;
 };
 
 export type Configuration = {

@@ -4,6 +4,7 @@ import _ from "lodash";
 import { friend_card, friend_card_active, friend_card_inactive } from "./style";
 import { handleDeleteFriend } from "#sockets/Friends/request.ts";
 import type { Friend, Friendship } from "#types/user.ts";
+import { useAvatar } from "#hooks/useAvatar.ts";
 
 const FriendCard = (props: {
   friend: Friend & { active: boolean };
@@ -20,7 +21,7 @@ const FriendCard = (props: {
       class: friend_card + (active ? friend_card_active : friend_card_inactive),
     },
     createElement("img", {
-      src: _.isEmpty(avatar) ? "/images/avatar_1.jpg" : avatar,
+      src: useAvatar(avatar),
       class: "h-[50px] w-[50px] rounded-[50px]",
     }),
     createElement("span", { class: "text-xl" }, name),

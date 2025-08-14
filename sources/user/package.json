@@ -21,7 +21,7 @@
 		"@fastify/websocket": "^11.0.2",
 		"@prisma/client": "^6.7.0",
 		"@types/bcrypt": "^5.0.2",
-		"@types/fastify-static": "^2.2.3",
+		"@types/fastify-static": "^0.14.0",
 		"@types/nodemailer": "^6.4.17",
 		"bcrypt": "^5.1.1",
 		"dotenv": "^16.5.0",

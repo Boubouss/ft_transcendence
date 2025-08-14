@@ -25,7 +25,10 @@ export type ComponentAttr = {
   min?: number;
   enctype?: string;
   max?: number;
-  maxlength?: number;
+  pattern?: string;
+  minlength?: string;
+  maxlength?: string | number;
+  inputmode?: string;
 };
 
 type Self = {

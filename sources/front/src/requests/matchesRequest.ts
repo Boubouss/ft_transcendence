@@ -10,7 +10,7 @@ import type { Match, Player } from "#types/match.ts";
 export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
   const conf = getStorage(localStorage, KeysStorage.CONFTRANS);
 
-  const matches: Match[] = await fetchAPI(
+  const matches = await fetchAPI(
     import.meta.env.VITE_API_GAME + API_GAME_ROUTES.MATCH + `/${conf?.id}`,
     {
       method: "GET",
@@ -18,16 +18,14 @@ export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
     }
   );
 
-  //console.log(matches);
 
-  if (matches) setMatches(matches.reverse());
+  if (matches) setMatches(matches.data);
 };
 
 export const getPlayers = async (
   matches: Match[] | null,
   setPlayers: (toSet: Player[]) => void
 ) => {
-  // console.log(matches);
   if (!matches) return;
 
   const ids: Set<number> = new Set();

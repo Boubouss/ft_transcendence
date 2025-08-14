@@ -1,3 +1,4 @@
+import { useLanguage } from "#hooks/useLanguage.ts";
 import type { UserServerEvent } from "#types/enums.ts";
 import type { Friendship } from "#types/user.ts";
 
@@ -12,17 +13,31 @@ export type FriendsStates = Record<
 
 export const friendHandlers: Record<
   UserServerEvent,
-  (data: Friendship, states: FriendsStates) => void
+  (data: Friendship | { message: string }, states: FriendsStates) => void
 > = {
   UPDATE: handleUpdateFriend,
+  SENT: handleSentFriend,
   ERROR: handleErrorFriend,
 };
 
-function handleUpdateFriend(data: Friendship, states: FriendsStates) {
+function handleSentFriend(
+  _data: Friendship | { message: string },
+  _states: FriendsStates
+) {
+  alert(useLanguage("send_request"));
+}
+
+function handleUpdateFriend(
+  data: Friendship | { message: string },
+  states: FriendsStates
+) {
   const { FRIENDSHIP: state } = states;
   state[1](data);
 }
 
-function handleErrorFriend(data: Friendship, _states: FriendsStates) {
-  console.error(data);
+function handleErrorFriend(
+  data: Friendship | { message: string },
+  _states: FriendsStates
+) {
+  console.log(data);
 }
