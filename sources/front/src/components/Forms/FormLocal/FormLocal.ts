@@ -1,9 +1,8 @@
-import Form from "#components/Forms/Form.ts";
-import Input from "#components/Inputs/Input.ts";
-import { useState } from "#core/hooks/useState.ts";
-import { createElement } from "#core/render.ts";
-import { useForm } from "#hooks/useForm.ts";
-import type { GameConfig, GameMode } from "../type";
+import Form from "#components/Forms/Form";
+import Input from "#components/Inputs/Input";
+import Selector from "#components/Inputs/Selector/Selector";
+import _ from "lodash";
+import type { GameConfig, GameMode } from "#types/local";
 import {
   confirmButtonStyle,
   formStyle,
@@ -13,10 +12,10 @@ import {
   modeToggleStyle,
   nameInputContainerStyle,
   nameInputStyle,
-  scoreButtonStyle,
-  scoreContainerStyle,
-  scoreLabelStyle,
 } from "./style";
+import { createElement } from "#core/render.ts";
+import { useForm } from "#hooks/useForm.ts";
+import { useState } from "#core/hooks/useState.ts";
 
 //todo: handle both game mode
 function handleLocalForm(formId: string, setConfig: (toSet: any) => void) {
@@ -24,14 +23,16 @@ function handleLocalForm(formId: string, setConfig: (toSet: any) => void) {
   if (!form_data) return; //todo: handle this error
 
   let config: GameConfig = {
-    id: `local-${crypto.randomUUID()}`,
     mode: String(form_data.get("mode")),
     score: Number(form_data.get("score")),
+    players: ["0", "1"],
   };
 
   if (form_data.get("mode") === "tournament") {
-    const nicknames = form_data.getAll("name").filter((name) => name);
+    const size = Number(form_data.get("size"));
+    const nicknames = form_data.getAll("name").slice(0, size);
     const set = [...new Set(nicknames)];
+
     if (nicknames.length !== set.length) return alert("Invalid config");
     if (nicknames.length <= 2) return alert("Invalid config");
     if (Math.log2(nicknames.length) % 1 !== 0) return alert("Invalid config");
@@ -40,46 +41,13 @@ function handleLocalForm(formId: string, setConfig: (toSet: any) => void) {
   setConfig({ ...config });
 }
 
-const ScoreInput = (props: {
-  min: number;
-  max: number;
-  score: number;
-  setScore: (toSet: number) => void;
-}) => {
-  return createElement(
-    "div",
-    { class: scoreContainerStyle },
-    createElement("input", {
-      class: scoreButtonStyle + ` border-l-[2px] rounded-l-[8px]`,
-      type: `button`,
-      value: `<<`,
-      onClick: () => props.setScore(props.min),
-    }),
-    createElement("input", {
-      class: scoreButtonStyle,
-      type: `button`,
-      value: `<`,
-      onClick: () => props.setScore(Math.max(props.min, props.score - 1)),
-    }),
-    createElement("div", { class: scoreLabelStyle }, `${props.score}`),
-    createElement("input", {
-      class: scoreButtonStyle,
-      type: `button`,
-      value: `>`,
-      onClick: () => props.setScore(Math.min(props.max, props.score + 1)),
-    }),
-    createElement("input", {
-      class: scoreButtonStyle + ` border-r-[2px] rounded-r-[8px]`,
-      type: `button`,
-      value: `>>`,
-      onClick: () => props.setScore(props.max),
-    })
-  );
-};
-
 const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
-  const [mode, setMode] = useState<GameMode>("versus");
+  const scoreOptions: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const sizeOptions: number[] = [4, 8, 16];
+
+  const [mode, setMode] = useState<GameMode>("tournament");
   const [score, setScore] = useState<number>(5);
+  const [size, setSize] = useState<number>(4);
 
   return Form(
     { attr: { class: formStyle, id: "local_form" } },
@@ -109,13 +77,16 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
           if (mode !== "tournament") setMode("tournament");
         },
       }),
-      createElement("input", {
-        type: "hidden",
-        name: "mode",
-        value: `${mode}`,
-      })
+      createElement("input", { type: "hidden", name: "mode", value: `${mode}` })
     ),
 
+    createElement(
+      "div",
+      { class: mode !== "tournament" ? " hidden" : `` },
+      createElement("div", { class: `text-center` }, "Tournament Size"),
+      Selector({ values: sizeOptions, value: size, setValue: setSize }),
+      createElement("input", { type: "hidden", name: "size", value: `${size}` })
+    ),
     createElement(
       "div",
       { class: mode !== "tournament" ? " hidden" : `` },
@@ -123,13 +94,13 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
       createElement(
         "div",
         {
-          class: nameInputContainerStyle,
+          class: `${nameInputContainerStyle} grid-cols-${size / 4}`,
           name: "nicknames",
         },
-        ...Array.from({ length: 8 }, () =>
+        ...Array.from({ length: _.last(sizeOptions) as number }, (_, i) =>
           Input({
             attr: {
-              class: nameInputStyle,
+              class: `${nameInputStyle}${i >= size ? " hidden" : ""}`,
               name: `name`,
               placeholder: `Nickname`,
               type: "text",
@@ -144,7 +115,11 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
       "div",
       {},
       createElement("p", { class: `text-center` }, "Score/Round"),
-      ScoreInput({ min: 1, max: 10, score: score, setScore: setScore }),
+      Selector({
+        values: scoreOptions, //todo: remove the hardcoded value
+        value: score,
+        setValue: setScore,
+      }),
       createElement("input", {
         type: "hidden",
         name: "score",
