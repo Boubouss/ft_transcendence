@@ -101,11 +101,6 @@ const GameField = (props: {
   isRemote?: boolean;
 }) => {
   useEffect(() => {
-    for (const player of props.players) {
-      player.socket.onerror = (event) => console.error(event);
-      player.socket.onclose = (event) => console.debug(event);
-    }
-
     const handlePause = (event: KeyboardEvent) => {
       if (!props.players.every((p) => p.socket.readyState === WebSocket.OPEN))
         return;

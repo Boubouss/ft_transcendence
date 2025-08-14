@@ -1,30 +1,27 @@
 import { createElement } from "#core/render.ts";
 import {
-  account_background,
   account_container,
-  button_close,
-  image_button_close,
   title_container,
   title_page_account,
   account_page,
 } from "./style";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import { navigateTo, useState } from "#core/framework.ts";
-import { getStorage } from "#services/data.ts";
-import { KeysStorage } from "#types/enums.ts";
+import { useState } from "#core/framework.ts";
 import _ from "lodash";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 import FormAccount from "#components/Forms/FormAccount/FormAccount.ts";
+import ModalError from "#components/Modals/ModalError/ModalError.ts";
+import { home_background } from "#pages/Home/style.ts";
 
 const Account = () => {
-  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
+  const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
 
-  const [isUser, setUserState] = useState(user);
 
   return createElement(
     "div",
-    { id: "account_background", class: account_background },
-    NavigationBar({ userState: { user: isUser, setUser: setUserState } }),
+    { id: "account_background", class: home_background },
+    NavigationBar({}),
     createElement(
       "div",
       { class: account_page },
@@ -40,8 +37,12 @@ const Account = () => {
             useLanguage("myacc")
           )
         ),
-        FormAccount()
-      )
+        FormAccount(setShowModal, setError)
+      ),
+      ModalError({
+        showModalState: [showModal, setShowModal],
+        Error: error,
+      })
     )
   );
 };

@@ -146,7 +146,7 @@ export async function deleteUser(id: number) {
 export async function googleSignIn(googleData: GoogleData) {
 	const user = await getUser({ email: googleData.email });
 
-	if (user) return { ...user };
+	if (user) return user;
 
 	let name: string = googleData.name;
 

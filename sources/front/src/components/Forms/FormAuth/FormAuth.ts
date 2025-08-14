@@ -3,7 +3,6 @@ import Input from "#components/Inputs/Input.ts";
 import Submit from "#components/Inputs/Submit/Submit.ts";
 import { useState } from "#core/hooks/useState.ts";
 import { createElement } from "#core/render.ts";
-import type { User } from "#types/user.ts";
 
 import {
   handleConnexion,
@@ -19,15 +18,27 @@ import {
   img_google,
 } from "../style";
 import { useLanguage } from "#hooks/useLanguage.ts";
+import _ from "lodash";
+import { input_default, label_default } from "#components/Inputs/style.ts";
 
 const FormAuth = (props: {
   setModal: (toSet: boolean) => void;
-  set2FA: (toSet: boolean) => void;
-  setUser: (toSet: User | null) => void;
+  state2FA: [boolean, (toSet: boolean) => void];
+  setError: (toSet: string) => void;
+  stateModalError: [boolean, (toSet: boolean) => void];
 }) => {
   const [isConnexion, setIsConnexion] = useState(false);
 
-  const { setModal, set2FA, setUser } = props;
+
+  const {
+    setModal,
+    state2FA,
+    setError,
+    stateModalError,
+  } = props;
+
+  const [modal2FA, set2FA] = state2FA;
+  const [showModalError, setShowModalError] = stateModalError;
 
   return Form(
     { attr: { class: form_connexion, id: "form_auth" } },
@@ -60,11 +71,21 @@ const FormAuth = (props: {
         "Google"
       )
     ),
-    isConnexion
-      ? createElement("div", { class: `hidden` })
-      : Input({ attr: { type: "email", name: "email", placeholder: "Email" } }),
     Input({
-      attr: { type: "text", name: "name", placeholder: useLanguage("name") },
+      attr: {
+        type: "email",
+        name: "email",
+        placeholder: "Email",
+        class: input_default + (isConnexion && " hidden"),
+      },
+      labelAttr: { class: label_default + (isConnexion && " hidden") },
+    }),
+    Input({
+      attr: {
+        type: "text",
+        name: "name",
+        placeholder: useLanguage("name"),
+      },
     }),
     Input({
       attr: {
@@ -72,20 +93,36 @@ const FormAuth = (props: {
         name: "password",
         placeholder: useLanguage("pw"),
       },
-    }),
+    }),  
     isConnexion
       ? Submit({
           text: "Connexion",
           attr: {
             onClick: () => {
-              handleConnexion(set2FA, setUser);
+              handleConnexion(
+                set2FA,
+                setError,
+                setShowModalError,
+              );
               setModal(false);
             },
           },
         })
       : Submit({
           text: useLanguage("valid"),
-          attr: { onClick: () => handleRegister(set2FA) },
+          attr: {
+            onClick: async () => {
+              if (!modal2FA && !showModalError)
+              {
+                await handleRegister(
+                  set2FA,
+                  setError,
+                  setShowModalError,
+                  setModal
+                );
+              }
+            },
+          },
         })
   );
 };

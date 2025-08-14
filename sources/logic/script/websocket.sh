@@ -7,7 +7,7 @@ if [ "$#" -ne 2 ]; then
 	exit
 fi
 
-port=3000
+port=3002
 gameId=${1}
 playerId=${2}
 

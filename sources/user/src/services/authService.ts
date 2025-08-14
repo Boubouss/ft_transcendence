@@ -19,6 +19,7 @@ export async function getUserAuth(name: string) {
 		select: {
 			id: true,
 			email: true,
+			verify: true,
 			password: true,
 			configuration: {
 				select: {
@@ -63,4 +64,22 @@ export async function generate2FA(user: UserAuth) {
 		console.error(error);
 	}
 	return;
+}
+
+export async function updateToken(id: number, token: string) {
+	return await prisma.user.update({
+		where: { id },
+		data: { token },
+	});
+}
+
+export async function checkRight(id: number, authorization: string) {
+	const token = await prisma.user.findUnique({
+		where: { id },
+		select: {
+			token: true,
+		},
+	});
+	if (!token || token.token.localeCompare(authorization.slice(7))) return false;
+	return true;
 }

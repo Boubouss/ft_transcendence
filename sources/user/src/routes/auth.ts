@@ -29,6 +29,7 @@ import {
 	getUserAuth,
 	updateConfig,
 	generate2FA,
+	updateToken,
 } from "../services/authService";
 
 const auth: FastifyPluginAsync = async (fastify) => {
@@ -63,15 +64,13 @@ const auth: FastifyPluginAsync = async (fastify) => {
 			if (!data)
 				return reply.status(500).send({ error: "Authentication failed" });
 
-			const user = await googleSignIn(googleData);
+			const user = (await googleSignIn(googleData)) as User;
 
 			if (user) {
+				const token = fastify.jwt.sign({ email: user.email });
+				await updateToken(user.id, token);
 				reply.redirect(
-					process.env.FRONT_URL +
-						"/?token=" +
-						fastify.jwt.sign({ email: user.email }) +
-						"&id=" +
-						user.id
+					process.env.FRONT_URL + "/?token=" + token + "&id=" + user.id
 				);
 			} else {
 				reply.status(403).send({ error: "User not authorized" });
@@ -106,13 +105,16 @@ const auth: FastifyPluginAsync = async (fastify) => {
 		const user = await getUser({ id: userAuth.id });
 		if (!user) throw new Error("Couldn't find user.");
 
-		if (userAuth.configuration.is2FA) {
+		if (userAuth.configuration.is2FA || !userAuth.verify) {
 			await generate2FA(userAuth);
 			reply.send({ ...user });
 			return;
 		}
 
-		reply.send({ ...user, token: fastify.jwt.sign({ email: user.email }) });
+		const token = fastify.jwt.sign({ email: user.email });
+		await updateToken(userAuth.id, token);
+
+		reply.send({ ...user, token });
 	});
 
 	fastify.post("/2FA", { schema: auth2FASchema }, async (request, reply) => {
@@ -123,9 +125,12 @@ const auth: FastifyPluginAsync = async (fastify) => {
 			userAuth.configuration.code2FA = "";
 			await updateConfig(userAuth.configuration);
 
-			if (type === "REGISTER") await verifyUser(userAuth.id);
+			if (type === "REGISTER" || !userAuth.verify)
+				await verifyUser(userAuth.id);
 
-			reply.send({ token: fastify.jwt.sign({ email: userAuth.email }) });
+			const token = fastify.jwt.sign({ email: userAuth.email });
+			await updateToken(userAuth.id, token);
+			reply.send({ token });
 			return;
 		}
 

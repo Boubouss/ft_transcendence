@@ -1,6 +1,5 @@
 import {
   createElement,
-  useEffect,
   useState,
   type Component,
   type ComponentAttr,
@@ -21,7 +20,7 @@ const Dropdown = (
   }) => Component,
   content: Component
 ) => {
-  const [dropdown, setDropdown] = useState(false, true);
+  const [dropdown, setDropdown] = useState(false);
 
   let { btn, attr } = props;
   let { children, attr: attrButton } = btn;

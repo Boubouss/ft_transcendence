@@ -16,17 +16,17 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 checkEnv();
 
 const app = fastify({
-	https: {
-		key: fs.readFileSync(process.env.HTTPS_KEY as string),
-		cert: fs.readFileSync(process.env.HTTPS_CERT as string),
-	},
+  https: {
+    key: fs.readFileSync(process.env.HTTPS_KEY as string),
+    cert: fs.readFileSync(process.env.HTTPS_CERT as string),
+  },
 });
 
 app.register(cors, {
-	origin: "http://localhost:5173",
-	optionsSuccessStatus: 200,
-	methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
-	preflightContinue: false,
+  origin: process.env.FRONT_URL as string,
+  optionsSuccessStatus: 200,
+  methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+  preflightContinue: false,
 });
 
 app.register(fastifyWebsocket);
@@ -39,14 +39,14 @@ app.register(lobby);
 app.setErrorHandler(errorHandler);
 
 const start = async () => {
-	try {
-		await app.listen({ port: 3001 });
-		console.log("Server is running on https://localhost:3001");
-	} catch (err) {
-		app.log.error(err);
-		console.log(err);
-		process.exit(1);
-	}
+  try {
+    await app.listen({ port: 3001 });
+    console.log("Server is running on ", process.env.API_GAME);
+  } catch (err) {
+    app.log.error(err);
+    console.log(err);
+    process.exit(1);
+  }
 };
 
 start();

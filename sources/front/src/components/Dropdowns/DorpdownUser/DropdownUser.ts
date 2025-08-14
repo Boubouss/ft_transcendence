@@ -1,8 +1,6 @@
 import {
   createElement,
   navigateTo,
-  useEffect,
-  useState,
   type ComponentAttr,
 } from "#core/framework.ts";
 import Button from "#components/Buttons/Button.ts";
@@ -11,8 +9,6 @@ import Dropdown from "../Dropdown";
 import { handleDeconnexion } from "#requests/authRequest.ts";
 import { btn_list, btn_user } from "#components/Buttons/style.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import type { User } from "#types/user.ts";
-
 import {
   dropdown_content,
   dropdown_default,
@@ -21,18 +17,18 @@ import {
 import { getStorage } from "#services/data.ts";
 import { useAvatar } from "#hooks/useAvatar.ts";
 import { KeysStorage } from "#types/enums.ts";
+import { useContext } from "#core/hooks/useContext.ts";
+import type { UserState } from "#pages/Multiplayer/Multiplayer.ts";
 
 const DropdownUser = (props: {
   attr?: ComponentAttr;
   attrContent?: ComponentAttr;
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [getContext, _set] = useContext();
+  const [user, _setUser] = getContext("user") as UserState;
+  
 
   let { attr, attrContent } = props;
-
-  useEffect(() => {
-    setUser(getStorage(sessionStorage, KeysStorage.USERTRANS));
-  }, [getStorage(sessionStorage, "transcendende_user")]);
 
   const default_attr = { class: dropdown_default + " w-[220px]" };
   const default_attr_content = { class: dropdown_content + " w-[220px]" };
@@ -47,7 +43,7 @@ const DropdownUser = (props: {
           "span",
           { class: btn_user },
           createElement("img", {
-            src: useAvatar(user),
+            src: useAvatar(user?.avatar),
             class: dropdown_user_img,
           }),
           `${getStorage(sessionStorage, KeysStorage.USERTRANS)?.name}`
@@ -76,8 +72,7 @@ const DropdownUser = (props: {
         attr: {
           class: btn_list + " rounded-b-[20px]",
           onClick: () => {
-            navigateTo("/");
-            handleDeconnexion(setUser);
+            handleDeconnexion();
           },
         },
       },

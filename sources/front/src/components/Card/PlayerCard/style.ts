@@ -17,6 +17,8 @@ export const player_card_img = `
     border-black
     border-solid
     border-3
+    w-[87px]
+    object-cover
 `;
 
 export const player_card_action = `

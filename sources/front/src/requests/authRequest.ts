@@ -1,7 +1,4 @@
-import { navigateTo } from "#core/router.ts";
 import { useForm } from "#hooks/useForm.ts";
-import type { User } from "#types/user.ts";
-
 import {
   API_USER_ROUTES,
   fetchAPI,
@@ -11,16 +8,34 @@ import {
   setStorage,
 } from "#services/data.ts";
 import { KeysStorage } from "#types/enums.ts";
+import _ from "lodash";
+import { useValidation} from "../hooks/useValidation";
+import { useLanguage } from "#hooks/useLanguage.ts";
+import { useContext } from "#core/hooks/useContext.ts";
+import type { UserState } from "#pages/Multiplayer/Multiplayer.ts";
 
 export const handleConnexion = async (
   set2FA: (toSet: boolean) => void,
-  setUser: (toSet: User | null) => void
+  setError: (toSet: string) => void,
+  setShowModalError: (toSet: boolean) => void,
 ) => {
   const form = useForm("form_auth");
   const data = {
-    name: form?.get("name"),
-    password: form?.get("password"),
+    name: form?.get("name")?.toString() || "",
+    password: form?.get("password")?.toString() || "",
   };
+  const [isComplete, isValid] = useValidation();
+  const [getContext, _set] = useContext();
+
+  const [_userContext, setUser] = getContext("user") as UserState;
+
+  if (!isComplete(data, setError) || !isValid(data, setError)) {
+    setError(useLanguage("error_user_not_found"));
+
+    setShowModalError(true);
+    return;
+  }
+
   const user = await fetchAPI(
     import.meta.env.VITE_API_USER + API_USER_ROUTES.LOGIN,
     {
@@ -30,33 +45,56 @@ export const handleConnexion = async (
     }
   );
 
-  if (user) {
+  if (user && _.isUndefined(user.error)) {
     const { token, ...userData } = user;
 
-    setStorage(sessionStorage, KeysStorage.USERTRANS, userData);
-
     if (token) {
+      setStorage(sessionStorage, KeysStorage.USERTRANS, userData);
+
       setStorage(localStorage, KeysStorage.CONFTRANS, {
         id: user.id,
         token: user.token,
       });
       setUser(getStorage(sessionStorage, KeysStorage.USERTRANS));
     } else {
+      setUser(userData);
       setStorage(localStorage, KeysStorage.CONFTRANS, {
         id: user.id,
       });
       set2FA(true);
     }
+  } else {
+    setError(useLanguage("error_user_not_found"));
+
+    setShowModalError(true);
   }
 };
 
-export const handleRegister = async (setter: (toSet: boolean) => void) => {
+export const handleRegister = async (
+  setter2FA: (toSet: boolean) => void,
+  setError: (toSet: string) => void,
+  setShowModalError: (toSet: boolean) => void,
+  setModalRegister: (toSet:boolean) => void,
+) => {
+  const [getContext, _set] = useContext();
+  const [_userContext, setUser] = getContext("user") as UserState;
+
+
+
   const form = useForm("form_auth");
   const data = {
-    email: form?.get("email"),
-    name: form?.get("name"),
-    password: form?.get("password"),
+    email: form?.get("email")?.toString(),
+    name: form?.get("name")?.toString(),
+    password: form?.get("password")?.toString(),
   };
+  const [isComplete, isValid] = useValidation();
+
+  if (!isComplete(data, setError) || !isValid(data, setError)) {
+    setShowModalError(true);
+    return;
+  }
+  setModalRegister(false);
+
   const user = await fetchAPI(
     import.meta.env.VITE_API_USER + API_USER_ROUTES.REGISTER,
     {
@@ -66,21 +104,33 @@ export const handleRegister = async (setter: (toSet: boolean) => void) => {
     }
   );
 
-  if (user) {
+  if (user && _.isUndefined(user.error)) {
+
     setStorage(localStorage, KeysStorage.CONFTRANS, {
       id: user.id,
     });
-    setStorage(sessionStorage, KeysStorage.USERTRANS, user);
-    setter(true);
+    setUser(user);
+    setter2FA(true);
+  } else {
+    setError(useLanguage("error_account"));
+    setModalRegister(true);
+    setShowModalError(true);
+
   }
 };
 
-export const handle2FA = async (setter: (toSet: User | null) => void) => {
-  const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
+export const handle2FA = async (
+  set2FA: (toSet: boolean) => void,
+  setError: (toSet: string) => void,
+  setShowModalError: (toSet: boolean) => void,
+) => {
+  const [getContext, _set] = useContext();
+  const [user, setUser] = getContext("user") as UserState
   const form = useForm("form_2FA");
+
   const data = {
     code: form?.get("code"),
-    name: user.name,
+    name: user?.name,
     type: "REGISTER",
   };
   const token = await fetchAPI(
@@ -92,9 +142,15 @@ export const handle2FA = async (setter: (toSet: User | null) => void) => {
     }
   );
 
-  if (token) {
-    setStorage(localStorage, KeysStorage.CONFTRANS, { id: user.id, ...token });
-    setter(getStorage(sessionStorage, KeysStorage.USERTRANS));
+  if (token && user && token.token) {
+    setStorage(localStorage, KeysStorage.CONFTRANS, { id: user?.id, ...token });
+    setStorage(sessionStorage, KeysStorage.USERTRANS, user);
+
+    setUser(user);
+    set2FA(false);
+  } else {
+    setError(useLanguage("alerta2f"));
+    setShowModalError(true);
   }
 };
 
@@ -109,14 +165,14 @@ export const handleGoogleSign = async () => {
   window.location.href = google.url;
 };
 
-export const handleAutoConnect = async (
-  setter: (toSet: User | null) => void
-) => {
+export const handleAutoConnect = async () => {
   const configuration: {
     id: string;
     token: string;
     lang?: string;
   } = getStorage(localStorage, KeysStorage.CONFTRANS);
+  const [getContext, _set] = useContext();
+  const [_user, setUser] = getContext("user") as UserState
   if (
     configuration?.token &&
     !getStorage(sessionStorage, KeysStorage.USERTRANS)
@@ -130,9 +186,9 @@ export const handleAutoConnect = async (
         headers: { Authorization: `Bearer ` + configuration.token },
       }
     );
-    if (user) setStorage(sessionStorage, KeysStorage.USERTRANS, user);
+    if (user && !user.code) setStorage(sessionStorage, KeysStorage.USERTRANS, user);
     else
-      setStorage(localStorage, KeysStorage.CONFTRANS, {
+      replaceStorage(localStorage, KeysStorage.CONFTRANS, {
         lang: configuration?.lang ?? "FR",
       });
   }
@@ -141,16 +197,17 @@ export const handleAutoConnect = async (
     configuration?.token &&
     getStorage(sessionStorage, KeysStorage.USERTRANS)
   ) {
-    setter(getStorage(sessionStorage, KeysStorage.USERTRANS));
+    setUser(getStorage(sessionStorage, KeysStorage.USERTRANS));
   }
 };
 
-export const handleDeconnexion = (setter: (toSet: User | null) => void) => {
+export const handleDeconnexion = () => {
+  const [getContext, _set] = useContext();
+  const [_user, setUser] = getContext("user") as UserState
   const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
   replaceStorage(localStorage, KeysStorage.CONFTRANS, {
     lang: configuration.lang,
   });
   removeStorage(sessionStorage, KeysStorage.USERTRANS);
-  setter(null);
-  navigateTo("/");
+  if (setUser) setUser(null);
 };

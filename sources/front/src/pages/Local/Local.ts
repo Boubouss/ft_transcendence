@@ -90,7 +90,8 @@ const GameQueue = (props: { tournament: LocalTournament }) => {
                   )
                 )
               : [])
-          )
+          ),
+          createElement("div", { class: "" }, useLanguage("start_touch"))
         )
       : null
   );

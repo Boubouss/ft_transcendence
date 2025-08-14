@@ -26,14 +26,21 @@ import {
   input_account,
   submit_account_default,
 } from "./style";
+import { useContext } from "#core/hooks/useContext.ts";
+import type { UserState } from "#pages/Multiplayer/Multiplayer.ts";
 
-const FormAccount = () => {
-  const data = getStorage(sessionStorage, KeysStorage.USERTRANS);
+const FormAccount = (
+  setShowMoral: (toSet: boolean) => void,
+  setError: (toSet: string) => void
+) => {
 
   const [isEditing, setEditing] = useState(false);
   const [isView, setIsView] = useState(false);
-  const [user, setUser] = useState(data);
   const [currentPassword, setcurrentPassword] = useState("");
+
+
+  const [getContext, _set] = useContext();
+  const [user, _setUser] = getContext("user") as UserState;
 
   return Form(
     {
@@ -52,8 +59,8 @@ const FormAccount = () => {
           attr: {
             type: "email",
             name: "email",
-            placeholder: isEditing ? user.email : "Email",
-            value: isEditing ? "" : user.email,
+            placeholder: isEditing ? user?.email : "Email",
+            value: isEditing ? "" : user?.email,
             class: input_account,
             ...(!isEditing ? { readonly: true } : {}),
           },
@@ -62,9 +69,11 @@ const FormAccount = () => {
           attr: {
             type: "text",
             name: "name",
-            value: isEditing ? "" : user.name,
-            placeholder: isEditing ? user.name : useLanguage("username"),
+            value: isEditing ? "" : user?.name,
+            placeholder: isEditing ? user?.name : useLanguage("name"),
             class: input_account,
+            minlength: "3",
+            maxlength: "20",
             ...(!isEditing ? { readonly: true } : {}),
           },
         }),
@@ -74,6 +83,9 @@ const FormAccount = () => {
               type: isView ? "text" : "password",
               name: "password",
               placeholder: useLanguage("pw"),
+              pattern:
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+              minlength: "8",
               value: isEditing ? currentPassword : "            ",
               class: input_account,
               ...(!isEditing ? { readonly: true } : {}),
@@ -112,7 +124,7 @@ const FormAccount = () => {
             ToggleName: Form_ID.A2F,
             isEdit: isEditing,
             a2fMode: true,
-            is2FA: user.configuration.is2FA,
+            is2FA: user?.configuration.is2FA ?? false,
           })
         )
       ),
@@ -128,7 +140,7 @@ const FormAccount = () => {
           },
         }),
         createElement("img", {
-          src: useAvatar(user),
+          src: useAvatar(user?.avatar),
           class: avatar_img_class,
         })
       )
@@ -152,8 +164,7 @@ const FormAccount = () => {
           class: submit_account_default(isEditing),
           onClick: () => {
             if (isEditing) {
-              handleEditUser(user, setUser);
-              setEditing(false);
+              handleEditUser(setEditing, setShowMoral, setError);
             }
           },
           ...(!isEditing ? { disabled: true } : {}),

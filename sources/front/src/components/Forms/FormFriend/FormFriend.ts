@@ -23,7 +23,7 @@ const FormFriend = (props: {
       attr: {
         type: "text",
         name: "name",
-        placeholder: useLanguage("username"),
+        placeholder: useLanguage("name"),
       },
     }),
     Submit({
