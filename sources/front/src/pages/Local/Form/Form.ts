@@ -73,7 +73,7 @@ const ScoreInput = (props: {
       type: `button`,
       value: `>>`,
       onClick: () => props.setScore(props.max),
-    }),
+    })
   );
 };
 
@@ -113,7 +113,7 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
         type: "hidden",
         name: "mode",
         value: `${mode}`,
-      }),
+      })
     ),
 
     createElement(
@@ -135,21 +135,21 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
               type: "text",
               value: crypto.randomUUID().split("-")[0], //todo: removed after the tests
             },
-          }),
-        ),
-      ),
+          })
+        )
+      )
     ),
 
     createElement(
       "div",
       {},
-      createElement("p", { class: `text-center` }, "Score"),
+      createElement("p", { class: `text-center` }, "Score/Round"),
       ScoreInput({ min: 1, max: 10, score: score, setScore: setScore }),
       createElement("input", {
         type: "hidden",
         name: "score",
         value: `${score}`,
-      }),
+      })
     ),
 
     createElement("input", {
@@ -157,7 +157,7 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
       value: "Start",
       class: confirmButtonStyle,
       onClick: () => handleLocalForm("local_form", props.setConfig),
-    }),
+    })
   );
 };
 

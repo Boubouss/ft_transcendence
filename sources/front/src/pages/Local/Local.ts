@@ -16,7 +16,7 @@ function isSocketsReady(sockets: WebSocket[]) {
     sockets.every(
       (socket) =>
         socket.readyState === WebSocket.OPEN ||
-        socket.readyState === WebSocket.CONNECTING,
+        socket.readyState === WebSocket.CONNECTING
     )
   );
 }
@@ -32,7 +32,7 @@ async function createGame(id: string, players: string[], score: number) {
 async function handleVersus(
   config: GameConfig,
   setSockets: (toSet: WebSocket[]) => void,
-  setStage: (toSet: GameStage) => void,
+  setStage: (toSet: GameStage) => void
 ) {
   if (!config) return; //todo: add an error
   await createGame(config.id, ["0", "1"], config.score);
@@ -91,7 +91,6 @@ const Local = () => {
   return createElement(
     "div",
     { class: `${home_background} items-center justify-center` },
-
     !config ? LocalForm({ config: config, setConfig: setConfig }) : null,
 
     config && stage === "tree"
@@ -105,15 +104,7 @@ const Local = () => {
           players: [playerOne, playerTwo],
           setScores: setScores,
         })
-      : null,
-
-    config && stage === null
-      ? createElement(
-          "div",
-          { class: `bg-orange-400 border-[2px] border-black border-solid` },
-          "error",
-        )
-      : null,
+      : null
   );
 };
 
