@@ -95,6 +95,7 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
         "div",
         {
           class: `${nameInputContainerStyle} grid-cols-${size / 4}`,
+          // class: `${nameInputContainerStyle} grid-cols-4`,
           name: "nicknames",
         },
         ...Array.from({ length: _.last(sizeOptions) as number }, (_, i) =>
