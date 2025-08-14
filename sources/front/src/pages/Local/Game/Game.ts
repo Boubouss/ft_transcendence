@@ -70,10 +70,10 @@ const GameField = (props: {
 }) => {
   useEffect(() => {
     for (const player of props.players) {
-      player.socket.addEventListener("error", (event) => console.error(event));
-      player.socket.addEventListener("close", (event) => console.debug(event));
+      player.socket.onerror = (event) => console.error(event);
+      player.socket.onclose = (event) => console.debug(event);
     }
-    props.players[0].socket.addEventListener("message", (event) => {
+    props.players[0].socket.onmessage = (event) => {
       let message;
       try {
         message = JSON.parse(event.data);
@@ -87,7 +87,7 @@ const GameField = (props: {
         props.setScores(actualScores);
       }
       render(message);
-    });
+    };
 
     window.addEventListener("keydown", (event) => {
       if (!props.players.every((p) => p.socket.readyState === WebSocket.OPEN))
@@ -140,12 +140,12 @@ const Game = (props: {
     createElement(
       "div",
       { class: scoreStyle + ` col-1 row-1` },
-      `${props.scores[0]}`,
+      `${props.scores[0]}`
     ),
     createElement(
       "div",
       { class: scoreStyle + ` col-2 row-1` },
-      `${props.scores[1]}`,
+      `${props.scores[1]}`
     ),
     createElement(
       "div",
@@ -155,8 +155,8 @@ const Game = (props: {
         scores: props.scores,
         players: [props.players[0], props.players[1]],
         setScores: props.setScores,
-      }),
-    ),
+      })
+    )
   );
 };
 

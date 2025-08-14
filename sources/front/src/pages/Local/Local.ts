@@ -1,7 +1,7 @@
 import Game from "./Game/Game";
 import LocalForm from "#components/Forms/FormLocal/FormLocal.ts";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
-import type { GameConfig, GameStage } from "#types/local";
+import type { LocalConfig, LocalTournament } from "#types/local";
 import { createElement } from "#core/render.ts";
 import { home_background } from "#pages/Home/style.ts";
 import { mainBodyStyle, tournamentTreeStyle } from "./style";
@@ -9,6 +9,20 @@ import { useEffect } from "#core/hooks/useEffect";
 import { useState } from "#core/hooks/useState";
 
 const PORT = 3001;
+const playerOne = {
+  control: new Map([
+    ["w", "up"],
+    ["s", "down"],
+  ]),
+  input: [],
+};
+const playerTwo = {
+  control: new Map([
+    ["ArrowUp", "up"],
+    ["ArrowDown", "down"],
+  ]),
+  input: [],
+};
 
 function isSocketsReady(sockets: WebSocket[]) {
   return (
@@ -21,60 +35,75 @@ function isSocketsReady(sockets: WebSocket[]) {
   );
 }
 
-async function createGame(id: string, players: string[], score: number) {
-  return await fetch(`http://localhost:${PORT}/games`, {
+async function createGame(
+  score: number,
+  setSockets: (toSet: WebSocket[]) => void
+) {
+  const id = `local-${crypto.randomUUID()}`;
+  const players = ["0", "1"];
+  await fetch(`http://localhost:${PORT}/games`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ gameId: id, playersId: players, scoreMax: score }),
   });
-}
-
-async function handleVersus(
-  config: GameConfig,
-  setSockets: (toSet: WebSocket[]) => void,
-  setStage: (toSet: GameStage) => void
-) {
-  if (!config) throw Error; //todo: add an error
-  if (!config.players) throw Error; //todo: add an error
-  if (config.players.length < 2) throw Error; //todo: add an error
-
-  const id = `local-${crypto.randomUUID()}`;
-  await createGame(id, ["0", "1"], config.score);
   const sockets = [
-    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${config.players[0]}`),
-    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${config.players[1]}`),
+    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${players[0]}`),
+    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${players[1]}`),
   ];
   setSockets(sockets);
-  setStage("game");
 }
 
-async function handleTournament() {}
-
 const Local = () => {
-  const [config, setConfig] = useState<GameConfig>(null);
-  const [scores, setScores] = useState<number[]>([0, 0]);
+  const [config, setConfig] = useState<LocalConfig>(null);
+  const [tournament, setTournament] = useState<LocalTournament>(null);
   const [sockets, setSockets] = useState<WebSocket[]>([]);
-  const [stage, setStage] = useState<GameStage>(null);
+  const [scores, setScores] = useState<number[]>([0, 0]);
 
   useEffect(async () => {
     if (!config) return;
-    if (config.mode === "tournament") handleTournament();
-    else if (config.mode === "versus")
-      handleVersus(config, setSockets, setStage);
+    setTournament({
+      id: crypto.randomUUID(),
+      stage: config.mode === "versus" ? "game" : "tree",
+      players: [...config.players],
+      score: config.score,
+    });
   }, [config]);
+
+  useEffect(async () => {
+    if (!config || !tournament) return;
+    if (tournament.stage === "game") {
+      createGame(config.score, setSockets);
+      return;
+    }
+    if (tournament.stage === "tree")
+      window.addEventListener(
+        "keydown",
+        () => setTournament({ ...tournament, stage: "game" }),
+        { once: true }
+      );
+    if (tournament.stage === "finished") {
+      window.addEventListener(
+        "keydown",
+        () => {
+          setConfig(null);
+          setTournament(null);
+        },
+        { once: true }
+      );
+    }
+  }, [tournament?.stage]);
 
   //todo: improve the game cleanup
   useEffect(() => {
     if (!config) return;
     if (scores.includes(config?.score)) {
-      setConfig(null);
       setScores([0, 0]);
       setSockets([]);
-      setStage(null);
+      setTournament({ ...tournament, stage: "finished" } as LocalTournament);
     }
   }, [scores]);
 
-  console.debug(config);
+  console.debug(tournament);
   return createElement(
     "div",
     { class: `${home_background}` },
@@ -82,40 +111,37 @@ const Local = () => {
     createElement(
       "div",
       { class: mainBodyStyle },
-      !config ? LocalForm({ config: config, setConfig: setConfig }) : null,
 
-      config && stage === "tree"
+      !config && !tournament
+        ? LocalForm({ config: config, setConfig: setConfig })
+        : null,
+
+      tournament?.stage === "tree"
         ? createElement(
             "div",
-            { class: tournamentTreeStyle },
+            { class: `${tournamentTreeStyle} white-space` },
             "tree placeholder"
           )
         : null,
 
-      config && stage === "game" && isSocketsReady(sockets)
+      tournament?.stage === "game" && isSocketsReady(sockets)
         ? Game({
             id: `local-${crypto.randomUUID()}`,
-            scores: scores,
             players: [
-              {
-                socket: sockets[0],
-                control: new Map([
-                  ["w", "up"],
-                  ["s", "down"],
-                ]),
-                input: [],
-              },
-              {
-                socket: sockets[1],
-                control: new Map([
-                  ["ArrowUp", "up"],
-                  ["ArrowDown", "down"],
-                ]),
-                input: [],
-              },
+              { ...playerOne, socket: sockets[0] },
+              { ...playerTwo, socket: sockets[1] },
             ],
+            scores: scores,
             setScores: setScores,
           })
+        : null,
+
+      tournament?.stage === "finished"
+        ? createElement(
+            "div",
+            { class: `${tournamentTreeStyle} white-space` },
+            "end placeholder"
+          )
         : null
     )
   );

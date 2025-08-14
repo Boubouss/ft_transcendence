@@ -1,9 +1,14 @@
-export type GameMode = "versus" | "tournament";
-
-export type GameConfig = {
+export type LocalConfig = {
   mode: string;
   score: number;
-  players?: string[];
+  players: string[];
 } | null;
 
-export type GameStage = "game" | "tree" | null;
+export type LocalMode = "versus" | "tournament";
+
+export type LocalTournament = {
+  id: string; //todo: should be removed
+  stage: "game" | "tree" | "finished";
+  players: string[];
+  score: number;
+} | null;
