@@ -9,13 +9,15 @@ import {
   schemaGetGame,
   schemaWebSocket,
   schemaWebSocketInput,
-
 } from "./type/Schema";
+import { PlayerScore } from "./type/Type";
+import { requestGameEnd } from "./services/gameService";
+
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 //todo: remove the placeholders and constants
 const FPS: 30 | 60 = 60;
-const PORT: number = 3000;
-const TIMEOUT_GAME_DELETION = 30; //time in second
+const PORT: number = 3002;
 
 let games = new Map<string, Game>();
 const app = fastify();
@@ -39,10 +41,6 @@ app.register(() => {
         connection.close(WebSocketCode.UNDEFINED, `Player not expected`);
         return;
       }
-      if (game.playersConnected.has(playerId)) {
-        connection.close(WebSocketCode.UNDEFINED, `Player already connected`);
-        return;
-      }
 
       game.setPlayerConnection(playerId, connection);
       if (game.gameState !== GameState.Init)
@@ -64,19 +62,8 @@ app.register(() => {
       });
 
       connection.on("close", () => {
-        const game = games.get(gameId);
-        if (!game) return;
         game.setPlayerConnection(playerId, null);
         game.setPlayerInput(playerId, null);
-
-        if (game.gameState !== GameState.Init && game.isEmpty()) {
-          setTimeout(() => {
-            const game = games.get(gameId);
-            if (!game || !game.isEmpty()) return;
-            game.players.forEach((player) => player.socket?.close());
-            games.delete(gameId);
-          }, TIMEOUT_GAME_DELETION * 1000);
-        }
       });
     },
   );
@@ -130,6 +117,16 @@ setInterval(() => {
     game.broadcast(JSON.stringify(game.toJson()));
 
     if (game.gameState === GameState.Over) {
+      const playerScores: PlayerScore[] = [];
+
+      for (const player of game.players.values()) {
+        playerScores.push({
+          player_id: parseInt(player.id),
+          score: player.point,
+        });
+      }
+
+      requestGameEnd(gameId, game.winnerId, playerScores);
       games.get(gameId)?.players.forEach((player) => player.socket?.close());
       games.delete(gameId);
     }

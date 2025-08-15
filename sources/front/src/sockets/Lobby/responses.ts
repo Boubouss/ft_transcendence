@@ -4,13 +4,20 @@ import _ from "lodash";
 
 import type {
   CurrentLobbyIdState,
+  GameUrlState,
   LobbiesState,
+  NextOpponentsState,
   UserState,
 } from "#pages/Multiplayer/Multiplayer.ts";
+import type { Player } from "#types/match.ts";
 
 export type StatesRecord = Record<
   SocketLobbyState,
-  UserState | LobbiesState | CurrentLobbyIdState
+  | UserState
+  | LobbiesState
+  | GameUrlState
+  | CurrentLobbyIdState
+  | NextOpponentsState
 >;
 
 export type LobbyResponseHandlers = Record<
@@ -34,7 +41,6 @@ const createLobby = (newLobby: Lobby, states: StatesRecord) => {
   ] as LobbiesState;
 
   const lobbiesClone = _.cloneDeep(lobbies);
-  console.log(lobbiesClone);
 
   lobbiesClone.set(newLobby.id, newLobby);
   setLobbies(lobbiesClone);
@@ -63,7 +69,7 @@ const deleteLobby = (data: { target_id: number }, states: StatesRecord) => {
 };
 
 const joinLobby = (data: { target_id: number }, states: StatesRecord) => {
-  const [_, setCurrentLobby] = states[
+  const [_currentLobby, setCurrentLobby] = states[
     SocketLobbyState.CURRENT_LOBBY_ID_STATE
   ] as CurrentLobbyIdState;
 
@@ -79,11 +85,80 @@ const leaveLobby = (data: Lobby, states: StatesRecord) => {
   setCurrentLobby(-1);
 };
 
+const launchGame = (data: { gameId: number }, states: StatesRecord) => {
+  const [user, _setUser] = states[SocketLobbyState.USER_STATE] as UserState;
+  if (_.isEmpty(user)) return console.error("Error: no user found.");
+
+  const [_gameUrl, setGameUrl] = states[
+    SocketLobbyState.GAME_URL_STATE
+  ] as GameUrlState;
+
+  const [nextOpponents, setNextOpponents] = states[
+    SocketLobbyState.NEXT_OPPONENTS_STATE
+  ] as NextOpponentsState;
+
+  if (!_.isEmpty(nextOpponents)) {
+    setNextOpponents([]);
+  }
+
+  setGameUrl(`${import.meta.env.VITE_LOGIC_WSS}/${data.gameId}/${user.id}`);
+};
+
+const waitingOpponents = (
+  data: { opponents: Player[] },
+  states: StatesRecord
+) => {
+  const [_nextOpponents, setNextOpponents] = states[
+    SocketLobbyState.NEXT_OPPONENTS_STATE
+  ] as NextOpponentsState;
+
+  setNextOpponents(data.opponents);
+};
+
+const transferLobbyOwnership = (
+  data: { oldId: number; newId: number },
+  states: StatesRecord
+) => {
+  const [lobbies, setLobbies] = states[
+    SocketLobbyState.LOBBIES_STATE
+  ] as LobbiesState;
+
+  const [currentLobbyId, setCurrentLobbyId] = states[
+    SocketLobbyState.CURRENT_LOBBY_ID_STATE
+  ] as CurrentLobbyIdState;
+
+  const lobbiesClone = _.cloneDeep(lobbies);
+  const lobby = lobbiesClone.get(data.oldId);
+  if (_.isEmpty(lobby)) return console.error("Error: no lobby found.");
+
+  lobby.id = data.newId;
+  lobbiesClone.set(lobby.id, lobby);
+  lobbiesClone.delete(data.oldId);
+  console.log(lobbiesClone);
+
+  setLobbies(lobbiesClone);
+
+  if (currentLobbyId === data.oldId) setCurrentLobbyId(data.newId);
+};
+
+const kickedFromLobby = (_data: null, _states: StatesRecord) => {
+  alert("You got kicked :(");
+};
+
+const errorMessage = (data: { message: string }, _states: StatesRecord) => {
+  alert(data.message);
+};
+
 export const lobbyResponseHandlers: LobbyResponseHandlers = {
   LOBBY_LIST: initLobbyList,
   CREATE_LOBBY: createLobby,
   UPDATE_LOBBY: updateLobby,
   DELETE_LOBBY: deleteLobby,
+  GAME_CREATED: launchGame,
+  WAITING_OPPONENTS: waitingOpponents,
+  TRANSFER_OWNER: transferLobbyOwnership,
+  KICKED: kickedFromLobby,
   JOINED: joinLobby,
   LEFT: leaveLobby,
+  ERROR: errorMessage,
 };

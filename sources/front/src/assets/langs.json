@@ -49,6 +49,7 @@
     "friends": "Amis",
     "requests": "Demandes",
     "sent": "Envoyées",
+    "lobby_creation": "Création de lobby",
     "send_request": "Une demande d'amis a bien été envoyée !"
   },
   "EN": {
@@ -100,6 +101,7 @@
     "home": "Home",
     "friends": "Friends",
     "requests": "Requests",
+    "lobby_creation": "Lobby creation",
     "sent": "Sent",
     "send_request": "A friend request has been sent successfully!"
   },
@@ -153,6 +155,7 @@
     "friends": "Amigos",
     "requests": "Solicitudes",
     "sent": "Enviado",
+    "lobby_creation": "Creación de lobby",
     "send_request": "Se ha enviado una solicitud de amistad con éxito!"
   }
 }

@@ -36,6 +36,9 @@ function handleAttr(component: Component, element: HTMLElement) {
         const refsValue = value as { current: HTMLElement | null };
         refsValue.current = element;
         break;
+      case "disabled":
+        if (value) element.setAttribute(key, value as string);
+        break;
       default:
         element.setAttribute(key, value as string);
         break;
