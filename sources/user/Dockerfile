@@ -14,6 +14,7 @@
 
 # RUN npx prisma generate
 # RUN pnpm run build
+# RUN pnpm prune --prod
 
 # FROM node:24-alpine
 
@@ -23,13 +24,12 @@
 # ENV NODE_ENV=production
 
 # COPY --from=build /app/node_modules ./node_modules
-# COPY package.json ./
-
 # COPY --from=build /app/dist ./dist
 # COPY --from=build /app/.env .env
 # COPY --from=build /app/prisma ./prisma
 
 # CMD ["npm", "start"]
+
 
 # Version ghetto pour dev
 
@@ -38,7 +38,7 @@ FROM node:24-alpine
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install
 
 COPY . .
 RUN npx prisma generate

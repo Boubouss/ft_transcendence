@@ -1,6 +1,6 @@
-import { lobbies, players, sockets } from "../routes/lobby";
+import { lobbies, players, sockets } from "#routes/lobby";
 import { initTournament } from "./tournamentService";
-import { Action, ClientEvent } from "../types/enums";
+import { Action, ClientEvent } from "#types/enums";
 import { initGameInstance } from "./matchService";
 import axios from "axios";
 import _ from "lodash";
@@ -12,7 +12,7 @@ import {
     LobbyCreate,
     LobbyPlayer,
     LobbyPlayerAction,
-} from "../types/lobby";
+} from "#types/lobby";
 
 export const broadcastData = (data: string) => {
     players.forEach((player) => {

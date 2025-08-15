@@ -30,8 +30,8 @@ services:
     user:
         image: user:user
         build: ./sources/user
-        expose:
-            - "3000"
+        ports:
+            - "3000:3000"
         volumes:
             - ssl-certs:/usr/src/app/ssl:ro
             - user-db:/usr/src/app/prisma

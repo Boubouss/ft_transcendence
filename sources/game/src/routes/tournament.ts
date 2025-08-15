@@ -1,12 +1,12 @@
 import {
     findOrCreatePlayer,
     findOrCreatePlayers,
-} from "../services/playerService";
+} from "#services/playerService";
 import {
     createTournament,
     getPlayerTournaments,
-} from "../services/tournamentService";
-import { TournamentCreate } from "../types/tournament";
+} from "#services/tournamentService";
+import { TournamentCreate } from "#types/tournament";
 import { FastifyPluginAsync } from "fastify";
 
 const tournament: FastifyPluginAsync = async (fastify, opts) => {

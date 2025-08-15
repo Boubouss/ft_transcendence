@@ -7,12 +7,12 @@ import {
 } from "@prisma/client";
 import { findOrCreatePlayers } from "./playerService";
 import { emitLobbyData, whisperData } from "./lobbyService";
-import { ClientEvent } from "../types/enums";
-import { MatchUpdate } from "../types/match";
-import { Lobby } from "../types/lobby";
+import { ClientEvent } from "#types/enums";
+import { MatchUpdate } from "#types/match";
+import { Lobby } from "#types/lobby";
 import axios from "axios";
 import _ from "lodash";
-import { TournamentPlayer } from "../types/tournament";
+import { TournamentPlayer } from "#types/tournament";
 
 const prisma: PrismaClient = new PrismaClient();
 

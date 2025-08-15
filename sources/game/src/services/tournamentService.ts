@@ -5,13 +5,13 @@ import {
     Round,
     MatchPlayers,
 } from "@prisma/client";
-import { MatchQuery, RoundQuery, TournamentQuery } from "../types/tournament";
+import { MatchQuery, RoundQuery, TournamentQuery } from "#types/tournament";
 import { findOrCreatePlayers } from "./playerService";
-import { players, sockets, tournaments } from "../routes/lobby";
+import { players, sockets, tournaments } from "#routes/lobby";
 import { matchDefaultWin, sendMatchInfo } from "./matchService";
 import { emitLobbyData } from "./lobbyService";
-import { ClientEvent } from "../types/enums";
-import { Lobby, LobbyPlayer } from "../types/lobby";
+import { ClientEvent } from "#types/enums";
+import { Lobby, LobbyPlayer } from "#types/lobby";
 import _ from "lodash";
 import { findOrCreateRound } from "./roundServices";
 

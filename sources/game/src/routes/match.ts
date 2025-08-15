@@ -1,19 +1,16 @@
 import { FastifyPluginAsync } from "fastify";
-import {
-    matchCreateSchema,
-    matchUpdateSchema,
-} from "../validations/matchSchema";
+import { matchCreateSchema, matchUpdateSchema } from "#validations/matchSchema";
 import {
     findOrCreatePlayer,
     findOrCreatePlayers,
-} from "../services/playerService";
+} from "#services/playerService";
 import {
     createMatch,
     getPlayerMatches,
     updateMatch,
-} from "../services/matchService";
-import { handleTournamentMatch } from "../services/tournamentService";
-import { MatchCreate, MatchUpdate } from "../types/match";
+} from "#services/matchService";
+import { handleTournamentMatch } from "#services/tournamentService";
+import { MatchCreate, MatchUpdate } from "#types/match";
 import _ from "lodash";
 
 const match: FastifyPluginAsync = async (fastify, opts) => {

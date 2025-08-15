@@ -13,6 +13,7 @@ COPY .env ./
 COPY prisma ./prisma
 
 RUN npx prisma generate && pnpm run build
+RUN pnpm prune --prod
 
 FROM node:24-alpine
 
@@ -22,8 +23,6 @@ WORKDIR /usr/src/app
 ENV NODE_ENV=production
 
 COPY --from=build /app/node_modules ./node_modules
-# COPY package.json ./
-
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/.env .env
 COPY --from=build /app/prisma ./prisma
@@ -37,7 +36,7 @@ CMD ["node", "dist/index.js"]
 # WORKDIR /usr/src/app
 
 # COPY package*.json ./
-# RUN npm ci --omit=dev
+# RUN npm install
 
 # COPY . .
 # RUN npx prisma generate

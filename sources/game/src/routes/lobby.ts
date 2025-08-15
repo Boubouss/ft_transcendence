@@ -1,7 +1,7 @@
-import { handleTournamentLeave } from "../services/tournamentService";
-import { ClientEvent, ServerEvent } from "../types/enums";
-import { Lobby, LobbyPlayer } from "../types/lobby";
-import { Tournament } from "../types/tournament";
+import { handleTournamentLeave } from "#services/tournamentService";
+import { ClientEvent, ServerEvent } from "#types/enums";
+import { Lobby, LobbyPlayer } from "#types/lobby";
+import { Tournament } from "#types/tournament";
 import { FastifyPluginAsync } from "fastify";
 import _ from "lodash";
 
@@ -11,7 +11,7 @@ import {
     handleAction,
     leaveLobby,
     whisperData,
-} from "../services/lobbyService";
+} from "#services/lobbyService";
 
 export const sockets: Map<number, WebSocket> = new Map();
 export const lobbies: Lobby[] = [];

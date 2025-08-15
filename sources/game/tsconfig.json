@@ -11,13 +11,14 @@
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
-        "baseUrl": "."
-        // "paths": {
-        //     "#routes/*": ["./src/routes/*"],
-        //     "#services/*": ["./src/services/*"],
-        //     "#validations/*": ["./src/validations/*"],
-        //     "#middlewares/*": ["./src/middlewares/*"],
-        //     "#types/*": ["./src/types/*"]
-        // }
+        "baseUrl": "./src",
+        "paths": {
+            "#routes/*": ["routes/*"],
+            "#services/*": ["services/*"],
+            "#validations/*": ["validations/*"],
+            "#middlewares/*": ["middlewares/*"],
+            "#types/*": ["types/*"],
+            "#errors/*": ["errors/*"]
+        }
     }
 }
