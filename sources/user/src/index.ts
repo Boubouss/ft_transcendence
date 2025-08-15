@@ -12,11 +12,15 @@ import socket from "./routes/socket";
 import { errorHandler } from "./errors/errorHandler";
 import fastifyWebsocket from "@fastify/websocket";
 import cors from "@fastify/cors";
-import avatar from "./routes/avatar";
+import Ajv from "ajv";
+import ajvFormats from "ajv-formats";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 checkEnv();
+
+export const ajv = new Ajv();
+ajvFormats(ajv);
 
 const app = fastify({
     https: {
@@ -32,6 +36,11 @@ const app = fastify({
 app.register(fastifyStatic, {
     root: path.join(path.dirname(__dirname), "storage"),
     prefix: "/download/",
+    setHeaders: (res, path, stat) => {
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+    },
 });
 
 app.register(cors, {
@@ -54,8 +63,6 @@ app.register(crud, { prefix: "/crud" });
 app.register(auth, { prefix: "/auth" });
 
 app.register(socket, { prefix: "/socket" });
-
-app.register(avatar, { prefix: "/avatar" });
 
 app.setErrorHandler(errorHandler);
 

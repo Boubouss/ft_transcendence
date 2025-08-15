@@ -2,33 +2,44 @@ import { render, reRender, createElement } from "./render.ts";
 import { router, navigateTo } from "./router.ts";
 import { useState } from "./hooks/useState.ts";
 import { useEffect } from "./hooks/useEffect.ts";
-
-export type ComponentChildren = string | Component | false | null;
+import { useRef } from "./hooks/useRef.ts";
 
 export type ComponentAttr = {
-	id?: string;
-	class?: string;
-	src?: string;
-	onClick?: () => void;
-	name?: string;
-	type?: string;
-	placeholder?: string;
-	ref?: { current: HTMLElement | null };
-	value?: string | number | null;
+  id?: string;
+  class?: string;
+  src?: string;
+  onClick?: () => void;
+  onChange?: () => void;
+  name?: string;
+  type?: string;
+  placeholder?: string;
+  ref?: { current: HTMLElement | null };
+  checked?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  for?: string;
+  style?: string;
+  accept?: string;
+  value?: string | number | null;
+  min?: number;
+  enctype?: string;
 };
 
-export type Component = {
-	type: string;
-	attr: ComponentAttr | null;
-	children: ComponentChildren[];
+type Self = {
+  type: string;
+  attr: ComponentAttr | null;
+  children: Component[];
 };
+
+export type Component = string | false | null | Self;
 
 export {
-	render,
-	reRender,
-	createElement,
-	navigateTo,
-	router,
-	useState,
-	useEffect,
+  render,
+  reRender,
+  createElement,
+  navigateTo,
+  router,
+  useState,
+  useEffect,
+  useRef,
 };

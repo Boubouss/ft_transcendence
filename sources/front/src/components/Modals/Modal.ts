@@ -1,38 +1,38 @@
 import {
-	createElement,
-	type Component,
-	type ComponentAttr,
+  createElement,
+  type Component,
+  type ComponentAttr,
 } from "#core/framework";
 import { modal_background, modal_default } from "./style";
 
 const Modal = (
-	props: {
-		state: boolean;
-		setter: (setState: boolean) => void;
-		attr?: ComponentAttr;
-		attrBackground?: ComponentAttr;
-	},
-	children: Component
+  props: {
+    state: boolean;
+    setter: (setState: boolean) => void;
+    attr?: ComponentAttr;
+    attrBackground?: ComponentAttr;
+  },
+  children: Component
 ) => {
-	let { state, setter, attr, attrBackground } = props;
+  let { state, setter, attr, attrBackground } = props;
 
-	const default_attr = { class: modal_default };
-	const default_attr_bckg = {
-		class: modal_background,
-		onClick: () => setter(!state),
-	};
+  const default_attr = { class: modal_default };
+  const default_attr_bckg = {
+    class: modal_background,
+    onClick: () => setter(!state),
+  };
 
-	attr = { ...default_attr, ...attr };
-	attrBackground = { ...default_attr_bckg, ...attrBackground };
+  attr = { ...default_attr, ...attr };
+  attrBackground = { ...default_attr_bckg, ...attrBackground };
 
-	if (state)
-		return createElement(
-			"div",
-			null,
-			createElement("div", attrBackground),
-			createElement("div", attr, children)
-		);
-	return createElement("div", { class: `hidden` });
+  if (state)
+    return createElement(
+      "div",
+      null,
+      createElement("div", attrBackground),
+      createElement("div", attr, children)
+    );
+  return createElement("div", { class: `hidden` });
 };
 
 export default Modal;

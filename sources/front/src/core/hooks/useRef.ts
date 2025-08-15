@@ -1,7 +1,11 @@
 import { useState } from "./useState";
 
-export function useRef(init: any): { current: any } {
-	const [state, _] = useState({ current: init });
+export interface Ref<T> {
+  current: T;
+}
 
-	return state;
+export function useRef<T>(init: T): Ref<T> {
+  const [state, _] = useState({ current: init });
+
+  return state;
 }

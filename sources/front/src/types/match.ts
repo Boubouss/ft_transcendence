@@ -18,17 +18,3 @@ export interface Player {
   name: string;
   avatar: string;
 }
-
-export interface Round {
-  id: number;
-  matches: Match[];
-  tournament_id: number;
-  depth: number;
-}
-
-export interface Tournament {
-  id: number;
-  rounds: Round[];
-  created_at: string;
-  updated_at: string;
-}

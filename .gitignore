@@ -2,3 +2,4 @@ dev.db
 dev.db-journal
 ssl/
 .env
+.DS_Store

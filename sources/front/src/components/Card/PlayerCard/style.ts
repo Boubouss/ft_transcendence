@@ -1,0 +1,43 @@
+export const player_card = `
+    flex
+    w-full
+    h-[113px]
+    border-black
+    border-3
+    bg-[#f54900]
+    justify-between
+    rounded-[10px]
+    p-[10px]
+    gap-[20px]
+`;
+
+export const player_card_img = `
+    h-full
+    rounded-[5px]
+    border-black
+    border-solid
+    border-3
+`;
+
+export const player_card_action = `
+    flex 
+    flex-col 
+    justify-center 
+    flex-initial 
+    gap-[5px]
+`;
+
+export const kick_button = `
+    flex
+    p-2
+    text-1xl 
+    border-3
+    border-black
+    bg-yellow-400
+    justify-center
+    rounded-[10px]
+    cursor-pointer
+    hover:brightness-150
+    cursor-pointer
+    duration-300
+`;

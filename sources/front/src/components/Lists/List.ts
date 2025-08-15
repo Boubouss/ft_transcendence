@@ -1,27 +1,27 @@
 import {
-	createElement,
-	type Component,
-	type ComponentAttr,
+  createElement,
+  type Component,
+  type ComponentAttr,
 } from "#core/framework";
 import _ from "lodash";
 import { list_default } from "./style";
 
 const List = (
-	props: {
-		attr?: ComponentAttr;
-	},
-	model: (props?: any) => Component,
-	childrens: any[]
+  props: {
+    attr?: ComponentAttr;
+  },
+  model: (props?: any) => Component,
+  childrens: any[]
 ) => {
-	let { attr } = props;
+  let { attr } = props;
 
-	const default_attr = { class: list_default };
+  const default_attr = { class: list_default };
 
-	attr = { ...default_attr, ...attr };
+  attr = { ...default_attr, ...attr };
 
-	if (_.isEmpty(childrens)) return createElement("div", { class: "hidden" });
+  if (_.isEmpty(childrens)) return createElement("div", { class: "hidden" });
 
-	return createElement("div", attr, ...childrens?.map((child) => model(child)));
+  return createElement("div", attr, ...childrens?.map((child) => model(child)));
 };
 
 export default List;

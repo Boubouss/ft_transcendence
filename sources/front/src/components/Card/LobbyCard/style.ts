@@ -40,5 +40,6 @@ export const join_button = `
     rounded-[10px]
     cursor-pointer
     hover:brightness-150
+    cursor-pointer
     duration-300
 `;

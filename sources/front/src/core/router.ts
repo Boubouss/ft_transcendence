@@ -2,29 +2,34 @@ import { resetEffects } from "./hooks/useEffect";
 import { routes } from "../routes.ts";
 import { reRender } from "./render";
 import { resetStates } from "./hooks/useState.ts";
+import { getStorage } from "#services/data.ts";
+import _ from "lodash";
+import { KeysStorage } from "#types/enums.ts";
 
 window.addEventListener("popstate", () => {
-	resetEffects();
-	resetStates();
-	reRender();
+  resetEffects();
+  resetStates();
+  reRender();
 });
 
 export function router() {
-	const route = routes[window.location.pathname];
+  const route = routes[window.location.pathname];
 
-	if (!route) {
-		return routes["/404"].component();
-	} else if (route.protected) {
-		// Check for auth in storage
-	}
+  if (!route) {
+    return routes["/404"].component();
+  } else if (route.protected) {
+    const storedUser = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
-	return route.component();
+    if (_.isEmpty(storedUser)) return navigateTo("/");
+  }
+
+  return route.component();
 }
 
 export function navigateTo(path: string) {
-	window.history.pushState({}, "", path);
+  window.history.pushState({}, "", path);
 
-	resetEffects();
-	resetStates();
-	reRender();
+  resetEffects();
+  resetStates();
+  reRender();
 }
