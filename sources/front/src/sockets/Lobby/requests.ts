@@ -1,4 +1,5 @@
 import { useForm } from "#hooks/useForm.ts";
+import _ from "lodash";
 
 import {
   Action,
@@ -13,11 +14,13 @@ export const requestLobbyCreation = (lobbySocket: WebSocket | null) => {
   }
 
   const formData = useForm("form_lobby");
-  if (!formData) return console.error("Error: form data is empty");
+  if (_.isEmpty(formData)) return console.error("Error: form data is empty");
 
   const data: LobbyCreate = {
     player_limit: parseInt((formData.get("player_limit") ?? 0).toString()),
-    is_tournament: false,
+    is_tournament:
+      (formData.get("is_tournament") ?? false).toString().toLowerCase() ===
+      "true",
   };
 
   lobbySocket.send(

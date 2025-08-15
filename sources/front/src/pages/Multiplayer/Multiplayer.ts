@@ -61,7 +61,7 @@ const Multiplayer = () => {
       [configuration.token]
     );
 
-    lobbySocketRef.current.onclose = () => console.log("LOBBY CLOSE");
+    lobbySocketRef.current.onclose = () => handleSocketClose();
   }, [user]);
 
   useEffect(() => {
@@ -86,6 +86,10 @@ const Multiplayer = () => {
 
   const handleLeave = () => {
     requestAction(lobbySocketRef.current, Action.LEAVE, currentLobbyId);
+  };
+
+  const handleSocketClose = () => {
+    lobbySocketRef.current = null;
   };
 
   const getMainContent = () => {

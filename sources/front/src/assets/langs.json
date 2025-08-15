@@ -50,6 +50,10 @@
     "requests": "Demandes",
     "sent": "Envoyées",
     "lobby_creation": "Création de lobby",
+    "name": "Nom",
+    "create": "Créer",
+    "tournament_mode": "Mode tournoi",
+    "player_limit": "Limite de joueurs",
     "send_request": "Une demande d'amis a bien été envoyée !"
   },
   "EN": {
@@ -102,7 +106,11 @@
     "friends": "Friends",
     "requests": "Requests",
     "lobby_creation": "Lobby creation",
+    "name": "Name",
+    "create": "Create",
+    "tournament_mode": "Tournament mode",
     "sent": "Sent",
+    "player_limit": "Player limit",
     "send_request": "A friend request has been sent successfully!"
   },
   "ES": {
@@ -156,6 +164,10 @@
     "requests": "Solicitudes",
     "sent": "Enviado",
     "lobby_creation": "Creación de lobby",
+    "name": "Nombre",
+    "create": "Crear",
+    "tournament_mod": "Modo torneo",
+    "player_limit": "Límite de jugadores",
     "send_request": "Se ha enviado una solicitud de amistad con éxito!"
   }
 }
