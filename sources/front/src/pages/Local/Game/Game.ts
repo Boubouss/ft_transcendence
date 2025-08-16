@@ -18,8 +18,8 @@ function fetchScores(message: any) {
     pause: string;
   }[];
   const messageScores = [
-    players[message.playerL].score,
-    players[message.playerR].score,
+    players.find((p) => p.id === message.playerL)!.score,
+    players.find((p) => p.id === message.playerR)!.score,
   ];
   //todo: might need to add some check to verify that messageScores is valid
   return messageScores;
@@ -82,10 +82,7 @@ const GameField = (props: {
         return;
       }
       const actualScores = fetchScores(message);
-      if (!_.isEqual(props.scores, actualScores)) {
-        props.scores = actualScores; //tocheck: why do I need to reassign the value dispite setScore()
-        props.setScores(actualScores);
-      }
+      if (!_.isEqual(props.scores, actualScores)) props.setScores(actualScores);
       render(message);
     };
 

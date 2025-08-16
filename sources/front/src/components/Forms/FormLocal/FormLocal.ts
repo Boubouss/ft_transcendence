@@ -25,7 +25,7 @@ function handleLocalForm(formId: string, setConfig: (toSet: any) => void) {
   let config: LocalConfig = {
     mode: String(form_data.get("mode")),
     score: Number(form_data.get("score")),
-    players: ["0", "1"],
+    players: ["P1", "P2"],
   };
 
   if (form_data.get("mode") === "tournament") {
