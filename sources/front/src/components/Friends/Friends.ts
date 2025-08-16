@@ -24,8 +24,6 @@ const Friends = (children: (props?: any) => Component) => {
 
     ref.current = socket;
 
-    socket.onclose = () => console.log("close");
-
     return () => {
       if (socket.readyState === WebSocket.OPEN) socket.close();
     };

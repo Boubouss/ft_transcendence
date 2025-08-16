@@ -49,7 +49,12 @@
     "friends": "Amis",
     "requests": "Demandes",
     "sent": "Envoyées",
-    "send_request": "Une demande d'amis a bien été envoyée !"
+    "send_request": "Une demande d'amis a bien été envoyée !",
+    "error_update_account": "Erreur Modification du Compte, veuillez essayer plus tard",
+    "error_name_length": "Erreur de Nom :\n 3 caractères minimum et 20 caractères maximum",
+    "error_pw_length": "Erreur du mot de passe :\n 8 caractères minimum",
+    "error_pw_complexity": "Erreur du mot de passe :\n 1 spécial, 1 nombre, 1 majuscule (minimum)",
+    "error_email_format": "Erreur d'email :\n ce n'est pas le format d'un email"
   },
   "EN": {
     "loginin": "Sign In",
@@ -101,7 +106,12 @@
     "friends": "Friends",
     "requests": "Requests",
     "sent": "Sent",
-    "send_request": "A friend request has been sent successfully!"
+    "send_request": "A friend request has been sent successfully!",
+    "error_update_account": "Account update error, please try again later",
+    "error_name_length": "Name error :\n minimum 3 characters and maximum 20 characters",
+    "error_pw_length": "Password error :\n minimum 8 characters",
+    "error_pw_complexity": "Password error :\n 1 special, 1 number, 1 uppercase (minimum)",
+    "error_email_format": "Email error :\n not a valid email format"
   },
   "ES": {
     "loginin": "Iniciar sesión",
@@ -153,6 +163,11 @@
     "friends": "Amigos",
     "requests": "Solicitudes",
     "sent": "Enviado",
-    "send_request": "Se ha enviado una solicitud de amistad con éxito!"
+    "send_request": "Se ha enviado una solicitud de amistad con éxito!",
+    "error_update_account": "Error al modificar la cuenta, inténtelo más tarde",
+    "error_name_length": "Error de nombre :\n mínimo 3 caracteres y máximo 20 caracteres",
+    "error_pw_length": "Error de contraseña :\n mínimo 8 caracteres",
+    "error_pw_complexity": "Error de contraseña :\n 1 especial, 1 número, 1 mayúscula (mínimo)",
+    "error_email_format": "Error de correo electrónico :\n no es un formato válido"
   }
 }

@@ -9,17 +9,20 @@ import {
   account_page,
 } from "./style";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import { navigateTo, useState } from "#core/framework.ts";
+import { useState } from "#core/framework.ts";
 import { getStorage } from "#services/data.ts";
 import { KeysStorage } from "#types/enums.ts";
 import _ from "lodash";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 import FormAccount from "#components/Forms/FormAccount/FormAccount.ts";
+import ModalError from "#components/Modals/ModalError/ModalError.ts";
 
 const Account = () => {
   const user = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   const [isUser, setUserState] = useState(user);
+  const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
 
   return createElement(
     "div",
@@ -40,8 +43,12 @@ const Account = () => {
             useLanguage("myacc")
           )
         ),
-        FormAccount()
-      )
+        FormAccount(setShowModal, setError)
+      ),
+      ModalError({
+        showModalState: [showModal, setShowModal],
+        Error: error,
+      })
     )
   );
 };

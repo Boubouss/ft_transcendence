@@ -9,12 +9,11 @@ import {
   schemaGetGame,
   schemaWebSocket,
   schemaWebSocketInput,
-
 } from "./type/Schema";
 
 //todo: remove the placeholders and constants
 const FPS: 30 | 60 = 60;
-const PORT: number = 3000;
+const PORT: number = 3002;
 const TIMEOUT_GAME_DELETION = 30; //time in second
 
 let games = new Map<string, Game>();
@@ -78,7 +77,7 @@ app.register(() => {
           }, TIMEOUT_GAME_DELETION * 1000);
         }
       });
-    },
+    }
   );
 });
 
@@ -90,7 +89,7 @@ app.get(
     for (const [gameId, game] of games.entries())
       if (game.players.has(params.id)) return response.send({ gameId: gameId });
     response.send({ gameId: null });
-  },
+  }
 );
 
 app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
@@ -113,7 +112,7 @@ app.delete(
     }
     games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
     games.delete(body.gameId);
-  },
+  }
 );
 
 app.listen({ port: PORT }, (err) => {

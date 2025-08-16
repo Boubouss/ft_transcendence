@@ -23,6 +23,9 @@ export type ComponentAttr = {
   value?: string | number | null;
   min?: number;
   enctype?: string;
+  pattern?: string;
+  minlength?: string;
+  maxlength?: string;
 };
 
 type Self = {
