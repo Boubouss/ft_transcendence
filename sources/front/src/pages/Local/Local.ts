@@ -1,4 +1,4 @@
-import Game from "./Game/Game";
+import Game from "#components/Game/Game";
 import LocalForm from "#components/Forms/FormLocal/FormLocal.ts";
 import NavigationBar from "#components/NavigationBar/NavigationBar.ts";
 import type { LocalConfig, LocalTournament } from "#types/local";
@@ -7,6 +7,7 @@ import { home_background } from "#pages/Home/style.ts";
 import { mainBodyStyle, tournamentTreeStyle } from "./style";
 import { useEffect } from "#core/hooks/useEffect";
 import { useState } from "#core/hooks/useState";
+import { create } from "lodash";
 
 const PORT = 3001;
 
@@ -166,9 +167,36 @@ const Local = () => {
       tournament?.stage === "queue"
         ? createElement(
             "div",
-            { class: `${tournamentTreeStyle} white-space` },
-            createElement("div", {}, `${tournament.queue.slice(0, 2)}`),
-            createElement("div", {}, `${tournament.queue.slice(2)}`)
+            {
+              class: `${tournamentTreeStyle} flex flex-col text-center`,
+            },
+            createElement(
+              "div",
+              { class: `text-center items-center` },
+              createElement("div", { class: `` }, `Next Match:`),
+              createElement(
+                "div",
+                { class: `flex flex-row justify-evenly` },
+                ...tournament.queue
+                  .slice(0, 2)
+                  .map((p) => createElement("div", {}, p))
+              )
+            ),
+            createElement(
+              "div",
+              { class: `gap-[8px] flex flex-row` },
+              ...(tournament.queue.slice(2)
+                ? tournament.queue.slice(2).map((p) =>
+                    createElement(
+                      "div",
+                      {
+                        class: `border-[2px] px-2 bg-[#FFFFFF99] rounded-[8px]`,
+                      },
+                      `${p}`
+                    )
+                  )
+                : [])
+            )
           )
         : null,
 

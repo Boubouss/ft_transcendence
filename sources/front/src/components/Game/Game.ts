@@ -1,6 +1,6 @@
 import { useEffect } from "#core/framework.ts";
 import { createElement } from "#core/render.ts";
-import { scoreStyle, gameContainerStyle } from "../style";
+import { scoreStyle, gameContainerStyle } from "./style";
 import _ from "lodash";
 
 export type Player = {

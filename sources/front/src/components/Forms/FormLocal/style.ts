@@ -38,7 +38,6 @@ export const confirmButtonStyle = [
 ].join(" ");
 
 export const modeToggleLabelStyle = [
-  `px-4`,
   `px-2`,
   `border-[2px]`,
   `rounded-[8px]`,
