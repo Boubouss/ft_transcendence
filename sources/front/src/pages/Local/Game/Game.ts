@@ -89,40 +89,49 @@ const GameField = (props: {
       render(message);
     };
 
-    window.addEventListener("keydown", (event) => {
+    const handlePause = (event: KeyboardEvent) => {
       if (!props.players.every((p) => p.socket.readyState === WebSocket.OPEN))
         return;
       if (event.key !== "p" && event.code !== "Space") return;
-      for (const player of props.players) {
-        player.socket.send(JSON.stringify({ type: "pause", value: "flip" }));
-      }
-    });
+      props.players.forEach((p) =>
+        p.socket.send(JSON.stringify({ type: "pause", value: "flip" }))
+      );
+    };
 
-    window.addEventListener("keydown", (event) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (!props.players.every((p) => p.socket.readyState === WebSocket.OPEN))
         return;
       for (const player of props.players) {
-        if (![...player.control.keys()].includes(event.key)) continue;
+        if (!player.control.has(event.key)) continue;
         event.preventDefault();
         player.input.push(event.key);
-        const move = player.control.get(event.key) || null;
-        const data = JSON.stringify({ type: "input", value: move || null });
-        player.socket.send(data);
+        const move = player.control.get(event.key);
+        player.socket.send(JSON.stringify({ type: "input", value: move }));
       }
-    });
+    };
 
-    window.addEventListener("keyup", (event) => {
+    const handleKeyUp = (event: KeyboardEvent) => {
       if (!props.players.every((p) => p.socket.readyState === WebSocket.OPEN))
         return;
       for (const player of props.players) {
-        if (![...player.control.keys()].includes(event.key)) continue;
+        if (!player.control.has(event.key)) continue;
         event.preventDefault();
-        player.input = player.input.filter((input) => input !== event.key);
-        const move = player.control.get(player.input[player.input.length - 1]);
-        const data = JSON.stringify({ type: "input", value: move || null });
-        player.socket.send(data);
+        player.input = player.input.filter((k) => k !== event.key);
+        const move = player.control.get(player.input.at(-1) || "");
+        player.socket.send(
+          JSON.stringify({ type: "input", value: move || null })
+        );
       }
-    });
+    };
+
+    window.addEventListener("keydown", handlePause);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handlePause);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [props.id]);
 
   return createElement("canvas", { id: ID });

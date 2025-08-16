@@ -8,21 +8,9 @@ import { mainBodyStyle, tournamentTreeStyle } from "./style";
 import { useEffect } from "#core/hooks/useEffect";
 import { useState } from "#core/hooks/useState";
 
+//todo: add a way to cleanup the game if the url change
+
 const PORT = 3001;
-const playerOne = {
-  control: new Map([
-    ["w", "up"],
-    ["s", "down"],
-  ]),
-  input: [],
-};
-const playerTwo = {
-  control: new Map([
-    ["ArrowUp", "up"],
-    ["ArrowDown", "down"],
-  ]),
-  input: [],
-};
 
 function isSocketsReady(sockets: WebSocket[]) {
   return (
@@ -59,7 +47,7 @@ const Local = () => {
   const [sockets, setSockets] = useState<WebSocket[]>([]);
   const [scores, setScores] = useState<number[]>([0, 0]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!config) return;
     setTournament({
       id: crypto.randomUUID(),
@@ -69,27 +57,26 @@ const Local = () => {
     });
   }, [config]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!config || !tournament) return;
     if (tournament.stage === "game") {
       createGame(config.score, setSockets);
       return;
     }
-    if (tournament.stage === "tree")
-      window.addEventListener(
-        "keydown",
-        () => setTournament({ ...tournament, stage: "game" }),
-        { once: true }
-      );
+
+    if (tournament.stage === "tree") {
+      const handler = () => setTournament({ ...tournament, stage: "game" });
+      window.addEventListener("keydown", handler, { once: true });
+      return () => window.removeEventListener("keydown", handler);
+    }
+
     if (tournament.stage === "finished") {
-      window.addEventListener(
-        "keydown",
-        () => {
-          setConfig(null);
-          setTournament(null);
-        },
-        { once: true }
-      );
+      const handler = () => {
+        setConfig(null);
+        setTournament(null);
+      };
+      window.addEventListener("keydown", handler, { once: true });
+      return () => window.removeEventListener("keydown", handler);
     }
   }, [tournament?.stage]);
 
@@ -97,13 +84,31 @@ const Local = () => {
   useEffect(() => {
     if (!config) return;
     if (scores.includes(config?.score)) {
+      sockets.forEach((s) => s.close());
       setScores([0, 0]);
       setSockets([]);
       setTournament({ ...tournament, stage: "finished" } as LocalTournament);
     }
   }, [scores]);
 
-  console.debug(tournament);
+  useEffect(() => {
+    return () => sockets.forEach((s) => s.close());
+  }, [sockets]);
+
+  const playerOne = {
+    control: new Map([
+      ["w", "up"],
+      ["s", "down"],
+    ]),
+    input: [],
+  };
+  const playerTwo = {
+    control: new Map([
+      ["ArrowUp", "up"],
+      ["ArrowDown", "down"],
+    ]),
+    input: [],
+  };
   return createElement(
     "div",
     { class: `${home_background}` },
