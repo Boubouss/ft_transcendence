@@ -136,19 +136,18 @@ export class Game {
     const gameFull = ![...this._players.values()].some((p) => !p.isConnected());
     const pausedPlayers = [...this._players.values()].some((p) => p.pause);
     if (this._gameState == GameState.Init && gameFull) {
-      this._sleep = 1 * this._fps;
+      this._sleep = 2 * this._fps;
       this._gameState = GameState.Running;
     } else if (this._gameState == GameState.Running) {
       if (!gameFull) this._gameState = GameState.Paused;
       if (pausedPlayers) this._gameState = GameState.Paused;
     } else if (this._gameState == GameState.Paused) {
       if (gameFull && !pausedPlayers) {
-        this._sleep = 1 * this._fps;
+        this._sleep = 2 * this._fps;
         this._gameState = GameState.Running;
       }
     }
 
-    //todo: check for multiple winners error ?
     const winners = [...this._players.entries()].filter(
       ([_, p]) => p.point >= this._maxScore,
     );
@@ -234,8 +233,8 @@ export class Game {
             if (current.y < paddle.center.y) this._ball.bottom = paddle.top;
             else this._ball.top = paddle.bottom;
           } else if (Math.abs(dX) >= Math.abs(dY)) {
-            if (crossedLeft && current.x < paddle.center.x) continue; //todo: check if usefull
-            if (!crossedLeft && current.x > paddle.center.x) continue; //todo: check if usefull
+            if (crossedLeft && current.x < paddle.center.x) continue;
+            if (!crossedLeft && current.x > paddle.center.x) continue;
             if (crossedLeft) this._ball.left = paddle.right;
             else this._ball.right = paddle.left;
           }
@@ -244,7 +243,7 @@ export class Game {
           const maxBounceAngle = (60 * Math.PI) / 180;
           const bounceAngle = normalized * maxBounceAngle;
           const direction = crossedLeft ? 1 : -1;
-          const maxSpeed = Math.min(speed * BALL_SPEED_RATIO, BALL_SPEED_MAX); //todo: replace with better value
+          const maxSpeed = Math.min(speed * BALL_SPEED_RATIO, BALL_SPEED_MAX);
           this._ball.velocity = {
             dx: Math.cos(bounceAngle) * maxSpeed * direction,
             dy: Math.sin(bounceAngle) * maxSpeed,
@@ -271,7 +270,7 @@ export class Game {
       this._players.forEach((player) => (player.input = null));
       if (!this._playerL || !this._playerR) this.resetQueue();
       this.resetObjects();
-      this._sleep = 1 * this._fps;
+      this._sleep = 2 * this._fps;
     }
   }
 }

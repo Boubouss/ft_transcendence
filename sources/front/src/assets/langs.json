@@ -49,7 +49,20 @@
     "friends": "Amis",
     "requests": "Demandes",
     "sent": "Envoyées",
-    "send_request": "Une demande d'amis a bien été envoyée !"
+    "send_request": "Une demande d'amis a bien été envoyée !",
+    "versus": "Versus",
+    "tournament": "Tournoi",
+    "score_round": "Score/Manche",
+    "start": "Démarrer",
+    "tournament_size": "Taille du tournoi",
+    "players": "Joueurs",
+    "nickname": "Surnom",
+    "next_match": "Prochain match",
+    "final_match": "Finale",
+    "incoming_matches": "Matchs à venir",
+    "winner": "Gagnant",
+    "start": "Démarrer",
+    "ready": "Prêt ?"
   },
   "EN": {
     "loginin": "Sign In",
@@ -101,7 +114,20 @@
     "friends": "Friends",
     "requests": "Requests",
     "sent": "Sent",
-    "send_request": "A friend request has been sent successfully!"
+    "send_request": "A friend request has been sent successfully!",
+    "versus": "Versus",
+    "tournament": "Tournament",
+    "score_round": "Score/Round",
+    "start": "Start",
+    "tournament_size": "Tournament Size",
+    "players": "Players",
+    "nickname": "Nickname",
+    "next_match": "Next Match",
+    "final_match": "Final Match",
+    "incoming_matches": "Incoming Matches",
+    "winner": "Winner",
+    "start": "Start",
+    "ready": "Ready?"
   },
   "ES": {
     "loginin": "Iniciar sesión",
@@ -153,6 +179,19 @@
     "friends": "Amigos",
     "requests": "Solicitudes",
     "sent": "Enviado",
-    "send_request": "Se ha enviado una solicitud de amistad con éxito!"
+    "send_request": "Se ha enviado una solicitud de amistad con éxito!",
+    "versus": "Versus",
+    "tournament": "Torneo",
+    "score_round": "Puntuación/Ronda",
+    "start": "Iniciar",
+    "tournament_size": "Tamaño del torneo",
+    "players": "Jugadores",
+    "nickname": "Apodo",
+    "next_match": "Próximo partido",
+    "final_match": "Final",
+    "incoming_matches": "Partidos próximos",
+    "winner": "Ganadora",
+    "start": "Comenzar",
+    "ready": "¿Listo?"
   }
 }
