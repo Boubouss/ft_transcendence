@@ -29,14 +29,14 @@ async function createGame(
 ) {
   const id = `local-${crypto.randomUUID()}`;
   const players = ["P1", "P2"];
-  await fetch(`http://localhost:${PORT}/games`, {
+  await fetch(`https://localhost:${PORT}/games`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ gameId: id, playersId: players, scoreMax: score }),
   });
   const sockets = [
-    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${players[0]}`),
-    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${players[1]}`),
+    new WebSocket(`wss://localhost:${PORT}/ws/${id}/${players[0]}`),
+    new WebSocket(`wss://localhost:${PORT}/ws/${id}/${players[1]}`),
   ];
   setSockets(sockets);
 }

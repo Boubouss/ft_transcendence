@@ -31,9 +31,11 @@
 	"dependencies": {
 		"@tailwindcss/vite": "^4.1.11",
 		"@types/lodash": "^4.17.20",
-		"prettier": "^3.6.2",
 		"ajv": "^8.17.1",
 		"ajv-formats": "^3.0.1",
-		"lodash": "^4.17.21"
+		"fs": "^0.0.1-security",
+		"lodash": "^4.17.21",
+		"path": "^0.12.7",
+		"prettier": "^3.6.2"
 	}
 }

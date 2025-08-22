@@ -1,5 +1,7 @@
 import cors from "@fastify/cors";
 import fastify from "fastify";
+import fs from "fs";
+import path from "path";
 import websocketPlugin from "@fastify/websocket";
 import { CreateGameRequestBody, DeleteGameRequestBody } from "./type/Interface";
 import { Game } from "./game/Game";
@@ -18,10 +20,16 @@ const PORT: number = 3001;
 const TIMEOUT_GAME_DELETION = 30; //time in second
 
 let games = new Map<string, Game>();
-const app = fastify();
+const app = fastify({
+  https: {
+	//todo: replace the hardcoded values
+    key: fs.readFileSync(path.resolve(__dirname, "../ssl/key.pem")),
+    cert: fs.readFileSync(path.resolve(__dirname, "../ssl/cert.pem")),
+  },
+});
 app.register(websocketPlugin);
 app.register(cors, {
-  origin: "http://localhost:5173", //todo:replace the hardcoded value
+  origin: "https://localhost:5173", //todo:replace the hardcoded value
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   preflightContinue: false,
@@ -32,7 +40,10 @@ app.register(() => {
     "/ws/:gameId/:playerId",
     { schema: schemaWebSocket, websocket: true },
     (connection, request) => {
-      const params = request.params as { gameId: string; playerId: string };
+      const params = request.params as {
+        gameId: string;
+        playerId: string;
+      };
       const gameId = params.gameId;
       const playerId = params.playerId;
       const game = games.get(gameId);
