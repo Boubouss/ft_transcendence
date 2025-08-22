@@ -1,8 +1,7 @@
 export const lobby_container = `
     flex
     flex-col
-    w-full
-    h-full
+    flex-auto
     rounded-[20px]
     border-black
     border-solid
@@ -16,12 +15,32 @@ export const lobby_container = `
 `;
 
 export const lobby_infos_container = `
+    absolute
+    inset-px
     flex
     flex-col
-    w-full
-    h-full
     gap-[5px]
     overflow-y-auto
+    pr-2
+    my-scrollbar
+`;
+
+export const launch_button = (props: { isDisabled: boolean }) => `
+    flex
+    p-2
+    mr-2
+    group
+    border-3
+    border-black
+    bg-${props.isDisabled ? "gray" : "green"}-500
+    text-3xl
+    justify-center
+    rounded-[10px]
+    cursor-pointer
+    justify-self-end
+    ${!props.isDisabled && "hover:brightness-150"}
+    cursor-${props.isDisabled ? "not-allowed" : "pointer"}
+    duration-300
 `;
 
 export const ready_button = (props: { isReady: boolean }) => `

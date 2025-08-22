@@ -1,7 +1,7 @@
 export const lobby_card = `
     flex
     w-full
-    h-[113px]
+    h-[115px]
     border-black
     border-3
     bg-[#f54900]
@@ -33,7 +33,7 @@ export const join_button = `
     text-1xl 
     border-3
     border-black
-    bg-green-500
+    bg-yellow-500
     h-fit
     w-full
     justify-center

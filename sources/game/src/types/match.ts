@@ -1,3 +1,5 @@
+import { LobbyPlayer } from "./lobby";
+
 export type MatchCreate = {
 	user_ids: number[];
 };

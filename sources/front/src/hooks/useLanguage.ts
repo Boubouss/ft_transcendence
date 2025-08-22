@@ -7,7 +7,7 @@ type Dictionary = Record<string, string>;
 
 type Dictionaries = Record<string, Dictionary>;
 
-export function useLanguage(key: string) {
+export function useLanguage(key: string, count?: number) {
   let lang = "FR";
   const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
   const dictionaries: Dictionaries = dictionary;
@@ -19,7 +19,14 @@ export function useLanguage(key: string) {
     lang = configuration.lang;
   }
 
-  if (dictionaries[lang] && dictionaries[lang][key]) {
+  if (
+    count &&
+    count > 1 &&
+    dictionaries[lang] &&
+    dictionaries[lang][`plural_${key}`]
+  ) {
+    return dictionaries[lang][`plural_${key}`];
+  } else if (dictionaries[lang] && dictionaries[lang][key]) {
     return dictionaries[lang][key];
   }
 

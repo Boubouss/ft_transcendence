@@ -22,7 +22,16 @@ const LobbyCard = ({ lobby, handleJoinLobby }: LobbyCardProps) => {
           ? "/icons/pong_tournament.png"
           : "/icons/pong.png",
       }),
-      createElement("p", { class: "flex-1 text-4xl truncate" }, lobby.name)
+      createElement(
+        "p",
+        { class: "flex flex-1 text-4xl truncate items-center gap-[10px]" },
+        createElement("span", null, lobby.name),
+        createElement(
+          "span",
+          { class: "text-[16px]" },
+          `(${lobby.score_max} ${useLanguage("round", lobby.score_max)})`
+        )
+      )
     ),
     createElement(
       "div",

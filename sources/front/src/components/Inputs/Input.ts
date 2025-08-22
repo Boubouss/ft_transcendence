@@ -1,36 +1,48 @@
+import { input_default, label_default } from "./style";
+import { useRef } from "#core/hooks/useRef.ts";
+import _ from "lodash";
+
 import {
   createElement,
   type Component,
   type ComponentAttr,
 } from "#core/framework";
-import { useRef } from "#core/hooks/useRef.ts";
-import _ from "lodash";
-import { input_default, label_default } from "./style";
+
+type Props = {
+  externalValueRef?: { current: string };
+  attr: ComponentAttr;
+  labelAttr?: ComponentAttr;
+  labelContent?: string;
+};
 
 const Input = (
-  props: { attr: ComponentAttr; labelAttr?: ComponentAttr },
+  { externalValueRef, attr, labelAttr, labelContent }: Props,
   ...childrens: Component[]
 ) => {
-  let { attr, labelAttr } = props;
+  let valueRef = externalValueRef;
+  if (_.isUndefined(valueRef)) valueRef = useRef("");
 
-  const ref = useRef(null);
-
-  const default_attr = {
-    ref,
-    value:
-      typeof ref.current !== "undefined" && ref.current !== null
-        ? ref.current.value
-        : "",
+  const defaultLabelAttr = { class: label_default };
+  const defaultAttr = {
+    value: !_.isEmpty(valueRef.current) ? valueRef.current : "",
+    onInput: (e: InputEvent) => handleInput(e),
     class: input_default,
   };
-  const default_label_attr = { class: label_default };
 
-  attr = { ...default_attr, ...attr };
-  labelAttr = { ...default_label_attr, ...labelAttr };
+  attr = { ...defaultAttr, ...attr };
+  labelAttr = { ...defaultLabelAttr, ...labelAttr };
+
+  const handleInput = (event: InputEvent) => {
+    const target = event.target as HTMLInputElement;
+    if (!target) return;
+
+    valueRef.current = target.value;
+  };
 
   return createElement(
     "label",
     labelAttr,
+    !_.isEmpty(labelContent) && labelContent,
     createElement("input", attr),
     ...childrens
   );

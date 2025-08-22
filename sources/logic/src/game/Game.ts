@@ -6,6 +6,7 @@ import { Paddle } from "./Paddle";
 import { Player } from "./Player";
 import { MessageTypes } from "../type/Schema";
 import * as other from "./other";
+import { gameTimeout } from "..";
 
 //offset from the center of the object
 const PADDLE_OFFSET: number = 20;
@@ -16,6 +17,7 @@ const BALL_SPEED_RATIO: number = 1.05;
 export class Game {
   private _gameId: string;
   private _players: Map<string, Player> = new Map();
+  private _winnerId: number;
 
   private _gameField: GameField;
   private _paddleL: Paddle;
@@ -39,6 +41,7 @@ export class Game {
     config.playersId.forEach((id: string) => {
       this._players.set(id, new Player(id));
     });
+    this._winnerId = -1;
 
     this._playersQueue = Array(...this._players.keys());
     if (this._players.size !== 2) other.shuffle(this._playersQueue);
@@ -56,6 +59,9 @@ export class Game {
   }
   public get gameState() {
     return this._gameState;
+  }
+  public get winnerId() {
+    return this._winnerId;
   }
   public get players() {
     return this._players;
@@ -84,6 +90,12 @@ export class Game {
     if (this._players.size !== 2) other.shuffle(this._playersQueue);
     this._playerL = this._playersQueue.shift() as string;
     this._playerR = this._playersQueue.shift() as string;
+  }
+  public setWinnerId(id: number) {
+    this._winnerId = id;
+  }
+  public setGameState(state: GameState) {
+    this._gameState = state;
   }
   public setPlayerConnection(id: string, socket: WebSocket | null) {
     const player = this._players.get(id);
@@ -121,7 +133,11 @@ export class Game {
       gameId: this._gameId,
       state: GameState[this._gameState].toLowerCase(),
       sleep: this._sleep,
-      players: [...this._players.values()].map((player) => player.toJson()),
+      players: [...this.players.entries()].map(
+        ([key, value]: [string, Player]) => {
+          return [key, value.toJson()];
+        },
+      ),
       queue: this._playersQueue,
       field: this._gameField.toJson(),
       playerL: this._playerL,
@@ -139,19 +155,25 @@ export class Game {
       this._sleep = 2 * this._fps;
       this._gameState = GameState.Running;
     } else if (this._gameState == GameState.Running) {
-      if (!gameFull) this._gameState = GameState.Paused;
       if (pausedPlayers) this._gameState = GameState.Paused;
     } else if (this._gameState == GameState.Paused) {
       if (gameFull && !pausedPlayers) {
         this._sleep = 2 * this._fps;
         this._gameState = GameState.Running;
+
+        gameTimeout.delete(this._gameId);
       }
     }
 
     const winners = [...this._players.entries()].filter(
       ([_, p]) => p.point >= this._maxScore,
     );
+
     if (winners.length !== 0) {
+      this._winnerId = parseInt(winners[0][1].id);
+    }
+
+    if (this.winnerId !== -1) {
       this._gameState = GameState.Over;
       return;
     }

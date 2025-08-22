@@ -10,8 +10,6 @@ import { useEffect } from "#core/hooks/useEffect";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import { useState } from "#core/hooks/useState";
 
-const PORT = 3001;
-
 function isSocketsReady(sockets: WebSocket[]) {
   return (
     sockets.length === 2 &&
@@ -29,14 +27,14 @@ async function createGame(
 ) {
   const id = `local-${crypto.randomUUID()}`;
   const players = ["P1", "P2"];
-  await fetch(`http://localhost:${PORT}/games`, {
+  await fetch(`${import.meta.env.VITE_API_LOGIC}/games`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ gameId: id, playersId: players, scoreMax: score }),
   });
   const sockets = [
-    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${players[0]}`),
-    new WebSocket(`ws://localhost:${PORT}/ws/${id}/${players[1]}`),
+    new WebSocket(`${import.meta.env.VITE_LOGIC_WSS}/${id}/${players[0]}`),
+    new WebSocket(`${import.meta.env.VITE_LOGIC_WSS}/${id}/${players[1]}`),
   ];
   setSockets(sockets);
 }

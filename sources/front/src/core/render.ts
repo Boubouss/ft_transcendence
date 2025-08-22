@@ -24,20 +24,28 @@ export function reRender() {
   render(App(), rootContainer);
 }
 
+type EventCallback = (...params: any) => void;
+
 function handleAttr(component: Component, element: HTMLElement) {
   if (!component || typeof component === "string" || !component.attr) return;
 
   for (const [key, value] of Object.entries(component.attr)) {
     switch (key) {
       case "onClick":
-        element.onclick = (event) => (value as (event?: Event) => void)(event);
+        element.onclick = (event) =>
+          (value as (event: MouseEvent) => void)(event);
         break;
       case "onInput":
-        element.oninput = (event) => (value as (event?: Event) => void)(event);
+        element.oninput = (event) =>
+          (value as (event: InputEvent) => EventCallback)(event as InputEvent);
         break;
       case "ref":
         const refsValue = value as { current: HTMLElement | null };
         refsValue.current = element;
+        break;
+      case "checked":
+      case "disabled":
+        if (value) element.setAttribute(key, value as string);
         break;
       default:
         element.setAttribute(key, value as string);
