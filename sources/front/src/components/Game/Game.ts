@@ -36,9 +36,7 @@ function drawPad({ ctx, pad, ratio }: DrawPadData, isCurrentPlayer: boolean) {
   const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
   const [x, y, w, h] = rect.map((d) => d * ratio);
   ctx.beginPath();
-  ctx.rect(x, y, w, h);
-  ctx.strokeStyle = color;
-  ctx.stroke();
+  ctx.roundRect(x, y, w, h, Math.min(w, h) / 4);
   ctx.fillStyle = color;
   ctx.fill();
 }
@@ -73,8 +71,7 @@ function render(state: any, player: GamePlayer) {
   const [x, y, r] = [ball.x, ball.y, ball.r].map((d) => d * ratio);
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.strokeStyle = "white";
-  ctx.stroke();
+  ctx.closePath();
   ctx.fillStyle = "white";
   ctx.fill();
 
@@ -88,10 +85,10 @@ function render(state: any, player: GamePlayer) {
     ctx.font = `${64 * ratio}px jaro`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "white";
     ctx.lineWidth = 4;
     ctx.strokeText(text, gameCanvas.width / 2, gameCanvas.height / 2);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "black";
     ctx.fillText(text, gameCanvas.width / 2, gameCanvas.height / 2);
   }
 }
