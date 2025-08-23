@@ -24,7 +24,10 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const FPS: 30 | 60 = 60;
 const PORT: number = 3002;
 const playerTimeout: Map<string, ReturnType<typeof setTimeout>> = new Map();
-export const gameTimeout: Map<string, ReturnType<typeof setTimeout>> = new Map();
+export const gameTimeout: Map<
+  string,
+  ReturnType<typeof setTimeout>
+> = new Map();
 
 let games = new Map<string, Game>();
 
@@ -51,7 +54,7 @@ app.register(cors, {
 
 app.register(async () => {
   app.get(
-    "/ws/:gameId/:playerId",
+    "/:gameId/:playerId",
     { schema: schemaWebSocket, websocket: true },
     (connection, request) => {
       const params = request.params as { gameId: string; playerId: string };
@@ -61,6 +64,11 @@ app.register(async () => {
 
       if (playerTimeout.has(playerId)) {
         const timeout = playerTimeout.get(playerId);
+        clearTimeout(timeout);
+      }
+
+      if (gameTimeout.has(gameId)) {
+        const timeout = gameTimeout.get(gameId);
         clearTimeout(timeout);
       }
 
@@ -141,7 +149,7 @@ app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
 
     games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
     games.delete(body.gameId);
-  }, 10000)
+  }, 10000);
 
   gameTimeout.set(body.gameId, timeout);
 });
