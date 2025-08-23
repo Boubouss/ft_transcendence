@@ -107,10 +107,10 @@ function render(state: any, player: GamePlayer) {
     ctx.font = `${64 * ratio}px jaro`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "white";
     ctx.lineWidth = 4;
     ctx.strokeText(text, gameCanvas.width / 2, gameCanvas.height / 2);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "black";
     ctx.fillText(text, gameCanvas.width / 2, gameCanvas.height / 2);
   }
 }
