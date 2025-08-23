@@ -18,11 +18,11 @@
     "@fastify/websocket": "^11.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
-    "fastify": "^5.3.2",
+    "fastify": "^5.5.0",
     "fastify-qs": "^5.0.0",
     "qs": "^6.14.0",
     "ws": "^8.18.2",
-    "zod": "^3.25.67"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^22.15.14",
