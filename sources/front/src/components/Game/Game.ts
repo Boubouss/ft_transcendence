@@ -18,6 +18,12 @@ type MessagePlayer = {
   pause: string;
 };
 
+//todo: move out the images
+const BACKGROUND = new Image();
+BACKGROUND.src = "src/components/Game/background.PNG";
+const WOOD = new Image();
+WOOD.src = "src/components/Game/wood.jpg";
+
 const ID = "game";
 
 function fetchScores(message: any) {
@@ -32,15 +38,15 @@ function fetchScores(message: any) {
 }
 
 function drawPad({ ctx, pad, ratio }: DrawPadData, isCurrentPlayer: boolean) {
-  const color = isCurrentPlayer ? "#00FF78" : "white";
+  const color = isCurrentPlayer ? "#00FF78" : "black";
   const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
   const [x, y, w, h] = rect.map((d) => d * ratio);
+  ctx.drawImage(WOOD, x + 1, y + 1, w - 2, h - 2);
   ctx.beginPath();
-  ctx.rect(x, y, w, h);
+  ctx.roundRect(x, y, w, h, Math.min(w, h) / 4);
   ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
   ctx.stroke();
-  ctx.fillStyle = color;
-  ctx.fill();
 }
 
 //todo: replace the 'any', find the correct type for the game state
@@ -59,6 +65,14 @@ function render(state: any, player: GamePlayer) {
   gameCanvas.width = state.field.w * ratio;
   gameCanvas.style.background = "black";
 
+  //todo: should add a check
+  BACKGROUND.height;
+  ctx.drawImage(
+    BACKGROUND,
+    gameCanvas.width / 2 - BACKGROUND.width / 2,
+    gameCanvas.height / 2 - BACKGROUND.height / 2
+  );
+
   drawPad(
     { ctx, pad: state.paddleL, ratio },
     state.playerL === player.id?.toString()
@@ -71,12 +85,17 @@ function render(state: any, player: GamePlayer) {
 
   const ball = state.ball;
   const [x, y, r] = [ball.x, ball.y, ball.r].map((d) => d * ratio);
+  ctx.save();
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.strokeStyle = "white";
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(WOOD, x - r, y - r, r * 2, r * 2);
+  ctx.restore();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
   ctx.stroke();
-  ctx.fillStyle = "white";
-  ctx.fill();
 
   if (state.state === "paused" || state.sleep) {
     const sleep =
