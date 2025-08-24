@@ -3,8 +3,13 @@
 SESSION="ft_transcendence"
 ROOT="$HOME/Code/ft_transcendence/"
 
+if tmux has-session -t "$SESSION"; then
+	tmux attach -t "$SESSION:1" -c "$ROOT"
+	exit
+fi
+
 (
-	cd $ROOT
+	cd "$ROOT"
 
 	tmux new-session -d -s "$SESSION"
 	tmux send-keys -t "$SESSION:1" 'nvim -c "Explore"' C-m
