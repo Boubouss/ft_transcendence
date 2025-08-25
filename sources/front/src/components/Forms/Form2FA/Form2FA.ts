@@ -38,7 +38,7 @@ const Form2FA = (props: {
         minlength: "6",
         inputmode: "numeric",
         pattern: "[0-9]{6}",
-        placeholder: useLanguage("entera2f"),
+        placeholder: useLanguage("entercode"),
       },
     }),
     Submit({
