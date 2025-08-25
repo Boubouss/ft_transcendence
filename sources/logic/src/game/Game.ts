@@ -152,6 +152,8 @@ export class Game {
     const gameFull = ![...this._players.values()].some((p) => !p.isConnected());
     const pausedPlayers = [...this._players.values()].some((p) => p.pause);
     if (this._gameState == GameState.Init && gameFull) {
+      clearTimeout(gameTimeout.get(this._gameId));
+      gameTimeout.delete(this._gameId);
       this._sleep = 2 * this._fps;
       this._gameState = GameState.Running;
     } else if (this._gameState == GameState.Running) {
@@ -160,8 +162,6 @@ export class Game {
       if (gameFull && !pausedPlayers) {
         this._sleep = 2 * this._fps;
         this._gameState = GameState.Running;
-
-        gameTimeout.delete(this._gameId);
       }
     }
 

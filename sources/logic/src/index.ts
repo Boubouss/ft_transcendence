@@ -67,11 +67,6 @@ app.register(async () => {
         clearTimeout(timeout);
       }
 
-      if (gameTimeout.has(gameId)) {
-        const timeout = gameTimeout.get(gameId);
-        clearTimeout(timeout);
-      }
-
       if (!game) {
         connection.close(WebSocketCode.UNDEFINED, `Game not found`);
         return;
