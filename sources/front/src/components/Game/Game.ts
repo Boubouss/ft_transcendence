@@ -66,7 +66,6 @@ function render(state: any, player: GamePlayer) {
   gameCanvas.style.background = "black";
 
   //todo: should add a check
-  BACKGROUND.height;
   ctx.drawImage(
     BACKGROUND,
     gameCanvas.width / 2 - BACKGROUND.width / 2,
