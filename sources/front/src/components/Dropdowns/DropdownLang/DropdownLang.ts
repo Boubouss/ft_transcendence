@@ -14,6 +14,7 @@ const DropdownLang = (props: {
 }) => {
   const [language, setLanguage] = useState("FR");
 
+  
   let { attr, attrContent } = props;
 
   const default_attr = { class: dropdown_default + " w-[96px]" };
@@ -59,7 +60,8 @@ const DropdownLang = (props: {
           onClick: () => handleLang("ES", setLanguage),
         },
       },
-    ])
+    ]),
+
   );
 };
 

@@ -44,4 +44,5 @@ export const dropdown_user_img = `
     w-[50px]
     h-[50px]
     rounded-[50px]
+    object-cover
 `;

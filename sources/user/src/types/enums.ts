@@ -9,6 +9,7 @@ export enum ServerEvent {
 	UPDATE = "UPDATE",
 	CONNECT = "CONNECT",
 	DECONNECT = "DECONNECT",
+	SENT = "SENT",
 	// REQUEST = "REQUEST",
 	// ACCEPTED = "ACCEPTED",
 	// DECLINED = "DECLINED",

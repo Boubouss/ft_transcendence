@@ -1,4 +1,3 @@
-import { useLanguage } from "#hooks/useLanguage.ts";
 import { getStorage } from "#services/data.ts";
 import { KeysStorage, UserClientEvent } from "#types/enums.ts";
 import type { Friend, Friendship } from "#types/user.ts";
@@ -31,7 +30,6 @@ export function handleSendFriendRequest(
     return;
 
   socket?.send(JSON.stringify({ event: UserClientEvent.SEND, target }));
-  alert(useLanguage("send_request"));
 }
 
 export function handleAcceptFriendRequest(props: {

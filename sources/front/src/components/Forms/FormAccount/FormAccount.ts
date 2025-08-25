@@ -27,7 +27,10 @@ import {
   submit_account_default,
 } from "./style";
 
-const FormAccount = () => {
+const FormAccount = (
+  setShowMoral: (toSet: boolean) => void,
+  setError: (toSet: string) => void
+) => {
   const data = getStorage(sessionStorage, KeysStorage.USERTRANS);
 
   const [isEditing, setEditing] = useState(false);
@@ -63,8 +66,10 @@ const FormAccount = () => {
             type: "text",
             name: "name",
             value: isEditing ? "" : user.name,
-            placeholder: isEditing ? user.name : useLanguage("username"),
+            placeholder: isEditing ? user.name : useLanguage("name"),
             class: input_account,
+            minlength: "3",
+            maxlength: "20",
             ...(!isEditing ? { readonly: true } : {}),
           },
         }),
@@ -74,6 +79,9 @@ const FormAccount = () => {
               type: isView ? "text" : "password",
               name: "password",
               placeholder: useLanguage("pw"),
+              pattern:
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+              minlength: "8",
               value: isEditing ? currentPassword : "            ",
               class: input_account,
               ...(!isEditing ? { readonly: true } : {}),
@@ -128,7 +136,7 @@ const FormAccount = () => {
           },
         }),
         createElement("img", {
-          src: useAvatar(user),
+          src: useAvatar(user.avatar),
           class: avatar_img_class,
         })
       )
@@ -152,8 +160,7 @@ const FormAccount = () => {
           class: submit_account_default(isEditing),
           onClick: () => {
             if (isEditing) {
-              handleEditUser(user, setUser);
-              setEditing(false);
+              handleEditUser(user, setUser, setEditing, setShowMoral, setError);
             }
           },
           ...(!isEditing ? { disabled: true } : {}),

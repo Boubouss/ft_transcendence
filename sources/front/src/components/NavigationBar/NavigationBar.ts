@@ -1,6 +1,9 @@
 import { dropdown_default } from "#components/Dropdowns/style.ts";
 import Friends from "#components/Friends/Friends.ts";
-import { createElement, type ComponentAttr } from "#core/framework.ts";
+import {
+  createElement,
+  type ComponentAttr,
+} from "#core/framework.ts";
 import { getStorage } from "#services/data.ts";
 import { KeysStorage } from "#types/enums.ts";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -52,7 +55,9 @@ const NavigationBar = (props: {
         class: !getStorage(sessionStorage, KeysStorage.USERTRANS)
           ? btn_modal
           : "hidden",
-        onClick: () => setModalAuth(!modalAuth),
+        onClick: () => {
+          setModalAuth(!modalAuth);
+        },
       },
     })
   );

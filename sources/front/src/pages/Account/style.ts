@@ -18,12 +18,12 @@ items-center
 justify-center`;
 
 export const account_container = `
-    relative
     flex flex-col
     items-center
     bg-orange-400
     border-3 border-black
     rounded-[20px]
+    mb-[20px]
 `;
 
 export const title_container = `mt-[15px] mb-[15px] flex gap-10 items-center`;

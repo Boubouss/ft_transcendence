@@ -15,7 +15,7 @@ const FriendsBar = (props: {
 
   return createElement(
     "div",
-    { class: "flex" },
+    { class: "flex z-2" },
     Button({
       children: createElement("img", {
         src: "/icons/home_icon.png",
