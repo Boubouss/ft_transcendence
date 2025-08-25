@@ -90,7 +90,8 @@
     "error_email_format": "Erreur d'email :\n ce n'est pas le format d'un email",
     "empty_form": "Erreur champ vide : ",
     "error_account": "Une erreur est survenue, veuillez essayer plus tard",
-    "error_user_not_found": "Utilisateur introuvable !"
+    "error_user_not_found": "Utilisateur introuvable !",
+    "start_touch": "Appuyez sur une touche pour lancer !"
   },
   "EN": {
     "loginin": "Sign In",
@@ -183,7 +184,8 @@
     "error_email_format": "Email error :\n not a valid email format",
     "empty_form": "Empty field error : ",
     "error_account": "An account error occurred, please try again later",
-    "error_user_not_found": "User not found !"
+    "error_user_not_found": "User not found !",
+    "start_touch": "Press any key to start !"
   },
   "ES": {
     "loginin": "Iniciar sesión",
@@ -276,6 +278,7 @@
     "error_email_format": "Error de correo electrónico :\n no es un formato válido",
     "empty_form": "Error campo vacío : ",
     "error_account": "Se ha producido un error en la cuenta. Inténtelo de nuevo más tarde.",
-    "error_user_not_found": "¡Usuario no encontrado!"
+    "error_user_not_found": "¡Usuario no encontrado!",
+    "start_touch": "Pulse cualquier tecla para iniciar !"
   }
 }
