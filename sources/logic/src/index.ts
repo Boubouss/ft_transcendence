@@ -54,7 +54,7 @@ app.register(cors, {
 
 app.register(async () => {
   app.get(
-    "ws/:gameId/:playerId",
+    "/ws/:gameId/:playerId",
     { schema: schemaWebSocket, websocket: true },
     (connection, request) => {
       const params = request.params as { gameId: string; playerId: string };
