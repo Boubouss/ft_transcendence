@@ -24,7 +24,7 @@ fi
 	tmux send-keys -t "$SESSION:2.3" "cd sources/logic && npm start" C-m
 	tmux send-keys -t "$SESSION:2.4" "cd sources/game && npm start" C-m
 	tmux select-pane -t 5
-	# tmux select-layout -t "$SESSION:2" tiled
+	tmux select-layout -t "$SESSION:2" tiled
 )
 
 tmux attach -t "$SESSION:1" -c "$ROOT"
