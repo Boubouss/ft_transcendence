@@ -9,6 +9,7 @@ import { mainBodyStyle, tournamentTreeStyle } from "./style";
 import { useEffect } from "#core/hooks/useEffect";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import { useState } from "#core/hooks/useState";
+import type { ComponentAttr } from "#core/framework.ts";
 
 function isSocketsReady(sockets: WebSocket[]) {
   return (
@@ -39,7 +40,10 @@ async function createGame(
   setSockets(sockets);
 }
 
-const GameQueue = (props: { tournament: LocalTournament }) => {
+const GameQueue = (props: {
+  tournament: LocalTournament;
+  attr?: ComponentAttr;
+}) => {
   if (!props.tournament) return null;
 
   const matchCurrent = props.tournament.queue.slice(0, 2) as [string, string];
@@ -52,11 +56,14 @@ const GameQueue = (props: { tournament: LocalTournament }) => {
     matchRemaining.push(pair);
   }
 
+  const default_attr = {
+    class: `${tournamentTreeStyle} flex flex-col text-center`,
+  };
+  let { attr } = props;
+  attr = { ...default_attr, ...(attr || {}) };
   return createElement(
     "div",
-    {
-      class: `${tournamentTreeStyle} flex flex-col text-center`,
-    },
+    attr,
     createElement(
       "div",
       { class: `text-center items-center` },
@@ -235,44 +242,51 @@ const Local = () => {
       "div",
       { class: `${mainBodyStyle}` },
 
-      !config && !tournament
-        ? LocalForm({ config: config, setConfig: setConfig })
-        : null,
+      LocalForm({
+        config: config,
+        setConfig: setConfig,
+        attr: !config && !tournament ? {} : { class: "hidden" },
+      }),
 
-      tournament?.stage === "queue"
-        ? GameQueue({ tournament: tournament })
-        : null,
+      GameQueue({
+        tournament: tournament,
+        attr: tournament?.stage === "queue" ? {} : { class: "hidden" },
+      }),
 
-      tournament?.stage === "game" && isSocketsReady(sockets)
-        ? Game({
-            id: `${tournament.currentMatchId}`,
-            players: [
-              { ...playerOne, socket: sockets[0] },
-              { ...playerTwo, socket: sockets[1] },
-            ],
-            scores: scores,
-            setScores: setScores,
-          })
-        : null,
+      Game({
+        id: `${tournament?.currentMatchId}`,
+        players: [
+          { ...playerOne, socket: sockets[0] },
+          { ...playerTwo, socket: sockets[1] },
+        ],
+        scores: scores,
+        setScores: setScores,
+        isRemote: false,
+        attr:
+          tournament?.stage === "game" && isSocketsReady(sockets)
+            ? {}
+            : { class: "hidden" },
+      }),
 
-      tournament?.stage === "finished"
-        ? createElement(
+      createElement(
+        "div",
+        {
+          class:
+            tournament?.stage === "finished"
+              ? `${tournamentTreeStyle} text-center items-center`
+              : "hidden",
+        },
+        createElement(
+          "div",
+          {},
+          createElement("div", {}, useLanguage(`winner`)),
+          createElement(
             "div",
-            {
-              class: `${tournamentTreeStyle} text-center items-center`,
-            },
-            createElement(
-              "div",
-              {},
-              createElement("div", {}, useLanguage(`winner`)),
-              createElement(
-                "div",
-                { class: `border-[2px] px-2 bg-[#FFFFFF99] rounded-[8px]` },
-                `${tournament.queue[0]}`
-              )
-            )
+            { class: `border-[2px] px-2 bg-[#FFFFFF99] rounded-[8px]` },
+            `${tournament?.queue[0]}`
           )
-        : null
+        )
+      )
     )
   );
 };

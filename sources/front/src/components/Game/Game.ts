@@ -1,7 +1,6 @@
-import { useEffect } from "#core/framework.ts";
+import { useEffect, useState, type ComponentAttr } from "#core/framework.ts";
 import { createElement } from "#core/render.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
-import type { DrawPadData } from "#types/game.ts";
 import { scoreStyle, gameContainerStyle } from "./style";
 import _ from "lodash";
 
@@ -19,6 +18,13 @@ type MessagePlayer = {
 };
 
 const ID = "game";
+const asset_background = new Image();
+asset_background.src = "/asset/background.webp";
+const asset_paddle = new Image();
+asset_paddle.src = "/asset/paddle.png";
+const asset_ball = new Image();
+asset_ball.src = "/asset/ball.png";
+let rotation = 0;
 
 function fetchScores(message: any) {
   const players: Map<string, MessagePlayer> = new Map(message.players);
@@ -31,18 +37,8 @@ function fetchScores(message: any) {
   return messageScores;
 }
 
-function drawPad({ ctx, pad, ratio }: DrawPadData, isCurrentPlayer: boolean) {
-  const color = isCurrentPlayer ? "#00FF78" : "white";
-  const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
-  const [x, y, w, h] = rect.map((d) => d * ratio);
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, Math.min(w, h) / 4);
-  ctx.fillStyle = color;
-  ctx.fill();
-}
-
 //todo: replace the 'any', find the correct type for the game state
-function render(state: any, player: GamePlayer) {
+function render(state: any) {
   const gameCanvas = document.getElementById(ID) as HTMLCanvasElement;
   if (!gameCanvas) return;
 
@@ -55,31 +51,37 @@ function render(state: any, player: GamePlayer) {
 
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
-  gameCanvas.style.background = "black";
+  ctx.drawImage(asset_background, 0, 0, gameCanvas.width, gameCanvas.height);
 
-  drawPad(
-    { ctx, pad: state.paddleL, ratio },
-    state.playerL === player.id?.toString()
-  );
-
-  drawPad(
-    { ctx, pad: state.paddleR, ratio },
-    state.playerR === player.id?.toString()
-  );
+  for (const pad of [state.paddleL, state.paddleR]) {
+    const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
+    const [x, y, w, h] = rect.map((d) => d * ratio);
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 5);
+    ctx.clip();
+    ctx.drawImage(asset_paddle, x, y, w, h);
+    ctx.restore();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "black";
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 5);
+    ctx.stroke();
+  }
 
   const ball = state.ball;
   const [x, y, r] = [ball.x, ball.y, ball.r].map((d) => d * ratio);
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fillStyle = "white";
-  ctx.fill();
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  ctx.drawImage(asset_ball, -r, -r, r * 2, r * 2);
+  ctx.restore();
+  if (state.state !== "paused" && !state.sleep)
+    rotation += 0.1 * (state.ball.dx > 0 ? 1 : -1);
 
   if (state.state === "paused" || state.sleep) {
-    const sleep =
-      Math.floor((state.sleep * 4) / 60) <= 1
-        ? useLanguage(`start`)
-        : useLanguage(`ready`);
+    const isStarting = Math.floor((state.sleep * 4) / 60) <= 1;
+    const sleep = isStarting ? useLanguage(`start`) : useLanguage(`ready`);
     const text = state.state === "paused" ? `PAUSE` : sleep;
 
     ctx.font = `${64 * ratio}px jaro`;
@@ -99,7 +101,10 @@ const GameField = (props: {
   players: GamePlayer[];
   setScores: (toSet: number[]) => void;
   isRemote?: boolean;
+  activePlayersState: [string[], (value: string[]) => void];
 }) => {
+  const [activePlayers, setActivePlayers] = props.activePlayersState;
+
   useEffect(() => {
     const handlePause = (event: KeyboardEvent) => {
       if (!props.players.every((p) => p.socket.readyState === WebSocket.OPEN))
@@ -151,19 +156,19 @@ const GameField = (props: {
     const player = _.first(props.players);
     if (_.isEmpty(player)) return;
 
-    player.socket.onmessage = (event) => handleLogicMessage(event, player);
+    player.socket.onmessage = (event) => handleLogicMessage(event);
   }, [props.id, props.players, props.scores]);
 
-  const handleLogicMessage = (event: MessageEvent, player: GamePlayer) => {
+  const handleLogicMessage = (event: MessageEvent) => {
     try {
       const message = JSON.parse(event.data);
       const actualScores = fetchScores(message);
+      const playerIds = [message.playerL, message.playerR];
 
-      if (!_.isEqual(props.scores, actualScores)) {
-        props.setScores(actualScores);
-      }
+      if (!_.isEqual(activePlayers, playerIds)) setActivePlayers(playerIds);
+      if (!_.isEqual(props.scores, actualScores)) props.setScores(actualScores);
 
-      render(message, player);
+      render(message);
     } catch (e) {
       console.error(e);
     }
@@ -177,21 +182,32 @@ const Game = (props: {
   scores: number[];
   setScores: (toSet: number[]) => void;
   players: GamePlayer[];
-  isRemote?: boolean;
+  isRemote: boolean;
+  attr?: ComponentAttr;
 }) => {
+  const [activePlayers, setActivePlayers] = useState<string[]>([]);
+
+  if (props.attr?.class === "hidden") {
+    console.log("early return");
+    return null;
+  }
+  const getScoreElement = (score: number, player: GamePlayer, side: 0 | 1) => {
+    let _class = scoreStyle + (side === 0 ? " col-1" : " col-2");
+    if (!props.isRemote)
+      return createElement("div", { class: _class }, `${score}`);
+    const isCurrent = player.id?.toString() === activePlayers[side];
+    _class += isCurrent ? " text-white" : " text-black";
+    return createElement("div", { class: _class }, `> ${score} <`);
+  };
+
+  const default_attr = { class: gameContainerStyle };
+  let { attr } = props;
+  attr = { ...default_attr, ...(attr || {}) };
   return createElement(
     "div",
-    { class: gameContainerStyle },
-    createElement(
-      "div",
-      { class: scoreStyle + ` col-1 row-1` },
-      `${props.scores[0]}`
-    ),
-    createElement(
-      "div",
-      { class: scoreStyle + ` col-2 row-1` },
-      `${props.scores[1]}`
-    ),
+    attr,
+    getScoreElement(props.scores[0], _.first(props.players)!, 0),
+    getScoreElement(props.scores[1], _.first(props.players)!, 1),
     createElement(
       "div",
       { class: "col-1 col-span-2" },
@@ -201,6 +217,7 @@ const Game = (props: {
         setScores: props.setScores,
         players: props.players,
         isRemote: props.isRemote,
+        activePlayersState: [activePlayers, setActivePlayers],
       })
     )
   );

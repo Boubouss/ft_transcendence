@@ -36,10 +36,10 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 const app = fastify({
   https: {
     key: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_KEY as string)
+      path.resolve(__dirname, process.env.HTTPS_KEY as string),
     ),
     cert: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_CERT as string)
+      path.resolve(__dirname, process.env.HTTPS_CERT as string),
     ),
   },
 });
@@ -112,7 +112,7 @@ app.register(async () => {
 
         playerTimeout.set(playerId, timeout);
       });
-    }
+    },
   );
 });
 
@@ -124,7 +124,7 @@ app.get(
     for (const [gameId, game] of games.entries())
       if (game.players.has(params.id)) return response.send({ gameId: gameId });
     response.send({ gameId: null });
-  }
+  },
 );
 
 app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
@@ -160,7 +160,7 @@ app.delete(
     }
     games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
     games.delete(body.gameId);
-  }
+  },
 );
 
 app.listen({ port: PORT }, (err) => {
@@ -168,7 +168,7 @@ app.listen({ port: PORT }, (err) => {
     console.error(err);
     process.exit(1);
   }
-  console.log(`Server listening on port: ${PORT}`);
+  console.log("Server is running on ", process.env.API_LOGIC);
 });
 
 function isLocalGameOver(game: Game, gameId: string) {

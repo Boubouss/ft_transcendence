@@ -17,6 +17,7 @@ import { createElement } from "#core/render.ts";
 import { useForm } from "#hooks/useForm.ts";
 import { useState } from "#core/hooks/useState.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
+import type { ComponentAttr } from "#core/framework.ts";
 
 function handleLocalForm(formId: string, setConfig: (toSet: any) => void) {
   const form_data = useForm(formId);
@@ -52,7 +53,11 @@ function handleLocalForm(formId: string, setConfig: (toSet: any) => void) {
   setConfig({ ...config });
 }
 
-const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
+const LocalForm = (props: {
+  config: any;
+  setConfig: (toSet: any) => void;
+  attr?: ComponentAttr;
+}) => {
   const scoreOptions: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const sizeOptions: number[] = [4, 8, 16];
 
@@ -60,9 +65,11 @@ const LocalForm = (props: { config: any; setConfig: (toSet: any) => void }) => {
   const [score, setScore] = useState<number>(5);
   const [size, setSize] = useState<number>(8);
 
+  const default_attr = { class: `${formStyle}`, id: "local_form" };
+  let { attr } = props;
+  attr = { ...default_attr, ...(attr || {}) };
   return Form(
-    { attr: { class: `${formStyle}`, id: "local_form" } },
-
+    { attr: attr },
     createElement(
       "div",
       { class: modeToggleStyle },
