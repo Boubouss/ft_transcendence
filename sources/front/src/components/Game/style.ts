@@ -1,18 +1,17 @@
 export const gameContainerStyle = [
-  `m-auto`,
-  `grid`,
   `bg-black`,
-  `p-[4px]`,
   `gap-[4px]`,
   `grid-cols-2`,
   `grid-rows-auto`,
+  `grid`,
+  `m-auto`,
+  `p-[4px]`,
 ].join(" ");
 
 export const scoreStyle = [
-  // `bg-white`,
   `bg-[url('asset/score.png')]`,
   `bg-cover`,
+  `items-center`,
   `text-black`,
   `text-center`,
-  `items-center`,
 ].join(" ");
