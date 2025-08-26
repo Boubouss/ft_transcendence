@@ -251,6 +251,7 @@ const Local = () => {
             ],
             scores: scores,
             setScores: setScores,
+            isRemote: false,
           })
         : null,
 

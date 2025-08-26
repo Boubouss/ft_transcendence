@@ -8,8 +8,8 @@ export class Paddle {
   constructor(
     x: number,
     y: number,
-    h: number = 100,
-    w: number = 20,
+    h: number = 130,
+    w: number = 30,
     step = 10,
   ) {
     this._x = x;

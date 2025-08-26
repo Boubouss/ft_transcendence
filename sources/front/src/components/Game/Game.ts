@@ -1,4 +1,4 @@
-import { useEffect } from "#core/framework.ts";
+import { useEffect, useState } from "#core/framework.ts";
 import { createElement } from "#core/render.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import type { DrawPadData } from "#types/game.ts";
@@ -19,6 +19,14 @@ type MessagePlayer = {
 };
 
 const ID = "game";
+let rotation = 0;
+
+const asset_background = new Image();
+asset_background.src = "/asset/background.webp";
+const asset_paddle = new Image();
+asset_paddle.src = "/asset/paddle2.png";
+const asset_ball = new Image();
+asset_ball.src = "/asset/ball.png";
 
 function fetchScores(message: any) {
   const players: Map<string, MessagePlayer> = new Map(message.players);
@@ -31,18 +39,17 @@ function fetchScores(message: any) {
   return messageScores;
 }
 
-function drawPad({ ctx, pad, ratio }: DrawPadData, isCurrentPlayer: boolean) {
-  const color = isCurrentPlayer ? "#00FF78" : "white";
+function drawPad({ ctx, pad, ratio }: DrawPadData) {
   const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
   const [x, y, w, h] = rect.map((d) => d * ratio);
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, Math.min(w, h) / 4);
-  ctx.fillStyle = color;
-  ctx.fill();
+  // ctx.beginPath();
+  // ctx.roundRect(x, y, w, h, Math.min(w, h) / 4);
+  // ctx.stroke();
+  ctx.drawImage(asset_paddle, x, y, w, h);
 }
 
 //todo: replace the 'any', find the correct type for the game state
-function render(state: any, player: GamePlayer) {
+function render(state: any) {
   const gameCanvas = document.getElementById(ID) as HTMLCanvasElement;
   if (!gameCanvas) return;
 
@@ -55,25 +62,24 @@ function render(state: any, player: GamePlayer) {
 
   gameCanvas.height = state.field.h * ratio;
   gameCanvas.width = state.field.w * ratio;
-  gameCanvas.style.background = "black";
+  // gameCanvas.style.background = "black";
+  ctx.drawImage(asset_background, 0, 0, gameCanvas.width, gameCanvas.height);
 
-  drawPad(
-    { ctx, pad: state.paddleL, ratio },
-    state.playerL === player.id?.toString()
-  );
+  drawPad({ ctx, pad: state.paddleL, ratio });
 
-  drawPad(
-    { ctx, pad: state.paddleR, ratio },
-    state.playerR === player.id?.toString()
-  );
+  drawPad({ ctx, pad: state.paddleR, ratio });
 
   const ball = state.ball;
   const [x, y, r] = [ball.x, ball.y, ball.r].map((d) => d * ratio);
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fillStyle = "white";
-  ctx.fill();
+  ctx.save(); // save current transform/stack
+  ctx.translate(x, y); // move origin to ball center
+  ctx.rotate(rotation); // rotate canvas
+  ctx.drawImage(asset_ball, -r, -r, r * 2, r * 2); // draw with center at origin
+  ctx.restore(); // restore transform
+  if (state.state !== "paused" && !state.sleep) {
+    if (state.ball.dx > 0) rotation += 0.1;
+    else rotation -= 0.1;
+  }
 
   if (state.state === "paused" || state.sleep) {
     const sleep =
@@ -99,7 +105,10 @@ const GameField = (props: {
   players: GamePlayer[];
   setScores: (toSet: number[]) => void;
   isRemote?: boolean;
+  activePlayersState: [string[], (value: string[]) => void];
 }) => {
+  const [activePlayers, setActivePlayers] = props.activePlayersState;
+
   useEffect(() => {
     for (const player of props.players) {
       player.socket.onerror = (event) => console.error(event);
@@ -156,19 +165,24 @@ const GameField = (props: {
     const player = _.first(props.players);
     if (_.isEmpty(player)) return;
 
-    player.socket.onmessage = (event) => handleLogicMessage(event, player);
+    player.socket.onmessage = (event) => handleLogicMessage(event);
   }, [props.id, props.players, props.scores]);
 
-  const handleLogicMessage = (event: MessageEvent, player: GamePlayer) => {
+  const handleLogicMessage = (event: MessageEvent) => {
     try {
       const message = JSON.parse(event.data);
       const actualScores = fetchScores(message);
+      const playerIds = [message.playerL, message.playerR];
+
+      if (!_.isEqual(activePlayers, playerIds)) {
+        setActivePlayers(playerIds);
+      }
 
       if (!_.isEqual(props.scores, actualScores)) {
         props.setScores(actualScores);
       }
 
-      render(message, player);
+      render(message);
     } catch (e) {
       console.error(e);
     }
@@ -182,21 +196,36 @@ const Game = (props: {
   scores: number[];
   setScores: (toSet: number[]) => void;
   players: GamePlayer[];
-  isRemote?: boolean;
+  isRemote: boolean;
 }) => {
+  const [activePlayers, setActivePlayers] = useState<string[]>([]);
+
+  const getScoreElement = (
+    score: number,
+    player: GamePlayer,
+    side: "left" | "right"
+  ) => {
+    const isCurrentPlayer =
+      props.isRemote &&
+      player.id?.toString() === activePlayers[side === "left" ? 0 : 1];
+
+    const col = side === "left" ? "col-1" : "col-2";
+    const textColor = isCurrentPlayer ? "text-white" : "text-black";
+
+    return createElement(
+      "div",
+      {
+        class: scoreStyle + ` ${col} row-1 ${textColor}`,
+      },
+      isCurrentPlayer ? `> ${score} <` : `${score}`
+    );
+  };
+
   return createElement(
     "div",
     { class: gameContainerStyle },
-    createElement(
-      "div",
-      { class: scoreStyle + ` col-1 row-1` },
-      `${props.scores[0]}`
-    ),
-    createElement(
-      "div",
-      { class: scoreStyle + ` col-2 row-1` },
-      `${props.scores[1]}`
-    ),
+    getScoreElement(props.scores[0], _.first(props.players)!, "left"),
+    getScoreElement(props.scores[1], _.first(props.players)!, "right"),
     createElement(
       "div",
       { class: "col-1 col-span-2" },
@@ -206,6 +235,7 @@ const Game = (props: {
         setScores: props.setScores,
         players: props.players,
         isRemote: props.isRemote,
+        activePlayersState: [activePlayers, setActivePlayers],
       })
     )
   );
