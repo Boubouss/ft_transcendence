@@ -24,7 +24,10 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const FPS: 30 | 60 = 60;
 const PORT: number = 3002;
 const playerTimeout: Map<string, ReturnType<typeof setTimeout>> = new Map();
-export const gameTimeout: Map<string, ReturnType<typeof setTimeout>> = new Map();
+export const gameTimeout: Map<
+  string,
+  ReturnType<typeof setTimeout>
+> = new Map();
 
 let games = new Map<string, Game>();
 
@@ -141,7 +144,7 @@ app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
 
     games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
     games.delete(body.gameId);
-  }, 10000)
+  }, 10000);
 
   gameTimeout.set(body.gameId, timeout);
 });
