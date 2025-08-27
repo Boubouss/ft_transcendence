@@ -131,34 +131,36 @@ export async function deleteMatch(match_id: number) {
 }
 
 export async function updateMatch(match_id: number, data: MatchUpdate) {
-  data.infos.forEach(async (info) => {
-    await prisma.matchPlayers.update({
-      where: {
-        match_id_player_id: {
-          match_id: match_id,
-          player_id: info.player_id,
+  return await prisma.$transaction(async (prisma) => {
+    data.infos.forEach(async (info) => {
+      await prisma.matchPlayers.update({
+        where: {
+          match_id_player_id: {
+            match_id: match_id,
+            player_id: info.player_id,
+          },
         },
+        data: {
+          score: info.score,
+        },
+      });
+    });
+
+    return await prisma.match.update({
+      where: {
+        id: match_id,
       },
       data: {
-        score: info.score,
+        winner_id: data.winner_id,
       },
-    });
-  });
-
-  return await prisma.match.update({
-    where: {
-      id: match_id,
-    },
-    data: {
-      winner_id: data.winner_id,
-    },
-    include: {
-      round: true,
-      players: {
-        include: {
-          player: true,
+      include: {
+        round: true,
+        players: {
+          include: {
+            player: true,
+          },
         },
       },
-    },
+    });
   });
 }
