@@ -56,7 +56,17 @@ function render(state: any) {
   for (const pad of [state.paddleL, state.paddleR]) {
     const rect = [pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h];
     const [x, y, w, h] = rect.map((d) => d * ratio);
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 5);
+    ctx.clip();
     ctx.drawImage(asset_paddle, x, y, w, h);
+    ctx.restore();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "black";
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 5);
+    ctx.stroke();
   }
 
   const ball = state.ball;
