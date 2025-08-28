@@ -36,17 +36,17 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 const app = fastify({
   https: {
     key: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_KEY as string),
+      path.resolve(__dirname, process.env.HTTPS_KEY as string)
     ),
     cert: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_CERT as string),
+      path.resolve(__dirname, process.env.HTTPS_CERT as string)
     ),
   },
 });
 
 app.register(websocketPlugin);
 app.register(cors, {
-  origin: "http://localhost:5173",
+  origin: process.env.FRONT_URL,
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   preflightContinue: false,
@@ -112,7 +112,7 @@ app.register(async () => {
 
         playerTimeout.set(playerId, timeout);
       });
-    },
+    }
   );
 });
 
@@ -124,7 +124,7 @@ app.get(
     for (const [gameId, game] of games.entries())
       if (game.players.has(params.id)) return response.send({ gameId: gameId });
     response.send({ gameId: null });
-  },
+  }
 );
 
 app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
@@ -160,7 +160,7 @@ app.delete(
     }
     games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
     games.delete(body.gameId);
-  },
+  }
 );
 
 app.listen({ port: PORT }, (err) => {

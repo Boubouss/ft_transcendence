@@ -1,9 +1,8 @@
 import { API_USER_ROUTES } from "#services/data.ts";
-import type { User } from "#types/user.ts";
 import _ from "lodash";
 
-export const useAvatar = (user: User | null | undefined) => {
-  if (!user || _.isEmpty(user.avatar)) {
+export const useAvatar = (avatar: string | null | undefined) =>  {
+  if (!avatar || _.isEmpty(avatar)) {
     return "/images/avatar_1.jpg";
   }
 
@@ -11,7 +10,7 @@ export const useAvatar = (user: User | null | undefined) => {
     import.meta.env.VITE_API_USER +
     API_USER_ROUTES.DOWNLOAD_AVATAR +
     `/` +
-    user.avatar +
+    avatar +
     "?t=" +
     Date.now().toString()
   );

@@ -18,8 +18,9 @@ model User {
   name            String            @unique
   email           String            @unique
   avatar          String            @default("")
-  password        String
+  password        String           
   verify          Boolean           @default(false)
+  token           String            @default("")
   sender          User[]            @relation("FriendRequest")
   receiver        User[]            @relation("FriendRequest")
   friends         User[]            @relation("Friendship")

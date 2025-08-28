@@ -10,7 +10,7 @@ export type ConfigAuth = Configuration & {
 };
 
 export type User = {
-	id?: number;
+	id: number;
 	name: string;
 	email: string;
 	avatar: string;
@@ -40,6 +40,7 @@ export type UserUpdate = {
 export type UserAuth = {
 	id: number;
 	email: string;
+	verify: boolean;
 	password: string;
 	configuration: ConfigAuth;
 };

@@ -3,8 +3,8 @@
 cd "$(dirname "$0")"
 
 config="config.json"
-gameId="${1:-0}"
-port=3001
+gameId="${1:-100}"
+port=3002
 
 data="$(jq .gameId="${gameId}" "${config}")"
 jq <<<"${data}"

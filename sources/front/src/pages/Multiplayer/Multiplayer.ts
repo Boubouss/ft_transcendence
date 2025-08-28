@@ -17,6 +17,7 @@ import { KeysStorage } from "#types/enums.ts";
 import type { User } from "#types/user.ts";
 import * as style from "./style";
 import _ from "lodash";
+import { useContext } from "#core/hooks/useContext.ts";
 
 export type UserState = [User | null, (value: User | null) => void];
 export type CurrentLobbyIdState = [number, (value: number) => void];
@@ -39,7 +40,6 @@ const Multiplayer = () => {
   const lobbySocketRef = useRef<WebSocket | null>(null);
   const gameSocketRef = useRef<WebSocket | null>(null);
 
-  const [user, setUser] = useState<User | null>(null);
   const [lobbies, setLobbies] = useState<Map<number, Lobby>>(new Map());
   const [gameUrl, setGameUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -49,16 +49,13 @@ const Multiplayer = () => {
   const [player, setPlayer] = useState<GamePlayer | null>(null);
   const [match, setMatch] = useState<Match | null>(null);
 
-  useEffect(() => {
-    const storedUser = getStorage(sessionStorage, KeysStorage.USERTRANS);
-
-    setUser(storedUser);
-  }, []);
+  const [getContext, _set] = useContext();
+  const [user, setUser] = getContext("user") as UserState
 
   useEffect(() => {
     if (_.isEmpty(user)) return;
 
-    const configuration = getStorage(localStorage, "transcendence_conf");
+    const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
     lobbySocketRef.current = new WebSocket(
       `${import.meta.env.VITE_LOBBY_WSS}/${user.id}`,
       [configuration.token]

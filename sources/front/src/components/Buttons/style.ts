@@ -1,7 +1,7 @@
 export const btn_default = `
 flex
 p-5
-text-5xl 
+text-5xl
 border-3
 border-black
 bg-orange-400
@@ -15,7 +15,7 @@ hover:cursor-pointer
 export const btn_nav = `
 flex
 p-5
-text-5xl 
+text-5xl
 border-3
 border-black
 bg-orange-400
@@ -30,12 +30,13 @@ export const btn_modal = `
 text-white
 flex
 p-5
-text-3xl 
+text-3xl
 border-3
 border-black
 bg-orange-400
 h-fit
 w-fit
+items-center
 justify-center
 rounded-[20px]
 hover:cursor-pointer

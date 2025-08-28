@@ -6,6 +6,7 @@ import { useLanguage } from "#hooks/useLanguage.ts";
 import * as style from "./style.ts";
 import Card from "../Card";
 import _ from "lodash";
+import { useAvatar } from "#hooks/useAvatar.ts";
 
 type Props = {
   player: LobbyPlayer;
@@ -37,6 +38,8 @@ const PlayerCard = ({
 
     requestAction(lobbySocket, Action.KICK, currentLobby.id, player.id);
   };
+
+  
 
   const getEndContent = () => {
     if (typeof score !== "undefined") {
@@ -82,7 +85,7 @@ const PlayerCard = ({
       { class: "flex flex-1 gap-[10px] truncate items-center" },
       createElement("img", {
         class: style.player_card_img,
-        src: "/images/avatar_1.jpg",
+        src: useAvatar(player.avatar),
       }),
       createElement(
         "p",

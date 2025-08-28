@@ -8,6 +8,7 @@ import {
   handleAcceptFriendRequest,
   handleDeclineFriendRequest,
 } from "#sockets/Friends/request.ts";
+import { useAvatar } from "#hooks/useAvatar.ts";
 
 const FriendRequestCard = (props: {
   friend: Friend;
@@ -24,7 +25,7 @@ const FriendRequestCard = (props: {
       class: friend_card,
     },
     createElement("img", {
-      src: _.isEmpty(avatar) ? "/images/avatar_1.jpg" : avatar,
+      src: useAvatar(avatar),
       class: "h-[50px] w-[50px] rounded-[50px]",
     }),
     createElement("span", { class: "text-xl" }, name),

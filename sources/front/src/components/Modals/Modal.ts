@@ -12,7 +12,7 @@ const Modal = (
     attr?: ComponentAttr;
     attrBackground?: ComponentAttr;
   },
-  children: Component
+  ...children: Component[]
 ) => {
   let { state, setter, attr, attrBackground } = props;
 
@@ -30,7 +30,7 @@ const Modal = (
       "div",
       null,
       createElement("div", attrBackground),
-      createElement("div", attr, children)
+      createElement("div", attr, ...children)
     );
   return createElement("div", { class: `hidden` });
 };

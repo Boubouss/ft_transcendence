@@ -20,7 +20,7 @@ const FriendsContent = (props: {
 
   return createElement(
     "div",
-    { class: "flex flex-col h-full w-full p-[50px]" },
+    { class: "flex flex-col h-full w-full p-[50px] " },
     createElement(
       "div",
       { class: form_choice_container },
