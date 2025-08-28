@@ -10,7 +10,7 @@ export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
     const conf = getStorage(localStorage, "transcendence_conf");
 
     const matches: Match[] = await fetchAPI(
-        "/api/game" + API_GAME_ROUTES.MATCH + `/${conf?.id}`,
+        import.meta.env.VITE_API_GAME + API_GAME_ROUTES.MATCH + `/${conf?.id}`,
         {
             method: "GET",
             headers: { Authorization: `Bearer ` + conf?.token },
@@ -56,7 +56,9 @@ export const getTournaments = async (
     const conf = getStorage(localStorage, "transcendence_conf");
 
     const tournaments: Tournament[] = await fetchAPI(
-        "/api/game" + API_GAME_ROUTES.TOURNAMENT + `/${conf?.id}`,
+        import.meta.env.VITE_API_GAME +
+            API_GAME_ROUTES.TOURNAMENT +
+            `/${conf?.id}`,
         {
             method: "GET",
             headers: { Authorization: `Bearer ` + conf?.token },

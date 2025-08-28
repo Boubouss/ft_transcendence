@@ -6,7 +6,7 @@
 # WORKDIR /app
 
 # COPY package.json tsconfig.json ./
-# RUN pnpm i
+# RUN pnpm install
 
 # COPY src ./src
 # COPY .env ./

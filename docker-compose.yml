@@ -16,6 +16,18 @@ services:
         networks:
             - transcendence
         restart: always
+    ngrok:
+        image: ngrok/ngrok:latest
+        command: http nginx:80 --url=wildcat-tolerant-kit.ngrok-free.app
+        environment:
+            - NGROK_AUTHTOKEN=${NGROK_TOKEN}
+        ports:
+            - "4040:4040"
+        depends_on:
+            - nginx
+        networks:
+            - transcendence
+        restart: always
     front:
         image: front:user
         build: ./sources/front
@@ -24,6 +36,7 @@ services:
             - ssl-certs:/usr/src/app/ssl:ro
         env_file:
             - .env
+            - ./sources/front/.env
         networks:
             - transcendence
         restart: none

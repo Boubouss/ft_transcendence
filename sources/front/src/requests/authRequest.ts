@@ -18,11 +18,14 @@ export const handleConnexion = async (
         name: form?.get("name"),
         password: form?.get("password"),
     };
-    const user = await fetchAPI("/api/user" + API_USER_ROUTES.LOGIN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+    const user = await fetchAPI(
+        import.meta.env.VITE_API_USER + API_USER_ROUTES.LOGIN,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        }
+    );
 
     if (user) {
         const { token, ...userData } = user;
@@ -51,11 +54,14 @@ export const handleRegister = async (setter: (toSet: boolean) => void) => {
         name: form?.get("name"),
         password: form?.get("password"),
     };
-    const user = await fetchAPI("/api/user" + API_USER_ROUTES.REGISTER, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+    const user = await fetchAPI(
+        import.meta.env.VITE_API_USER + API_USER_ROUTES.REGISTER,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        }
+    );
 
     if (user) {
         setStorage(localStorage, "transcendence_conf", {
@@ -74,11 +80,14 @@ export const handle2FA = async (setter: (toSet: boolean) => void) => {
         name: user.name,
         type: "REGISTER",
     };
-    const token = await fetchAPI("/api/user" + API_USER_ROUTES.AUTH_2FA, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+    const token = await fetchAPI(
+        import.meta.env.VITE_API_USER + API_USER_ROUTES.AUTH_2FA,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        }
+    );
 
     if (token) {
         setStorage(localStorage, "transcendence_conf", {
@@ -90,9 +99,12 @@ export const handle2FA = async (setter: (toSet: boolean) => void) => {
 };
 
 export const handleGoogleSign = async () => {
-    const google = await fetchAPI("/api/user" + API_USER_ROUTES.GOOGLE, {
-        method: "GET",
-    });
+    const google = await fetchAPI(
+        import.meta.env.VITE_API_USER + API_USER_ROUTES.GOOGLE,
+        {
+            method: "GET",
+        }
+    );
 
     window.location.href = google.url;
 };
@@ -108,7 +120,9 @@ export const handleAutoConnect = async (setter: (toSet: boolean) => void) => {
         !getStorage(sessionStorage, "transcendence_user")
     ) {
         const user = await fetchAPI(
-            "/api/user" + API_USER_ROUTES.CRUD_USER + `/${configuration.id}`,
+            import.meta.env.VITE_API_USER +
+                API_USER_ROUTES.CRUD_USER +
+                `/${configuration.id}`,
             {
                 method: "GET",
                 headers: { Authorization: `Bearer ` + configuration.token },
