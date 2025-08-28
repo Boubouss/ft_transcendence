@@ -25,10 +25,10 @@ ajvFormats(ajv);
 const app = fastify({
   https: {
     key: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_KEY as string)
+      path.resolve(__dirname, process.env.HTTPS_KEY as string),
     ),
     cert: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_CERT as string)
+      path.resolve(__dirname, process.env.HTTPS_CERT as string),
     ),
   },
 });
@@ -36,7 +36,7 @@ const app = fastify({
 app.register(fastifyStatic, {
   root: path.join(path.dirname(__dirname), "storage"),
   prefix: "/download/",
-  setHeaders: (res, path, stat) => {
+  setHeaders: (res, _path, _stat) => {
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
@@ -68,8 +68,7 @@ app.setErrorHandler(errorHandler);
 
 const start = async () => {
   try {
-    await app.listen({ port: 3000 });
-    console.log("Server is running on ", process.env.API_USER);
+    await app.listen({ port: 3000, host: "0.0.0.0" });
   } catch (err) {
     app.log.error(err);
     console.log(err);

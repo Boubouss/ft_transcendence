@@ -22,8 +22,8 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 //todo: remove the placeholders and constants
 const FPS: 30 | 60 = 60;
-const PORT: number = 3002;
 const playerTimeout: Map<string, ReturnType<typeof setTimeout>> = new Map();
+
 export const gameTimeout: Map<
   string,
   ReturnType<typeof setTimeout>
@@ -36,10 +36,10 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 const app = fastify({
   https: {
     key: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_KEY as string)
+      path.resolve(__dirname, process.env.HTTPS_KEY as string),
     ),
     cert: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_CERT as string)
+      path.resolve(__dirname, process.env.HTTPS_CERT as string),
     ),
   },
 });
@@ -112,7 +112,7 @@ app.register(async () => {
 
         playerTimeout.set(playerId, timeout);
       });
-    }
+    },
   );
 });
 
@@ -124,7 +124,7 @@ app.get(
     for (const [gameId, game] of games.entries())
       if (game.players.has(params.id)) return response.send({ gameId: gameId });
     response.send({ gameId: null });
-  }
+  },
 );
 
 app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
@@ -160,15 +160,14 @@ app.delete(
     }
     games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
     games.delete(body.gameId);
-  }
+  },
 );
 
-app.listen({ port: PORT }, (err) => {
+app.listen({ port: 3000, host: "0.0.0.0" }, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);
   }
-  console.log(`Server listening on port: ${PORT}`);
 });
 
 function isLocalGameOver(game: Game, gameId: string) {

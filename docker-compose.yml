@@ -1,0 +1,96 @@
+services:
+  nginx:
+    image: nginx:user
+    build: ./nginx
+    ports:
+      - "8080:80"
+      - "3443:443"
+    volumes:
+      - frontend:/usr/share/nginx/html:ro
+      - ssl-certs:/etc/nginx/ssl:ro
+    depends_on:
+      - front
+      - user
+      - game
+      - logic
+    networks:
+      - transcendence
+    restart: always
+  ngrok:
+    image: ngrok/ngrok:latest
+    command: http nginx:80 --url=${FRONT_DOMAIN}
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_TOKEN}
+    ports:
+      - "4040:4040"
+    depends_on:
+      - nginx
+    networks:
+      - transcendence
+    restart: always
+  front:
+    image: front:user
+    build: ./sources/front
+    volumes:
+      - frontend:/usr/src/app
+      - ssl-certs:/usr/src/app/ssl:ro
+    env_file:
+      - .env
+      - ./sources/front/.env
+    networks:
+      - transcendence
+    restart: none
+  user:
+    image: user:user
+    build: ./sources/user
+    ports:
+      - "3000:3000"
+    volumes:
+      - ssl-certs:/usr/src/app/ssl:ro
+      - user-db:/usr/src/app/prisma
+    env_file:
+      - .env
+      - ./sources/user/.env
+    networks:
+      - transcendence
+    restart: unless-stopped
+  game:
+    image: game:user
+    build: ./sources/game
+    expose:
+      - "3000"
+    volumes:
+      - ssl-certs:/usr/src/app/ssl:ro
+      - game-db:/usr/src/app/prisma
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    restart: unless-stopped
+  logic:
+    image: logic:user
+    build: ./sources/logic
+    expose:
+      - "3000"
+    volumes:
+      - ssl-certs:/usr/src/app/ssl:ro
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    restart: unless-stopped
+
+networks:
+  transcendence:
+    name: transcendence
+
+volumes:
+  ssl-certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./ssl
+  frontend:
+  game-db:
+  user-db:
