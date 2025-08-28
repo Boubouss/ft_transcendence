@@ -37,10 +37,12 @@ FROM node:24-alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY . .
+
 RUN npm install
 
-COPY . .
 RUN npx prisma generate
 
-CMD ["npm", "run", "dev"]
+RUN npx prisma migrate dev
+
+CMD ["npm", "run", "start"]
