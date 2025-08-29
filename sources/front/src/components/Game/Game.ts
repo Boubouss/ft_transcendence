@@ -188,7 +188,6 @@ const Game = (props: {
   const [activePlayers, setActivePlayers] = useState<string[]>([]);
 
   if (props.attr?.class === "hidden") {
-    console.log("early return");
     return null;
   }
   const getScoreElement = (score: number, player: GamePlayer, side: 0 | 1) => {
