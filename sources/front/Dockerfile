@@ -3,7 +3,7 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # COPY package.json tsconfig.json ./
-COPY ../sources/front .
+COPY . .
 
 RUN npm i
 

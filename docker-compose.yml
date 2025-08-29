@@ -1,7 +1,7 @@
 services:
   nginx:
     image: nginx:user
-    build: ./nginx
+    build: ./sources/front
     ports:
       - "8080:80"
       - "3443:443"

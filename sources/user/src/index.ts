@@ -23,37 +23,33 @@ export const ajv = new Ajv();
 ajvFormats(ajv);
 
 const app = fastify({
-  https: {
-    key: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_KEY as string)
-    ),
-    cert: fs.readFileSync(
-      path.resolve(__dirname, process.env.HTTPS_CERT as string)
-    ),
-  },
+	https: {
+		key: fs.readFileSync(process.env.HTTPS_KEY as string),
+		cert: fs.readFileSync(process.env.HTTPS_CERT as string),
+	},
 });
 
 app.register(fastifyStatic, {
-  root: path.join(path.dirname(__dirname), "storage"),
-  prefix: "/download/",
-  setHeaders: (res, path, stat) => {
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-  },
+	root: path.join(path.dirname(__dirname), "storage"),
+	prefix: "/download/",
+	setHeaders: (res, path, stat) => {
+		res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		res.setHeader("Pragma", "no-cache");
+		res.setHeader("Expires", "0");
+	},
 });
 
 app.register(cors, {
-  origin: process.env.FRONT_URL,
-  optionsSuccessStatus: 200,
-  methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
-  preflightContinue: false,
+	origin: process.env.FRONT_URL,
+	optionsSuccessStatus: 200,
+	methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+	preflightContinue: false,
 });
 
 app.register(fastifyWebsocket);
 
 app.register(fastifyJwt, {
-  secret: process.env.JWT_KEY as string,
+	secret: process.env.JWT_KEY as string,
 });
 
 app.register(fastifyMultipart);
@@ -67,14 +63,14 @@ app.register(socket, { prefix: "/socket" });
 app.setErrorHandler(errorHandler);
 
 const start = async () => {
-  try {
-    await app.listen({ port: 3000 });
-    console.log("Server is running on ", process.env.API_USER);
-  } catch (err) {
-    app.log.error(err);
-    console.log(err);
-    process.exit(1);
-  }
+	try {
+		await app.listen({ port: 3000 });
+		console.log("Server is running on ", process.env.API_USER);
+	} catch (err) {
+		app.log.error(err);
+		console.log(err);
+		process.exit(1);
+	}
 };
 
 start();
