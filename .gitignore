@@ -1,3 +1,4 @@
 dev.db
 dev.db-journal
 .DS_Store
+.env
