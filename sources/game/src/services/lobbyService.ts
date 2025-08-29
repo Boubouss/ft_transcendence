@@ -41,6 +41,14 @@ export const whisperData = (player_ids: number[], data: string) => {
   });
 };
 
+export const findPlayerLobby = (playerId: number) => {
+  if (playerId === -1) return undefined;
+
+  return lobbies.find((lobby) => {
+    return lobby.players.find((p) => p.id === playerId);
+  });
+};
+
 export const getLobbyPlayer = async (
   user_id: string,
   socket: WebSocket,
@@ -80,6 +88,16 @@ export const getLobbyPlayer = async (
 };
 
 const joinLobby = (lobby: Lobby, player: LobbyPlayer) => {
+  if (!lobby.joinable) {
+    return whisperData(
+      [player.id],
+      JSON.stringify({
+        event: ClientEvent.ERROR,
+        data: { message: "not_joinable" },
+      }),
+    );
+  }
+
   if (lobby.player_limit <= lobby.players.length) {
     return whisperData(
       [player.id],
@@ -90,9 +108,7 @@ const joinLobby = (lobby: Lobby, player: LobbyPlayer) => {
     );
   }
 
-  const playerLobby = lobbies.find((l) => {
-    return l.players.map((p) => p.id).includes(player.id);
-  });
+  const playerLobby = findPlayerLobby(player.id);
 
   if (!_.isEmpty(playerLobby)) {
     return whisperData(
@@ -330,6 +346,7 @@ export const createLobby = (player: LobbyPlayer, data: LobbyCreate) => {
     is_tournament: data.is_tournament,
     players: [player],
     ready_ids: [],
+    joinable: true,
   };
 
   lobbies.push(lobby);

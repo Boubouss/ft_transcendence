@@ -77,6 +77,7 @@
     "pow_player_limit": "La limite de joueurs doit être une puissance de 2 pour les tournois",
     "kicked": "Vous avez été expulsé",
     "match_result": "Résultat du match",
+    "tournament_result": "Résultat du tournoi",
     "win_message": "Vous êtes le gagnant, félicitations !",
     "game_size": "Nombre de joueurs",
     "round": "Tour",
@@ -91,6 +92,8 @@
     "empty_form": "Erreur champ vide : ",
     "error_account": "Une erreur est survenue, veuillez essayer plus tard",
     "error_user_not_found": "Utilisateur introuvable !",
+    "waiting_opponents": "En attente d'adversaires",
+    "not_joinable": "Ce lobby n'est plus joignable",
     "start_touch": "Appuyez sur une touche pour lancer !"
   },
   "EN": {
@@ -171,6 +174,7 @@
     "pow_player_limit": "Player limit must be a power of 2 for tournaments",
     "kicked": "You got kicked",
     "match_result": "Match result",
+    "tournament_result": "Tournament result",
     "win_message": "You are the winner, congrats !",
     "game_size": "Game size",
     "round": "Round",
@@ -185,6 +189,8 @@
     "empty_form": "Empty field error : ",
     "error_account": "An account error occurred, please try again later",
     "error_user_not_found": "User not found !",
+    "waiting_opponents": "Waiting for opponents",
+    "not_joinable": "This lobby is closed",
     "start_touch": "Press any key to start !"
   },
   "ES": {
@@ -264,6 +270,7 @@
     "pow_player_limit": "El límite de jugadores debe ser una potencia de 2 para los torneos",
     "kicked": "Has sido expulsado",
     "match_result": "Resultado del partido",
+    "tournament_result": "Resultado del torneo",
     "win_message": "¡Eres el ganador, felicidades!",
     "game_size": "Número de jugadores",
     "round": "Turno",
@@ -279,6 +286,8 @@
     "empty_form": "Error campo vacío : ",
     "error_account": "Se ha producido un error en la cuenta. Inténtelo de nuevo más tarde.",
     "error_user_not_found": "¡Usuario no encontrado!",
+    "waiting_opponents": "Esperando a los oponentes",
+    "not_joinable": "Este vestíbulo está cerrado",
     "start_touch": "Pulse cualquier tecla para iniciar !"
   }
 }

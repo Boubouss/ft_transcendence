@@ -33,6 +33,7 @@ model MatchPlayers {
 
 model Match {
   id         Int            @id @default(autoincrement())
+  score_max  Int
   players    MatchPlayers[]
   winner     Player?        @relation(fields: [winner_id], references: [id])
   winner_id  Int?

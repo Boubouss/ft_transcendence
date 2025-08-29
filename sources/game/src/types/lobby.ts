@@ -9,6 +9,7 @@ export type Lobby = {
   is_tournament: boolean;
   players: LobbyPlayer[];
   ready_ids: number[];
+  joinable: boolean;
 };
 
 export type Instance = {

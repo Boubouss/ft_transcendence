@@ -1,4 +1,5 @@
-export const lobby_card = `
+export const lobby_card = (isJoinable: boolean) => `
+    ${isJoinable ? "block" : "hidden"}
     flex
     w-full
     h-[115px]

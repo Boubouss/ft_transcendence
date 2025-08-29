@@ -18,8 +18,7 @@ export const getMatches = async (setMatches: (toSet: Match[]) => void) => {
     }
   );
 
-
-  if (matches) setMatches(matches.data);
+  if (matches) setMatches(matches);
 };
 
 export const getPlayers = async (

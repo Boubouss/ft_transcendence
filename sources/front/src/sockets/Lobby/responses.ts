@@ -10,6 +10,7 @@ import type {
   LobbiesState,
   MatchState,
   NextOpponentsState,
+  TournamentWonState,
   UserState,
 } from "#pages/Multiplayer/Multiplayer.ts";
 
@@ -21,6 +22,7 @@ export type StatesRecord = Record<
   | CurrentLobbyIdState
   | NextOpponentsState
   | MatchState
+  | TournamentWonState
 >;
 
 export type LobbyResponseHandlers = Record<
@@ -159,6 +161,14 @@ const gameResult = (
   setMatch(data.match);
 };
 
+const handleTournamentWin = (_data: null, states: StatesRecord) => {
+  const [_, setTournamentWon] = states[
+    SocketLobbyState.TOURNAMENT_WON_STATE
+  ] as TournamentWonState;
+
+  setTournamentWon(true);
+};
+
 const kickedFromLobby = (_data: null, _states: StatesRecord) => {
   alert(useLanguage("kicked"));
 };
@@ -174,6 +184,7 @@ export const lobbyResponseHandlers: LobbyResponseHandlers = {
   DELETE_LOBBY: deleteLobby,
   GAME_CREATED: launchGame,
   GAME_RESULT: gameResult,
+  TOURNAMENT_WON: handleTournamentWin,
   WAITING_OPPONENTS: waitingOpponents,
   TRANSFER_OWNER: transferLobbyOwnership,
   KICKED: kickedFromLobby,

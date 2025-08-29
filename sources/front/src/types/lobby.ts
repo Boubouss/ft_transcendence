@@ -10,6 +10,7 @@ export enum LobbyClientEvent {
   TRANSFER_OWNER = "TRANSFER_OWNER",
   GAME_CREATED = "GAME_CREATED",
   GAME_RESULT = "GAME_RESULT",
+  TOURNAMENT_WON = "TOURNAMENT_WON",
   WAITING_OPPONENTS = "WAITING_OPPONENTS",
 }
 
@@ -32,6 +33,7 @@ export enum SocketLobbyState {
   GAME_URL_STATE = "GAME_URL_STATE",
   CURRENT_LOBBY_ID_STATE = "CURRENT_LOBBY_ID_STATE",
   NEXT_OPPONENTS_STATE = "NEXT_OPPONENTS_STATE",
+  TOURNAMENT_WON_STATE = "TOURNAMENT_WON_STATE",
   MATCH_STATE = "MATCH_STATE",
 }
 
@@ -49,6 +51,7 @@ export type Lobby = {
   is_tournament: boolean;
   players: LobbyPlayer[];
   ready_ids: number[];
+  joinable: boolean;
 };
 
 export type LobbyCreate = {
