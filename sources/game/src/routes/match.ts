@@ -35,7 +35,7 @@ const match: FastifyPluginAsync = async (fastify, opts) => {
     async (request, reply) => {
       const data = request.body as MatchCreate;
       const players = await findOrCreatePlayers(data.user_ids);
-      const match = await createMatch(players);
+      const match = await createMatch(players, 5);
 
       return reply.send(match);
     },

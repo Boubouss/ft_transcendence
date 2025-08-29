@@ -21,23 +21,25 @@ const prisma: PrismaClient = new PrismaClient();
 export const initGameInstance = async (lobby: Lobby) => {
   try {
     const players = await findOrCreatePlayers(lobby.players.map((p) => p.id));
-    const match = await createMatch(players);
+    const match = await createMatch(players, lobby.score_max);
 
-    sendMatchInfo(lobby, match, match.players);
+    sendMatchInfo(match, match.players);
   } catch (err) {
     emitLobbyData(lobby, `error: ${JSON.stringify(err)}`);
   }
 };
 
 export const sendMatchInfo = async (
-  lobby: Lobby,
   match: Match,
-  players: MatchPlayers[],
+  players: MatchPlayers[]
 ) => {
+  console.log(match);
+  console.log(players);
+
   const requestData = {
     gameId: match.id.toString(),
     playersId: players.map((p) => p.player_id.toString()),
-    scoreMax: lobby.score_max,
+    scoreMax: match.score_max,
   };
 
   await axios
@@ -47,7 +49,7 @@ export const sendMatchInfo = async (
   for (const player of players) {
     playerInstance.set(player.player_id, {
       id: match.id,
-      type: "match",
+      type: "match"
     });
   }
 
@@ -58,7 +60,7 @@ export const sendMatchInfo = async (
       data: {
         gameId: match.id,
       },
-    }),
+    })
   );
 };
 
@@ -77,13 +79,14 @@ export async function getPlayerMatches(playerId: number) {
   });
 }
 
-export async function createMatch(players: Player[]) {
+export async function createMatch(players: Player[], score_max: number) {
   const data = players.map((p) => {
     return { player_id: p.id };
   });
 
   return await prisma.match.create({
     data: {
+      score_max,
       players: {
         createMany: {
           data,
@@ -99,11 +102,13 @@ export async function createMatch(players: Player[]) {
 export async function matchDefaultWin(
   winner: TournamentPlayer,
   nextRound: Round,
+  scoreMax: number
 ) {
   if (_.isEmpty(winner)) return;
 
   return await prisma.match.create({
     data: {
+      score_max: scoreMax,
       round_id: nextRound.id,
       winner_id: winner.id,
       players: {

@@ -5,6 +5,10 @@ export function handleSocket<E extends string, S>(
 ) {
   const message = JSON.parse(e.data);
   const { event, data }: { event: E; data: {} } = message;
+
+  console.log(event);
+  console.log(data);
+
   if (!handlers[event]) errorSocket();
   else handlers[event](data, states);
 }

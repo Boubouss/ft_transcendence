@@ -6,6 +6,7 @@ export type TournamentPlayer = {
 
 export type Tournament = {
 	id: number;
+	scoreMax: number;
 	players: TournamentPlayer[];
 }
 
@@ -14,6 +15,7 @@ export type TournamentCreate = {
 };
 
 export type MatchQuery = {
+	score_max: number,
 	players: { create: { player_id: number }[] };
 };
 

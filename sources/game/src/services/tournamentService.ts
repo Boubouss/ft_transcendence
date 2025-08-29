@@ -17,7 +17,7 @@ import { findOrCreateRound } from "./roundServices";
 
 const prisma: PrismaClient = new PrismaClient();
 
-const generateTournamentQuery = (players: Player[]) => {
+const generateTournamentQuery = (players: Player[], scoreMax: number) => {
   const matchCount = players.length / 2;
   const tournament: TournamentQuery = { rounds: { create: [] } };
 
@@ -28,7 +28,7 @@ const generateTournamentQuery = (players: Player[]) => {
 
   for (let i = 0; i < matchCount; i++) {
     const pos = i * 2;
-    const match: MatchQuery = { players: { create: [] } };
+    const match: MatchQuery = { score_max: scoreMax, players: { create: [] } };
 
     match.players.create = players.slice(pos, pos + 2).map((p) => {
       return { player_id: p.id };
@@ -49,7 +49,7 @@ export const initTournament = async (lobby: Lobby) => {
     }
 
     const dbPlayers = await findOrCreatePlayers(lobby.players.map((p) => p.id));
-    const tournament = await createTournament(dbPlayers);
+    const tournament = await createTournament(dbPlayers, lobby.score_max);
 
     const firstRound = _.first(tournament.rounds);
     if (_.isEmpty(firstRound)) throw new Error("First round wasn't found.");
@@ -66,6 +66,7 @@ export const initTournament = async (lobby: Lobby) => {
 
     tournaments.set(tournament.id, {
       id: tournament.id,
+      scoreMax: lobby.score_max,
       players: tournamentPlayer,
     });
   } catch (err) {
@@ -104,8 +105,8 @@ export async function getPlayerTournaments(playerId: number) {
   });
 }
 
-export async function createTournament(players: Player[]) {
-  const tournament = generateTournamentQuery(players);
+export async function createTournament(players: Player[], scoreMax:number) {
+  const tournament = generateTournamentQuery(players, scoreMax);
 
   return await prisma.tournament.create({
     data: tournament,
@@ -125,7 +126,7 @@ export async function createTournament(players: Player[]) {
 
 export async function sendNextOpponents(
   playerId: number,
-  tournamentId: number,
+  tournamentId: number
 ) {
   const tournament = tournaments.get(tournamentId);
   if (_.isEmpty(tournament)) return;
@@ -155,7 +156,7 @@ export async function sendNextOpponents(
       data: {
         opponents: players.filter((p) => opponentIds.includes(p.id)),
       },
-    }),
+    })
   );
 }
 
@@ -175,9 +176,9 @@ export async function handleTournamentLeave(player: LobbyPlayer) {
         ) {
           const nextRound = await findOrCreateRound(
             tournament.id,
-            nextOpponent.currentDepth,
+            nextOpponent.currentDepth
           );
-          const match = await matchDefaultWin(tournamentPlayer, nextRound);
+          const match = await matchDefaultWin(tournamentPlayer, nextRound, tournament.scoreMax);
           if (_.isEmpty(match)) return;
 
           handleTournamentMatch(match, nextRound);
@@ -192,7 +193,7 @@ export async function handleTournamentLeave(player: LobbyPlayer) {
 export async function handleTournamentMatch(
   match: Match,
   matchRound: Round,
-  looser?: MatchPlayers,
+  looser?: MatchPlayers
 ) {
   if (matchRound.depth <= 1) {
     tournaments.delete(matchRound.tournament_id);
@@ -202,14 +203,14 @@ export async function handleTournamentMatch(
   if (_.isEmpty(tournament)) return;
 
   const winnerIndex = tournament.players.findIndex(
-    (p) => !_.isEmpty(p) && p.id === match.winner_id,
+    (p) => !_.isEmpty(p) && p.id === match.winner_id
   );
   const winner = tournament.players[winnerIndex];
   if (_.isEmpty(winner)) return;
 
   if (!_.isEmpty(looser)) {
     const prevOpponentIndex = tournament.players.findIndex(
-      (p) => !_.isEmpty(p) && p.id === looser.player_id,
+      (p) => !_.isEmpty(p) && p.id === looser.player_id
     );
 
     tournament.players[prevOpponentIndex] = null;
@@ -217,7 +218,7 @@ export async function handleTournamentMatch(
 
   const nextRound = await findOrCreateRound(
     matchRound.tournament_id,
-    matchRound.depth - 1,
+    matchRound.depth - 1
   );
 
   winner.currentDepth = nextRound.depth;
@@ -227,17 +228,18 @@ export async function handleTournamentMatch(
   const pos = winnerIndex - (winnerIndex % interval);
   const opponentPool = tournament.players.slice(pos, pos + interval);
   const nextOpponent = opponentPool.find(
-    (p) => !_.isEmpty(p) && p.id !== match.winner_id,
+    (p) => !_.isEmpty(p) && p.id !== match.winner_id
   );
 
   if (_.isEmpty(nextOpponent)) {
-    const match = await matchDefaultWin(winner, nextRound);
-    if (_.isEmpty(match)) return;
+    const nextMatch = await matchDefaultWin(winner, nextRound, match.score_max);
+    if (_.isEmpty(nextMatch)) return;
 
-    handleTournamentMatch(match, nextRound);
+    handleTournamentMatch(nextMatch, nextRound);
   } else if (nextOpponent.currentDepth === nextRound.depth) {
-    const match = await prisma.match.create({
+    const nextMatch = await prisma.match.create({
       data: {
+        score_max: match.score_max,
         round_id: nextRound.id,
         players: {
           createMany: {
@@ -250,7 +252,7 @@ export async function handleTournamentMatch(
       },
     });
 
-    sendMatchInfo(match, match.players);
+    sendMatchInfo(nextMatch, nextMatch.players);
   } else if (nextOpponent.currentDepth !== nextRound.depth) {
     const playerSocket = sockets.get(winner.id);
     if (_.isEmpty(playerSocket)) return;
@@ -270,7 +272,7 @@ export async function handleTournamentMatch(
         data: {
           opponents: players.filter((p) => opponentIds.includes(p.id)),
         },
-      }),
+      })
     );
   }
 }

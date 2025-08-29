@@ -19,7 +19,7 @@ const tournament: FastifyPluginAsync = async (fastify, opts) => {
 		}
 
 		const players = await findOrCreatePlayers(data.user_ids);
-		const tournament = await createTournament(players);
+		const tournament = await createTournament(players, 5);
 
 		return reply.send(tournament);
 	});

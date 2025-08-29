@@ -21,7 +21,7 @@ const LobbyInfos = ({
   currentLobby,
   lobbySocket,
   handleLeave,
-}: Props) => {
+}: Props) => {  
   const isUserAdmin = currentLobby.id === user.id;
   const isUserReady = currentLobby.ready_ids.includes(user.id as number);
   const isAllReady = currentLobby.ready_ids.length >= currentLobby.player_limit;
