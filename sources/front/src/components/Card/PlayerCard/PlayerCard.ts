@@ -83,7 +83,7 @@ const PlayerCard = ({
       { class: "flex flex-1 gap-[10px] truncate items-center" },
       createElement("img", {
         class: style.player_card_img,
-        src: useAvatar(player.avatar),
+        src: useAvatar(player.avatar, player.updated_at),
       }),
       createElement(
         "p",

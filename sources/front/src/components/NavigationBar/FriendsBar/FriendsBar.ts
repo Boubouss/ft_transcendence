@@ -1,8 +1,7 @@
 import Button from "#components/Buttons/Button.ts";
-import { btn_default } from "#components/Buttons/style.ts";
 import FriendsContent from "#components/Friends/FriendsContent/FriendsContent.ts";
 import Modal from "#components/Modals/Modal.ts";
-import { navigateTo, useState } from "#core/framework.ts";
+import { useState } from "#core/framework.ts";
 import { createElement } from "#core/render.ts";
 import type { Friendship } from "#types/user.ts";
 

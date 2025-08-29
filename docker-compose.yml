@@ -1,0 +1,80 @@
+services:
+  nginx:
+    image: nginx:user
+    container_name: nginx
+    build: ./sources/front
+    ports:
+      - "3443:443"
+    volumes:
+      - ssl-certs:/etc/nginx/ssl:ro
+    env_file:
+      - .env
+    depends_on:
+      - user
+      - game
+      - logic
+    networks:
+      - transcendence
+    restart: always
+  user:
+    image: user:user
+    container_name: user
+    build: ./sources/user
+    expose:
+      - "3000"
+    volumes:
+      - ssl-certs:/usr/src/app/ssl:ro
+      - user-db:/usr/src/app/prisma
+      - storage:/usr/src/app/storage
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    restart: unless-stopped
+  game:
+    image: game:user
+    container_name: game
+    build: ./sources/game
+    expose:
+      - "3001"
+    volumes:
+      - ssl-certs:/usr/src/app/ssl:ro
+      - game-db:/usr/src/app/prisma
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    restart: unless-stopped
+  logic:
+    image: logic:user
+    container_name: logic
+    build: ./sources/logic
+    expose:
+      - "3002"
+    volumes:
+      - ssl-certs:/usr/src/app/ssl:ro
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    restart: unless-stopped
+
+networks:
+  transcendence:
+    name: transcendence
+
+volumes:
+  ssl-certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./ssl
+  storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./sources/user/storage
+  game-db:
+  user-db:

@@ -2,6 +2,7 @@ export type Friend = {
   id: number;
   name: string;
   avatar: string;
+  updated_at: string;
 };
 
 export type Friendship = {
@@ -17,6 +18,7 @@ export type User = {
   email: string;
   avatar: string;
   password?: string;
+  updated_at: string;
   configuration: Configuration;
 };
 

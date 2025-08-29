@@ -42,6 +42,7 @@ export async function getUser(
 			name: true,
 			email: true,
 			avatar: true,
+			updated_at: true,
 			configuration: {
 				select: {
 					id: true,
@@ -66,6 +67,7 @@ export async function createUser(userData: UserCreate) {
 				name: true,
 				email: true,
 				avatar: true,
+				updated_at: true,
 			},
 		});
 
@@ -101,6 +103,7 @@ export async function updateUser(id: number, data: UserUpdate) {
 				name: true,
 				email: true,
 				avatar: true,
+				updated_at: true,
 			},
 		});
 
@@ -192,6 +195,7 @@ export async function getPlayers(ids: number[]) {
 			id: true,
 			name: true,
 			avatar: true,
+			updated_at: true,
 		},
 	});
 }

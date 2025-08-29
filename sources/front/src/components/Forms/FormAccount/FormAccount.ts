@@ -6,8 +6,7 @@ import { createElement } from "#core/render.ts";
 import { useForm } from "#hooks/useForm.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import { handleEditUser } from "#requests/userRequest.ts";
-import { getStorage } from "#services/data.ts";
-import { Form_ID, KeysStorage } from "#types/enums.ts";
+import { Form_ID } from "#types/enums.ts";
 import { useAvatar } from "#hooks/useAvatar.ts";
 import _ from "lodash";
 import Form from "../Form";
@@ -33,11 +32,9 @@ const FormAccount = (
   setShowMoral: (toSet: boolean) => void,
   setError: (toSet: string) => void
 ) => {
-
   const [isEditing, setEditing] = useState(false);
   const [isView, setIsView] = useState(false);
   const [currentPassword, setcurrentPassword] = useState("");
-
 
   const [getContext, _set] = useContext();
   const [user, _setUser] = getContext("user") as UserState;
@@ -84,7 +81,7 @@ const FormAccount = (
               name: "password",
               placeholder: useLanguage("pw"),
               pattern:
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
               minlength: "8",
               value: isEditing ? currentPassword : "            ",
               class: input_account,
@@ -140,7 +137,7 @@ const FormAccount = (
           },
         }),
         createElement("img", {
-          src: useAvatar(user?.avatar),
+          src: useAvatar(user?.avatar, user?.updated_at),
           class: avatar_img_class,
         })
       )

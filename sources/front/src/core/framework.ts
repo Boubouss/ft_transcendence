@@ -37,7 +37,7 @@ type Self = {
   children: Component[];
 };
 
-export type Component = string | false | null | undefined | Self;
+export type Component = string | false | null | undefined | Self | void;
 
 export {
   render,

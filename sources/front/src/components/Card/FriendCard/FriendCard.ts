@@ -15,13 +15,13 @@ const FriendCard = (props: {
   };
 }) => {
   const { state, friend: target } = props;
-  const { name, avatar, active } = props.friend;
+  const { name, avatar, active, updated_at } = props.friend;
   return Card(
     {
       class: friend_card + (active ? friend_card_active : friend_card_inactive),
     },
     createElement("img", {
-      src: useAvatar(avatar),
+      src: useAvatar(avatar, updated_at),
       class: "h-[50px] w-[50px] rounded-[50px]",
     }),
     createElement("span", { class: "text-xl" }, name),

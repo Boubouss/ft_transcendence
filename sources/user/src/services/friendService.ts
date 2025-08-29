@@ -4,7 +4,7 @@ import { FriendShip } from "../types/types";
 const prisma: PrismaClient = new PrismaClient();
 
 export async function getUserFriends(id: number) {
-	return await prisma.user.findUnique({
+	const result = prisma.user.findUnique({
 		where: { id },
 		select: {
 			friends: {
@@ -12,10 +12,13 @@ export async function getUserFriends(id: number) {
 					id: true,
 					name: true,
 					avatar: true,
+					updated_at: true,
 				},
 			},
 		},
 	});
+
+	return [...result];
 }
 
 export async function getUserFriendRequests(id: number) {
@@ -27,6 +30,7 @@ export async function getUserFriendRequests(id: number) {
 					id: true,
 					name: true,
 					avatar: true,
+					updated_at: true,
 				},
 			},
 			sender: {
@@ -34,6 +38,7 @@ export async function getUserFriendRequests(id: number) {
 					id: true,
 					name: true,
 					avatar: true,
+					updated_at: true,
 				},
 			},
 		},
@@ -46,7 +51,7 @@ export async function getFriendShip(id: number, users: string[]) {
 		const requests = await getUserFriendRequests(id);
 		const friendShip: FriendShip = {
 			online: [],
-			offline: friends?.friends ?? [],
+			offline: friends ?? [],
 			requests: requests?.receiver ?? [],
 			sent: requests?.sender ?? [],
 		};
@@ -81,6 +86,7 @@ export async function createFriendRequest(
 				id: true,
 				name: true,
 				avatar: true,
+				updated_at: true,
 			},
 		});
 
@@ -117,6 +123,7 @@ export async function acceptFriendRequest(
 				id: true,
 				name: true,
 				avatar: true,
+				updated_at: true,
 			},
 		});
 
@@ -153,6 +160,7 @@ export async function declineFriendRequest(
 				id: true,
 				name: true,
 				avatar: true,
+				updated_at: true,
 			},
 		});
 
@@ -189,6 +197,7 @@ export async function deleteFriend(
 				id: true,
 				name: true,
 				avatar: true,
+				updated_at: true,
 			},
 		});
 

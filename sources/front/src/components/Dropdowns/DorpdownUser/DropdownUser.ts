@@ -26,7 +26,6 @@ const DropdownUser = (props: {
 }) => {
   const [getContext, _set] = useContext();
   const [user, _setUser] = getContext("user") as UserState;
-  
 
   let { attr, attrContent } = props;
 
@@ -43,7 +42,7 @@ const DropdownUser = (props: {
           "span",
           { class: btn_user },
           createElement("img", {
-            src: useAvatar(user?.avatar),
+            src: useAvatar(user?.avatar, user?.updated_at),
             class: dropdown_user_img,
           }),
           `${getStorage(sessionStorage, KeysStorage.USERTRANS)?.name}`

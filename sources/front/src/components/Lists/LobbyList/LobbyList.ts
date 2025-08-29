@@ -46,23 +46,23 @@ const LobbyList = ({ user, lobbies, showModalState, lobbySocket }: Props) => {
     createElement(
       "div",
       { class: "relative w-full h-full" },
-      !_.isEmpty(lobbies)
+      !_.isEmpty([...lobbies.values()].filter((l) => l.joinable))
         ? List(
-          { attr: { class: style.lobby_list_container } },
-          LobbyCard,
-          Array.from(lobbies).map(([_, lobby]) => {
-            return { lobby, handleJoinLobby };
-          })
-        )
-        : createElement(
-          "div",
-          { class: style.lobby_list_container },
-          createElement(
-            "p",
-            { class: "m-auto text-3xl" },
-            useLanguage("no_lobby")
+            { attr: { class: style.lobby_list_container } },
+            LobbyCard,
+            Array.from(lobbies).map(([_, lobby]) => {
+              return { lobby, handleJoinLobby };
+            })
           )
-        )
+        : createElement(
+            "div",
+            { class: style.lobby_list_container },
+            createElement(
+              "p",
+              { class: "m-auto text-3xl" },
+              useLanguage("no_lobby")
+            )
+          )
     )
   );
 };

@@ -1,7 +1,7 @@
 export const home_background = `
     w-full
     h-full
-    bg-[url('images/main_background.jpg')]
+    bg-[url('/images/main_background.jpg')]
     bg-cover bg-center
     bg-[length:150%_180%]
     flex

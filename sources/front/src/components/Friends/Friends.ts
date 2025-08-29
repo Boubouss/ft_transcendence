@@ -21,35 +21,29 @@ const Friends = (children: (props?: any) => Component) => {
   const ref = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    if (_.isEmpty(user)) 
-    {
+    if (_.isEmpty(user)) {
       if (ref.current) ref.current.close();
       return;
     }
 
-    ref.current = new WebSocket(
-      `${import.meta.env.VITE_USER_WSS}/${user.id}`,
-      [configuration?.token]
-    );
-
+    ref.current = new WebSocket(`${import.meta.env.VITE_USER_WSS}/${user.id}`, [
+      configuration?.token,
+    ]);
   }, [user]);
 
   useEffect(() => {
     if (!ref.current) return;
 
     ref.current.onmessage = (event: MessageEvent) =>
-      handleSocket<UserServerEvent, FriendsStates>(
-        event,
-        friendHandlers,
-        { FRIENDSHIP: [friends, setFriends] }
-      );
+      handleSocket<UserServerEvent, FriendsStates>(event, friendHandlers, {
+        FRIENDSHIP: [friends, setFriends],
+      });
 
     return () => {
-      if (!ref.current) return ;
+      if (!ref.current) return;
       ref.current.close();
     };
-
-  }, [user, ref])
+  }, [user, ref]);
 
   return createElement(
     "template",

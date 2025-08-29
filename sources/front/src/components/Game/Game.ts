@@ -188,16 +188,20 @@ const Game = (props: {
   const [activePlayers, setActivePlayers] = useState<string[]>([]);
 
   if (props.attr?.class === "hidden") {
-    console.log("early return");
     return null;
   }
   const getScoreElement = (score: number, player: GamePlayer, side: 0 | 1) => {
     let _class = scoreStyle + (side === 0 ? " col-1" : " col-2");
     if (!props.isRemote)
       return createElement("div", { class: _class }, `${score}`);
+
     const isCurrent = player.id?.toString() === activePlayers[side];
     _class += isCurrent ? " text-white" : " text-black";
-    return createElement("div", { class: _class }, `> ${score} <`);
+    return createElement(
+      "div",
+      { class: _class },
+      isCurrent ? `> ${score} <` : score.toString()
+    );
   };
 
   const default_attr = { class: gameContainerStyle };

@@ -1,34 +1,33 @@
 {
-  "name": "logic",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "clean": "rm -rf dist/",
-    "format": "npx prettier --write ."
-  },
-  "author": "Damien Trala",
-  "license": "ISC",
-  "dependencies": {
-    "@fastify/cors": "^11.1.0",
-    "@fastify/websocket": "^11.0.2",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "fastify": "^5.5.0",
-    "fastify-qs": "^5.0.0",
-    "qs": "^6.14.0",
-    "ws": "^8.18.2",
-    "zod": "^3.25.76"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.14",
-    "prettier": "^3.5.3",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3",
-    "wscat": "^5.2.2"
-  }
+	"name": "logic",
+	"version": "1.0.0",
+	"description": "",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "tsc",
+		"prestart": "npm run build",
+		"start": "node dist/index.js",
+		"dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+		"clean": "rm -rf dist/",
+		"format": "npx prettier --write ."
+	},
+	"author": "Damien Trala",
+	"license": "ISC",
+	"dependencies": {
+		"@fastify/cors": "^11.1.0",
+		"@fastify/websocket": "^11.0.2",
+		"dotenv": "^17.2.1",
+		"fastify": "^5.3.2",
+		"fastify-qs": "^5.0.0",
+		"qs": "^6.14.0",
+		"ws": "^8.18.2",
+		"zod": "^3.25.67"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.14",
+		"prettier": "^3.5.3",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.8.3",
+		"wscat": "^5.2.2"
+	}
 }
