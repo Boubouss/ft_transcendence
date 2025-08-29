@@ -42,7 +42,7 @@ const app = fastify({
 
 app.register(websocketPlugin);
 app.register(cors, {
-	origin: process.env.FRONT_URL,
+	origin: "*",
 	optionsSuccessStatus: 200,
 	methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 	preflightContinue: false,
@@ -50,7 +50,7 @@ app.register(cors, {
 
 app.register(async () => {
 	app.get(
-		"/ws/:gameId/:playerId",
+		"/api/logic/ws/:gameId/:playerId",
 		{ schema: schemaWebSocket, websocket: true },
 		(connection, request) => {
 			const params = request.params as { gameId: string; playerId: string };
@@ -113,7 +113,7 @@ app.register(async () => {
 });
 
 app.get(
-	"/players/:id/game",
+	"/api/logic/players/:id/game",
 	{ schema: schemaGetGame },
 	async (request, response) => {
 		const params = request.params as { id: string };
@@ -123,30 +123,37 @@ app.get(
 	}
 );
 
-app.post("/games", { schema: schemaCreateGame }, async (request, response) => {
-	const body = request.body as CreateGameRequestBody;
-	if (games.has(body.gameId)) {
-		response.code(HttpCode.CONFLICT).send(); //todo: add a body?
-		return;
+app.post(
+	"/api/logic/games",
+	{ schema: schemaCreateGame },
+	async (request, response) => {
+		console.log("OK");
+		const body = request.body as CreateGameRequestBody;
+		if (games.has(body.gameId)) {
+			response.code(HttpCode.CONFLICT).send(); //todo: add a body?
+			return;
+		}
+
+		games.set(String(body.gameId), new Game(body, FPS));
+
+		const timeout = setTimeout(() => {
+			const game = games.get(body.gameId);
+			if (!game) return;
+
+			requestGameDelete(body.gameId);
+
+			games
+				.get(body.gameId)
+				?.players.forEach((player) => player.socket?.close());
+			games.delete(body.gameId);
+		}, 10000);
+
+		gameTimeout.set(body.gameId, timeout);
 	}
-
-	games.set(String(body.gameId), new Game(body, FPS));
-
-	const timeout = setTimeout(() => {
-		const game = games.get(body.gameId);
-		if (!game) return;
-
-		requestGameDelete(body.gameId);
-
-		games.get(body.gameId)?.players.forEach((player) => player.socket?.close());
-		games.delete(body.gameId);
-	}, 10000);
-
-	gameTimeout.set(body.gameId, timeout);
-});
+);
 
 app.delete(
-	"/games",
+	"/api/logic/games",
 	{ schema: schemaDeleteGame },
 	async (request, response) => {
 		const body = request.body as DeleteGameRequestBody;
@@ -159,7 +166,7 @@ app.delete(
 	}
 );
 
-app.listen({ port: PORT }, (err) => {
+app.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
 	if (err) {
 		console.error(err);
 		process.exit(1);

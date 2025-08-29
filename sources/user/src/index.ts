@@ -31,7 +31,7 @@ const app = fastify({
 
 app.register(fastifyStatic, {
 	root: path.join(path.dirname(__dirname), "storage"),
-	prefix: "/download/",
+	prefix: "/api/user/download/",
 	setHeaders: (res, path, stat) => {
 		res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		res.setHeader("Pragma", "no-cache");
@@ -40,7 +40,7 @@ app.register(fastifyStatic, {
 });
 
 app.register(cors, {
-	origin: process.env.FRONT_URL,
+	origin: "*",
 	optionsSuccessStatus: 200,
 	methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 	preflightContinue: false,
@@ -54,17 +54,21 @@ app.register(fastifyJwt, {
 
 app.register(fastifyMultipart);
 
-app.register(crud, { prefix: "/crud" });
+app.register(crud, { prefix: "/api/user/crud" });
 
-app.register(auth, { prefix: "/auth" });
+app.register(auth, { prefix: "/api/user/auth" });
 
-app.register(socket, { prefix: "/socket" });
+app.register(socket, { prefix: "/api/user/socket" });
 
 app.setErrorHandler(errorHandler);
 
+app.get("/api/user/ping", () => {
+	return "pong";
+});
+
 const start = async () => {
 	try {
-		await app.listen({ port: 3000 });
+		await app.listen({ port: 3000, host: "0.0.0.0" });
 		console.log("Server is running on ", process.env.API_USER);
 	} catch (err) {
 		app.log.error(err);

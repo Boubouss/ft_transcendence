@@ -1,12 +1,13 @@
 services:
   nginx:
     image: nginx:user
+    container_name: nginx
     build: ./sources/front
     ports:
       - "8080:80"
       - "3443:443"
     volumes:
-      - frontend:/usr/share/nginx/html:ro
+      # - frontend:/usr/share/nginx/html:ro
       - ssl-certs:/etc/nginx/ssl:ro
     env_file:
       - .env
@@ -19,6 +20,7 @@ services:
     restart: always
   ngrok:
     image: ngrok/ngrok:latest
+    container_name: ngrok
     command: http nginx:80 --url=${FRONT_DOMAIN}
     environment:
       - NGROK_AUTHTOKEN=${NGROK_TOKEN}
@@ -31,6 +33,7 @@ services:
     restart: always
   user:
     image: user:user
+    container_name: user
     build: ./sources/user
     ports:
       - "3000:3000"
@@ -44,9 +47,10 @@ services:
     restart: unless-stopped
   game:
     image: game:user
+    container_name: game
     build: ./sources/game
     expose:
-      - "3000"
+      - "3001"
     volumes:
       - ssl-certs:/usr/src/app/ssl:ro
       - game-db:/usr/src/app/prisma
@@ -57,9 +61,10 @@ services:
     restart: unless-stopped
   logic:
     image: logic:user
+    container_name: logic
     build: ./sources/logic
     expose:
-      - "3000"
+      - "3002"
     volumes:
       - ssl-certs:/usr/src/app/ssl:ro
     env_file:
