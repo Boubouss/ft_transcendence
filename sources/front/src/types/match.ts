@@ -18,4 +18,5 @@ export interface Player {
   id: number;
   name: string;
   avatar: string;
+  updated_at: string;
 }

@@ -5,6 +5,7 @@ import { list_wrapper, score_container } from "../style";
 import UserCard from "../UserCard/UserCard";
 import List from "#components/Lists/List.ts";
 import TextCard from "../TextCard/TextCard";
+import { useAvatar } from "#hooks/useAvatar.ts";
 
 const Score = (props: { match: Match; players: Player[]; userID: number }) => {
   const { match, players, userID } = props;
@@ -21,7 +22,7 @@ const Score = (props: { match: Match; players: Player[]; userID: number }) => {
       ? [
           UserCard({
             name: player?.name ?? "",
-            avatar: player?.avatar ?? "",
+            avatar: useAvatar(player.avatar, player.updated_at),
             score: player?.score ?? 0,
           }),
           createElement("span", {}, "vs"),
@@ -38,7 +39,7 @@ const Score = (props: { match: Match; players: Player[]; userID: number }) => {
 
                 return {
                   name: player?.name,
-                  avatar: player?.avatar,
+                  avatar: useAvatar(player.avatar, player.updated_at),
                   score: player?.score,
                 };
               })
@@ -56,7 +57,7 @@ const Score = (props: { match: Match; players: Player[]; userID: number }) => {
 
               return {
                 name: player?.name,
-                avatar: player?.avatar,
+                avatar: useAvatar(player.avatar, player.updated_at),
                 score: player?.score,
               };
             })

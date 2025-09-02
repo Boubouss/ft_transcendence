@@ -27,7 +27,7 @@ const Home = () => {
   const [showModalError, setShowModalError] = useState(false);
 
   const [getContext, _set] = useContext();
-  const [user, _setUser] = getContext("user") as UserState
+  const [user, _setUser] = getContext("user") as UserState;
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -65,7 +65,8 @@ const Home = () => {
           children: useLanguage("local"),
           attr: { class: btn_nav, onClick: () => navigateTo("/local") },
         }),
-        (user && getStorage(localStorage, KeysStorage.CONFTRANS).token) &&
+        user &&
+          getStorage(localStorage, KeysStorage.CONFTRANS).token &&
           Button({
             children: useLanguage("multiplayer"),
             attr: { class: btn_nav, onClick: () => navigateTo("/multiplayer") },
@@ -81,7 +82,7 @@ const Home = () => {
       FormAuth({
         setModal: setModalAuth,
         state2FA: [modal2FA, setModal2FA],
-        setError:setError,
+        setError: setError,
         stateModalError: [showModalError, setShowModalError],
       })
     ),

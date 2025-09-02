@@ -4,17 +4,10 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "tsx src/index.ts",
-		"startClean": "rm prisma/dev.db* && npx prisma migrate dev && tsx src/index.ts",
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"type": "module",
-	"imports": {
-		"#routes/*": "./src/routes/*",
-		"#services/*": "./src/services/*",
-		"#validations/*": "./src/validations/*",
-		"#middlewares/*": "./src/middlewares/*",
-		"#types/*": "./src/types/*"
+		"build": "tsc && tsc-alias",
+		"dev": "tsx src/index.ts --use-system-ca",
+		"start": "node dist/index.js --use-system-ca",
+		"clean": "rm prisma/dev.db* && npx prisma migrate dev"
 	},
 	"keywords": [],
 	"author": "",
@@ -25,18 +18,19 @@
 		"@fastify/jwt": "^9.1.0",
 		"@fastify/websocket": "^11.0.2",
 		"@prisma/client": "^6.8.2",
-		"@types/lodash": "^4.17.17",
 		"axios": "^1.9.0",
 		"dotenv": "^16.5.0",
 		"envalid": "^8.0.0",
 		"fastify": "^5.3.3",
 		"lodash": "^4.17.21",
-		"prisma": "^6.8.2",
-		"tsx": "^4.19.4",
-		"typescript": "^5.8.3",
-		"typescript-language-server": "^4.3.4"
+		"prisma": "^6.8.2"
 	},
 	"devDependencies": {
-		"@types/node": "^22.15.21"
+		"@types/lodash": "^4.17.20",
+		"@types/node": "^22.15.21",
+		"tsc-alias": "^1.8.16",
+		"tsx": "^4.20.4",
+		"typescript": "^5.9.2",
+		"typescript-language-server": "^4.4.0"
 	}
 }

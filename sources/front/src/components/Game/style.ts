@@ -9,7 +9,7 @@ export const gameContainerStyle = [
 ].join(" ");
 
 export const scoreStyle = [
-  `bg-[url('asset/score.png')]`,
+  `bg-[url('/asset/score.png')]`,
   `bg-cover`,
   `items-center`,
   `text-black`,

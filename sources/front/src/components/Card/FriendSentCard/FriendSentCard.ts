@@ -6,13 +6,13 @@ import type { Friend } from "#types/user.ts";
 import { useAvatar } from "#hooks/useAvatar.ts";
 
 const FriendSentCard = (props: Friend) => {
-  const { name, avatar } = props;
+  const { name, avatar, updated_at } = props;
   return Card(
     {
       class: friend_card,
     },
     createElement("img", {
-      src: useAvatar(avatar),
+      src: useAvatar(avatar, updated_at),
       class: "h-[50px] w-[50px] rounded-[50px]",
     }),
     createElement("span", { class: "text-xl" }, name)

@@ -30,12 +30,12 @@ export type TournamentWonState = [boolean, (value: boolean) => void];
 
 export type PlayerState = [
   GamePlayer | null,
-  (value: GamePlayer | null) => void,
+  (value: GamePlayer | null) => void
 ];
 
 export type LobbiesState = [
   Map<number, Lobby>,
-  (value: Map<number, Lobby>) => void,
+  (value: Map<number, Lobby>) => void
 ];
 
 const Multiplayer = () => {
@@ -102,7 +102,7 @@ const Multiplayer = () => {
 
     if (gameUrl) {
       return GameWrapper({
-        userId: user.id as number,
+        userId: user?.id as number,
         currentLobbyId,
         lobbySocketRef,
         gameSocketRef,

@@ -19,13 +19,13 @@ const FriendRequestCard = (props: {
   };
 }) => {
   const { state, friend: target } = props;
-  const { name, avatar } = props.friend;
+  const { name, avatar, updated_at } = props.friend;
   return Card(
     {
       class: friend_card,
     },
     createElement("img", {
-      src: useAvatar(avatar),
+      src: useAvatar(avatar, updated_at),
       class: "h-[50px] w-[50px] rounded-[50px]",
     }),
     createElement("span", { class: "text-xl" }, name),

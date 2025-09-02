@@ -21,6 +21,7 @@ export async function getUserAuth(name: string) {
 			email: true,
 			verify: true,
 			password: true,
+			updated_at: true,
 			configuration: {
 				select: {
 					id: true,

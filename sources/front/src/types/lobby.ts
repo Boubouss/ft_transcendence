@@ -41,6 +41,7 @@ export type LobbyPlayer = {
   id: number;
   name: string;
   avatar: string;
+  updated_at: string;
 };
 
 export type Lobby = {
