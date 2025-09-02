@@ -1,5 +1,5 @@
 import { findOrCreatePlayers } from "./playerService";
-import { emitLobbyData, whisperData } from "./lobbyService";
+import { broadcastData, emitLobbyData, whisperData } from "./lobbyService";
 import { TournamentPlayer } from "#types/tournament";
 import { ClientEvent } from "#types/enums";
 import { MatchUpdate } from "#types/match";
@@ -21,23 +21,25 @@ const prisma: PrismaClient = new PrismaClient();
 export const initGameInstance = async (lobby: Lobby) => {
   try {
     const players = await findOrCreatePlayers(lobby.players.map((p) => p.id));
-    const match = await createMatch(players);
+    const match = await createMatch(players, lobby.score_max);
 
-    sendMatchInfo(lobby, match, match.players);
+    lobby.joinable = false;
+
+    broadcastData(
+      JSON.stringify({ event: ClientEvent.UPDATE_LOBBY, data: lobby }),
+    );
+
+    sendMatchInfo(match, match.players);
   } catch (err) {
     emitLobbyData(lobby, `error: ${JSON.stringify(err)}`);
   }
 };
 
-export const sendMatchInfo = async (
-  lobby: Lobby,
-  match: Match,
-  players: MatchPlayers[],
-) => {
+export const sendMatchInfo = async (match: Match, players: MatchPlayers[]) => {
   const requestData = {
     gameId: match.id.toString(),
     playersId: players.map((p) => p.player_id.toString()),
-    scoreMax: lobby.score_max,
+    scoreMax: match.score_max,
   };
 
   await axios
@@ -77,13 +79,14 @@ export async function getPlayerMatches(playerId: number) {
   });
 }
 
-export async function createMatch(players: Player[]) {
+export async function createMatch(players: Player[], score_max: number) {
   const data = players.map((p) => {
     return { player_id: p.id };
   });
 
   return await prisma.match.create({
     data: {
+      score_max,
       players: {
         createMany: {
           data,
@@ -99,11 +102,13 @@ export async function createMatch(players: Player[]) {
 export async function matchDefaultWin(
   winner: TournamentPlayer,
   nextRound: Round,
+  scoreMax: number,
 ) {
   if (_.isEmpty(winner)) return;
 
   return await prisma.match.create({
     data: {
+      score_max: scoreMax,
       round_id: nextRound.id,
       winner_id: winner.id,
       players: {

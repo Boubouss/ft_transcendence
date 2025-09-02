@@ -12,7 +12,7 @@ type LobbyCardProps = {
 
 const LobbyCard = ({ lobby, handleJoinLobby }: LobbyCardProps) => {
   return Card(
-    { class: style.lobby_card },
+    { class: style.lobby_card(lobby.joinable) },
     createElement(
       "div",
       { class: "flex flex-1 gap-[10px] truncate items-center" },

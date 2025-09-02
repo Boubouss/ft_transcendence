@@ -1,10 +1,15 @@
-import { FastifyPluginAsync } from "fastify";
 import { matchCreateSchema, matchUpdateSchema } from "#validations/matchSchema";
 import { handleTournamentMatch } from "#services/tournamentService";
 import { MatchCreate, MatchUpdate } from "#types/match";
-import { whisperData } from "#services/lobbyService";
-import { ClientEvent } from "#types/enums";
+import {
+  findPlayerLobby,
+  leaveLobby,
+  whisperData,
+} from "#services/lobbyService";
 import { playerInstance, players } from "./lobby";
+import { FastifyPluginAsync } from "fastify";
+import { ClientEvent } from "#types/enums";
+import { LobbyPlayer } from "#types/lobby";
 import _ from "lodash";
 
 import {
@@ -18,7 +23,6 @@ import {
   getPlayerMatches,
   updateMatch,
 } from "#services/matchService";
-import { LobbyPlayer } from "#types/lobby";
 
 const match: FastifyPluginAsync = async (fastify, opts) => {
   fastify.get("/match/:userId", async (request, reply) => {
@@ -35,7 +39,7 @@ const match: FastifyPluginAsync = async (fastify, opts) => {
     async (request, reply) => {
       const data = request.body as MatchCreate;
       const players = await findOrCreatePlayers(data.user_ids);
-      const match = await createMatch(players);
+      const match = await createMatch(players, 5);
 
       return reply.send(match);
     },
@@ -61,17 +65,23 @@ const match: FastifyPluginAsync = async (fastify, opts) => {
         playerInstance.delete(matchPlayer.player_id);
       }
 
-      if (!match.round) {
-        whisperData(
-          lobbyPlayers.map((p) => p.id),
-          JSON.stringify({
-            event: ClientEvent.GAME_RESULT,
-            data: { match, players },
-          }),
-        );
-      }
+      if (_.isEmpty(match.round)) {
+        for (const lobbyPlayer of lobbyPlayers) {
+          const lobby = findPlayerLobby(lobbyPlayer.id);
 
-      if (!_.isEmpty(match) && !_.isEmpty(match.round)) {
+          if (!_.isEmpty(lobby)) {
+            leaveLobby(lobby, lobbyPlayer);
+          }
+
+          whisperData(
+            [lobbyPlayer.id],
+            JSON.stringify({
+              event: ClientEvent.GAME_RESULT,
+              data: { match, players },
+            }),
+          );
+        }
+      } else if (!_.isEmpty(match) && !_.isEmpty(match.round)) {
         match.players = match.players.filter((p) => {
           return p.player_id !== match.winner_id;
         });
@@ -83,15 +93,12 @@ const match: FastifyPluginAsync = async (fastify, opts) => {
     },
   );
 
-  fastify.delete(
-    "/match/:id",
-    async (request, reply) => {
-      const { id } = request.params as { id: string };
-      const data = await deleteMatch(parseInt(id));
+  fastify.delete("/match/:id", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const data = await deleteMatch(parseInt(id));
 
-      return reply.send(data);
-    },
-  );
+    return reply.send(data);
+  });
 };
 
 export default match;

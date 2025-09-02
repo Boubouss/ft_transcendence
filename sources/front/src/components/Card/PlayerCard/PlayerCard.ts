@@ -39,8 +39,6 @@ const PlayerCard = ({
     requestAction(lobbySocket, Action.KICK, currentLobby.id, player.id);
   };
 
-  
-
   const getEndContent = () => {
     if (typeof score !== "undefined") {
       return createElement(
@@ -53,14 +51,14 @@ const PlayerCard = ({
         "template",
         null,
         !isPlayerAdmin &&
-          isUserAdmin &&
-          Button({
-            children: useLanguage("kick"),
-            attr: {
-              class: style.kick_button,
-              onClick: handleKick,
-            },
-          }),
+        isUserAdmin &&
+        Button({
+          children: useLanguage("kick"),
+          attr: {
+            class: style.kick_button,
+            onClick: handleKick,
+          },
+        }),
         createElement(
           "div",
           { class: "flex items-center gap-[5px]" },
@@ -91,10 +89,10 @@ const PlayerCard = ({
         "p",
         { class: "flex flex-1 items-center gap-[10px] text-4xl truncate" },
         isPlayerAdmin &&
-          createElement("img", {
-            class: "w-[20px] h-[20px]",
-            src: "/icons/crown.png",
-          }),
+        createElement("img", {
+          class: "ml-[5px] w-[35px] h-[30px]",
+          src: "/icons/crown.png",
+        }),
         createElement("span", null, player.name)
       )
     ),

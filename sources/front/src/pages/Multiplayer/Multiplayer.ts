@@ -9,6 +9,7 @@ import GameWrapper from "#components/GameWrapper/GameWrapper.ts";
 import LobbyInfos from "#components/LobbyInfos/LobbyInfos.ts";
 import { requestAction } from "#sockets/Lobby/requests.ts";
 import type { GamePlayer } from "#components/Game/Game.ts";
+import { useContext } from "#core/hooks/useContext.ts";
 import { Action, type Lobby } from "#types/lobby.ts";
 import { handleSocket } from "#services/socket.ts";
 import { getStorage } from "#services/data.ts";
@@ -17,7 +18,7 @@ import { KeysStorage } from "#types/enums.ts";
 import type { User } from "#types/user.ts";
 import * as style from "./style";
 import _ from "lodash";
-import { useContext } from "#core/hooks/useContext.ts";
+import ModalTournamentWon from "#components/Modals/ModalTournamentWon/ModalTournamentWon.ts";
 
 export type UserState = [User | null, (value: User | null) => void];
 export type CurrentLobbyIdState = [number, (value: number) => void];
@@ -25,6 +26,7 @@ export type GameUrlState = [string | null, (value: string | null) => void];
 export type NextOpponentsState = [Player[], (value: Player[]) => void];
 export type ScoresState = [number[], (value: number[]) => void];
 export type MatchState = [Match | null, (value: Match | null) => void];
+export type TournamentWonState = [boolean, (value: boolean) => void];
 
 export type PlayerState = [
   GamePlayer | null,
@@ -43,6 +45,7 @@ const Multiplayer = () => {
   const [lobbies, setLobbies] = useState<Map<number, Lobby>>(new Map());
   const [gameUrl, setGameUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [tournamentWon, setTournamentWon] = useState(false);
   const [currentLobbyId, setCurrentLobbyId] = useState(-1);
   const [nextOpponents, setNextOpponents] = useState<Player[]>([]);
   const [scores, setScores] = useState<number[]>([0, 0]);
@@ -50,7 +53,7 @@ const Multiplayer = () => {
   const [match, setMatch] = useState<Match | null>(null);
 
   const [getContext, _set] = useContext();
-  const [user, setUser] = getContext("user") as UserState
+  const [user, setUser] = getContext("user") as UserState;
 
   useEffect(() => {
     if (_.isEmpty(user)) return;
@@ -74,6 +77,7 @@ const Multiplayer = () => {
         GAME_URL_STATE: [gameUrl, setGameUrl],
         CURRENT_LOBBY_ID_STATE: [currentLobbyId, setCurrentLobbyId],
         NEXT_OPPONENTS_STATE: [nextOpponents, setNextOpponents],
+        TOURNAMENT_WON_STATE: [tournamentWon, setTournamentWon],
         MATCH_STATE: [match, setMatch],
       });
     };
@@ -141,6 +145,10 @@ const Multiplayer = () => {
     ModalGameResult({
       user,
       matchState: [match, setMatch],
+    }),
+    ModalTournamentWon({
+      user,
+      tournamentWonState: [tournamentWon, setTournamentWon],
     })
   );
 };
