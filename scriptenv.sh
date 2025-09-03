@@ -39,6 +39,5 @@ API_USER="https://user:3000"
 API_LOGIC="https://logic:3002"
 API_GAME="https://game:3001"
 
-NGROK_TOKEN="31vCGAdO0psr1fEgX88zcZ8uUkW_5GRVbASvZDeftXGMvmiJV"
 EOF
 
