@@ -25,17 +25,18 @@ export type CurrentLobbyIdState = [number, (value: number) => void];
 export type GameUrlState = [string | null, (value: string | null) => void];
 export type NextOpponentsState = [Player[], (value: Player[]) => void];
 export type ScoresState = [number[], (value: number[]) => void];
+export type ActivePlayersState = [string[], (value: string[]) => void];
 export type MatchState = [Match | null, (value: Match | null) => void];
 export type TournamentWonState = [boolean, (value: boolean) => void];
 
 export type PlayerState = [
   GamePlayer | null,
-  (value: GamePlayer | null) => void
+  (value: GamePlayer | null) => void,
 ];
 
 export type LobbiesState = [
   Map<number, Lobby>,
-  (value: Map<number, Lobby>) => void
+  (value: Map<number, Lobby>) => void,
 ];
 
 const Multiplayer = () => {
@@ -51,9 +52,12 @@ const Multiplayer = () => {
   const [scores, setScores] = useState<number[]>([0, 0]);
   const [player, setPlayer] = useState<GamePlayer | null>(null);
   const [match, setMatch] = useState<Match | null>(null);
+  const [activePlayers, setActivePlayers] = useState<string[]>([]);
 
-  const [getContext, _set] = useContext();
+  const [getContext, setContext] = useContext();
   const [user, setUser] = getContext("user") as UserState;
+
+  setContext("activePlayers", [activePlayers, setActivePlayers]);
 
   useEffect(() => {
     if (_.isEmpty(user)) return;
@@ -101,11 +105,20 @@ const Multiplayer = () => {
     if (_.isEmpty(user)) return false;
 
     if (gameUrl) {
+      let playerIdName;
+
+      if (lobbies.has(currentLobbyId)) {
+        playerIdName = new Map(
+          lobbies.get(currentLobbyId)!.players.map((p) => {
+            return [p.id.toString(), p.name];
+          })
+        );
+      }
+
       return GameWrapper({
         userId: user?.id as number,
-        currentLobbyId,
-        lobbySocketRef,
         gameSocketRef,
+        playerIdName,
         gameUrlState: [gameUrl, setGameUrl],
         scoresState: [scores, setScores],
         playerState: [player, setPlayer],

@@ -10,6 +10,7 @@ import { useEffect } from "#core/hooks/useEffect";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import { useState } from "#core/hooks/useState";
 import type { ComponentAttr } from "#core/framework.ts";
+import { useContext } from "#core/hooks/useContext.ts";
 
 function isSocketsReady(sockets: WebSocket[]) {
   return (
@@ -24,10 +25,11 @@ function isSocketsReady(sockets: WebSocket[]) {
 
 async function createGame(
   score: number,
+  current: string[] | null,
   setSockets: (toSet: WebSocket[]) => void
 ) {
   const id = `local-${crypto.randomUUID()}`;
-  const players = ["P1", "P2"];
+  const players = current || ["P1", "P2"];
   await fetch(`${import.meta.env.VITE_API_LOGIC}/games`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -76,7 +78,8 @@ const GameQueue = (props: {
           class: `inline-block border-[2px] px-2 bg-[#FFFFFF99] rounded-[8px] justify-center`,
         },
         matchCurrent.join(" - ")
-      )
+      ),
+      createElement("div", { class: "" }, useLanguage("start_touch"))
     ),
     matchRemaining.length > 0
       ? createElement(
@@ -109,6 +112,11 @@ const Local = () => {
   const [tournament, setTournament] = useState<LocalTournament>(null);
   const [sockets, setSockets] = useState<WebSocket[]>([]);
   const [scores, setScores] = useState<number[]>([0, 0]);
+  const [activePlayers, setActivePlayers] = useState<string[]>([]);
+
+  const [_get, setContext] = useContext();
+
+  setContext("activePlayers", [activePlayers, setActivePlayers]);
 
   useEffect(() => {
     const handler = () => {
@@ -142,7 +150,7 @@ const Local = () => {
     if (!config || !tournament) return;
 
     if (tournament.stage === "game") {
-      createGame(config.score, setSockets);
+      createGame(config.score, tournament.current, setSockets);
       return;
     }
 

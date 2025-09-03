@@ -2,6 +2,7 @@ import { MatchQuery, RoundQuery, TournamentQuery } from "#types/tournament";
 import { matchDefaultWin, sendMatchInfo } from "./matchService";
 import {
 	broadcastData,
+	destroyLobby,
 	emitLobbyData,
 	findPlayerLobby,
 	leaveLobby,
@@ -223,9 +224,11 @@ export async function handleTournamentMatch(
 		const lobby = findPlayerLobby(match.winner_id ?? -1);
 		const player = players.find((p) => p.id === match.winner_id);
 
-		if (!_.isEmpty(lobby) && !_.isEmpty(player)) {
-			leaveLobby(lobby, player);
+		if (!_.isEmpty(lobby)) {
+			destroyLobby(lobby);
+		}
 
+		if (!_.isEmpty(player)) {
 			whisperData(
 				[player.id],
 				JSON.stringify({
@@ -235,6 +238,7 @@ export async function handleTournamentMatch(
 		}
 
 		tournaments.delete(matchRound.tournament_id);
+
 		return;
 	}
 

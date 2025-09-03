@@ -1,7 +1,7 @@
 export const gameContainerStyle = [
   `bg-black`,
   `gap-[4px]`,
-  `grid-cols-2`,
+  `grid-cols-4`,
   `grid-rows-auto`,
   `grid`,
   `m-auto`,

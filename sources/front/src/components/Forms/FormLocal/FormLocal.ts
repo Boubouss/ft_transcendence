@@ -40,9 +40,9 @@ function handleLocalForm(formId: string, setConfig: (toSet: any) => void) {
       return /^[a-zA-Z0-9]{1,20}$/.test(name.trim());
     };
 
-    if (nicknames.some((p) => !p)) return alert("Missing nicknames");
-    if (nicknames.length !== set.length) return alert("No duplicate allowed");
-    if (Math.log2(nicknames.length) % 1 !== 0) return alert("Invalid config");
+    if (nicknames.some((p) => !p)) return alert(useLanguage("missing_nickname"));
+    if (nicknames.length !== set.length) return alert(useLanguage("no_dupli"));
+    if (Math.log2(nicknames.length) % 1 !== 0) return alert(useLanguage("invalid_conf"));
     if (!nicknames.every(validName))
       return alert(
         "Invalid nickname format\nBetween 1 to 20 alphanumeric characters"
@@ -126,7 +126,6 @@ const LocalForm = (props: {
               name: `name`,
               placeholder: useLanguage(`nickname`),
               type: "text",
-              value: crypto.randomUUID().split("-")[0],
             },
           })
         )

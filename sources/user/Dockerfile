@@ -39,8 +39,12 @@ WORKDIR /usr/src/app
 
 COPY . .
 
+RUN rm -rf ./node_modules/ || true
+
+RUN rm -rf ./prisma/dev.db* || true
+
 RUN npm install
 
-RUN npx prisma generate
+RUN npx prisma migrate dev
 
 CMD ["npm", "run", "dev"]

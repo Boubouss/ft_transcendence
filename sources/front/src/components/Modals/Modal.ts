@@ -25,14 +25,12 @@ const Modal = (
   attr = { ...default_attr, ...attr };
   attrBackground = { ...default_attr_bckg, ...attrBackground };
 
-  if (state)
-    return createElement(
-      "div",
-      null,
-      createElement("div", attrBackground),
-      createElement("div", attr, ...children)
-    );
-  return createElement("div", { class: `hidden` });
+  return createElement(
+    "div",
+    !state ? {class : "hidden"} : null,
+    createElement("div", attrBackground),
+    createElement("div", attr, ...children)
+  );
 };
 
 export default Modal;

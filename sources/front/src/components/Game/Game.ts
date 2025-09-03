@@ -1,6 +1,8 @@
-import { useEffect, useState, type ComponentAttr } from "#core/framework.ts";
+import { useEffect, type ComponentAttr } from "#core/framework.ts";
+import { useContext } from "#core/hooks/useContext.ts";
 import { createElement } from "#core/render.ts";
 import { useLanguage } from "#hooks/useLanguage.ts";
+import type { ActivePlayersState } from "#pages/Multiplayer/Multiplayer.ts";
 import { scoreStyle, gameContainerStyle } from "./style";
 import _ from "lodash";
 
@@ -183,15 +185,19 @@ const Game = (props: {
   setScores: (toSet: number[]) => void;
   players: GamePlayer[];
   isRemote: boolean;
+  playerIdName?: Map<string, string>;
   attr?: ComponentAttr;
 }) => {
-  const [activePlayers, setActivePlayers] = useState<string[]>([]);
+  const [getContext, _set] = useContext();
+  const [activePlayers, setActivePlayers] = getContext(
+    "activePlayers"
+  ) as ActivePlayersState;
 
   if (props.attr?.class === "hidden") {
     return null;
   }
   const getScoreElement = (score: number, player: GamePlayer, side: 0 | 1) => {
-    let _class = scoreStyle + (side === 0 ? " col-1" : " col-2");
+    let _class = `${scoreStyle} row-1` + (side === 0 ? " col-2" : " col-3");
     if (!props.isRemote)
       return createElement("div", { class: _class }, `${score}`);
 
@@ -204,17 +210,31 @@ const Game = (props: {
     );
   };
 
+  const getPlayerName = (id: string) => {
+    return props.playerIdName?.get(id) || id;
+  };
+
   const default_attr = { class: gameContainerStyle };
   let { attr } = props;
   attr = { ...default_attr, ...(attr || {}) };
   return createElement(
     "div",
     attr,
+    createElement(
+      "div",
+      { class: `${scoreStyle} row-1 col-1` },
+      getPlayerName(activePlayers[0])
+    ),
+    createElement(
+      "div",
+      { class: `${scoreStyle} row-1 col-4` },
+      getPlayerName(activePlayers[1])
+    ),
     getScoreElement(props.scores[0], _.first(props.players)!, 0),
     getScoreElement(props.scores[1], _.first(props.players)!, 1),
     createElement(
       "div",
-      { class: "col-1 col-span-2" },
+      { class: "col-1 col-span-4" },
       GameField({
         id: props.id,
         scores: props.scores,

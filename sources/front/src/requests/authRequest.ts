@@ -9,7 +9,7 @@ import {
 } from "#services/data.ts";
 import { KeysStorage } from "#types/enums.ts";
 import _ from "lodash";
-import { useValidation} from "../hooks/useValidation";
+import { useValidation } from "../hooks/useValidation";
 import { useLanguage } from "#hooks/useLanguage.ts";
 import { useContext } from "#core/hooks/useContext.ts";
 import type { UserState } from "#pages/Multiplayer/Multiplayer.ts";
@@ -17,7 +17,7 @@ import type { UserState } from "#pages/Multiplayer/Multiplayer.ts";
 export const handleConnexion = async (
   set2FA: (toSet: boolean) => void,
   setError: (toSet: string) => void,
-  setShowModalError: (toSet: boolean) => void,
+  setShowModalError: (toSet: boolean) => void
 ) => {
   const form = useForm("form_auth");
   const data = {
@@ -74,12 +74,10 @@ export const handleRegister = async (
   setter2FA: (toSet: boolean) => void,
   setError: (toSet: string) => void,
   setShowModalError: (toSet: boolean) => void,
-  setModalRegister: (toSet:boolean) => void,
+  setModalRegister: (toSet: boolean) => void
 ) => {
   const [getContext, _set] = useContext();
   const [_userContext, setUser] = getContext("user") as UserState;
-
-
 
   const form = useForm("form_auth");
   const data = {
@@ -105,7 +103,6 @@ export const handleRegister = async (
   );
 
   if (user && _.isUndefined(user.error)) {
-
     setStorage(localStorage, KeysStorage.CONFTRANS, {
       id: user.id,
     });
@@ -115,17 +112,16 @@ export const handleRegister = async (
     setError(useLanguage("error_account"));
     setModalRegister(true);
     setShowModalError(true);
-
   }
 };
 
 export const handle2FA = async (
   set2FA: (toSet: boolean) => void,
   setError: (toSet: string) => void,
-  setShowModalError: (toSet: boolean) => void,
+  setShowModalError: (toSet: boolean) => void
 ) => {
   const [getContext, _set] = useContext();
-  const [user, setUser] = getContext("user") as UserState
+  const [user, setUser] = getContext("user") as UserState;
   const form = useForm("form_2FA");
 
   const data = {
@@ -172,7 +168,7 @@ export const handleAutoConnect = async () => {
     lang?: string;
   } = getStorage(localStorage, KeysStorage.CONFTRANS);
   const [getContext, _set] = useContext();
-  const [_user, setUser] = getContext("user") as UserState
+  const [_user, setUser] = getContext("user") as UserState;
   if (
     configuration?.token &&
     !getStorage(sessionStorage, KeysStorage.USERTRANS)
@@ -186,7 +182,8 @@ export const handleAutoConnect = async () => {
         headers: { Authorization: `Bearer ` + configuration.token },
       }
     );
-    if (user && !user.code) setStorage(sessionStorage, KeysStorage.USERTRANS, user);
+    if (user && !user.code)
+      setStorage(sessionStorage, KeysStorage.USERTRANS, user);
     else
       replaceStorage(localStorage, KeysStorage.CONFTRANS, {
         lang: configuration?.lang ?? "FR",
@@ -203,7 +200,7 @@ export const handleAutoConnect = async () => {
 
 export const handleDeconnexion = () => {
   const [getContext, _set] = useContext();
-  const [_user, setUser] = getContext("user") as UserState
+  const [_user, setUser] = getContext("user") as UserState;
   const configuration = getStorage(localStorage, KeysStorage.CONFTRANS);
   replaceStorage(localStorage, KeysStorage.CONFTRANS, {
     lang: configuration.lang,

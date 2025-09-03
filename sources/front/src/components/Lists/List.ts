@@ -19,7 +19,7 @@ const List = (
 
   attr = { ...default_attr, ...attr };
 
-  if (_.isEmpty(childrens)) return createElement("div", { class: "hidden" });
+  if (_.isEmpty(childrens)) attr.class = "hidden" ;
 
   return createElement("div", attr, ...childrens?.map((child) => model(child)));
 };

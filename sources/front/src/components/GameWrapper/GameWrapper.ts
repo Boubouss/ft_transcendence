@@ -1,9 +1,7 @@
-import { requestAction } from "#sockets/Lobby/requests.ts";
 import { createElement } from "#core/render.ts";
 import { useEffect } from "#core/framework.ts";
 import { wrapper_container } from "./style";
 import Game from "#components/Game/Game.ts";
-import { Action } from "#types/lobby.ts";
 import _ from "lodash";
 
 import type {
@@ -14,8 +12,7 @@ import type {
 
 type Props = {
   userId: number;
-  currentLobbyId: number;
-  lobbySocketRef: { current: WebSocket | null };
+  playerIdName?: Map<string, string>;
   gameSocketRef: { current: WebSocket | null };
   gameUrlState: GameUrlState;
   scoresState: ScoresState;
@@ -24,8 +21,7 @@ type Props = {
 
 const GameWrapper = ({
   userId,
-  currentLobbyId,
-  lobbySocketRef,
+  playerIdName,
   gameSocketRef,
   gameUrlState,
   scoresState,
@@ -68,7 +64,6 @@ const GameWrapper = ({
     setGameUrl(null);
     setPlayer(null);
     gameSocketRef.current = null;
-    requestAction(lobbySocketRef.current, Action.SWITCH_READY, currentLobbyId);
   };
 
   return createElement(
@@ -77,6 +72,7 @@ const GameWrapper = ({
     player &&
       Game({
         id: gameUrl!,
+        playerIdName,
         scores,
         setScores,
         players: [player],

@@ -10,7 +10,7 @@ export const modal_container = `
     left-[50%]
     translate-[-50%]
     rounded-[20px]
-    z-2
+    z-1
     border-3
     border-black
     p-[20px]
@@ -32,19 +32,19 @@ export const modal_content = `
 `;
 
 export const player_container = `
-    flex-1 
-    p-2 
-    border-3 
-    border-black 
-    border-solid 
+    flex-1
+    p-2
+    border-3
+    border-black
+    border-solid
     rounded-[10px]
 `;
 
 export const ops_list = `
     flex
-    flex-col 
-    flex-1 
-    gap-[10px] 
+    flex-col
+    flex-1
+    gap-[10px]
     max-h-[480px]
     rounded-[10px]
     border-black

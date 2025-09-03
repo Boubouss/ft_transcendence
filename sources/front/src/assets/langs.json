@@ -87,14 +87,18 @@
     "error_update_account": "Erreur Modification du Compte, veuillez essayer plus tard",
     "error_name_length": "Erreur de Nom d'utilisateur :\n 3 caractères minimum et 20 caractères maximum",
     "error_pw_length": "Erreur du mot de passe :\n 8 caractères minimum",
-    "error_pw_complexity": "Erreur du mot de passe :\n 1 spécial, 1 nombre, 1 majuscule (minimum)",
+    "error_pw_complexity": "Erreur du mot de passe :\n 1 spz-écial, 1 nombre, 1 majuscule (minimum)",
     "error_email_format": "Erreur d'email :\n ce n'est pas le format d'un email",
     "empty_form": "Erreur champ vide : ",
     "error_account": "Une erreur est survenue, veuillez essayer plus tard",
     "error_user_not_found": "Utilisateur introuvable !",
     "waiting_opponents": "En attente d'adversaires",
     "not_joinable": "Ce lobby n'est plus joignable",
-    "start_touch": "Appuyez sur une touche pour lancer !"
+    "start_touch": "Appuyez sur une touche pour lancer !",
+    "missing_nickname": "Pseudos manquants !",
+    "no_dupli": "Doublons Interdits !",
+    "invalid_conf": "Configuration invalide !",
+    "invalid_nick_size": "Format de pseudo invalide: Nb caracteres entre 1 et 20."
   },
   "EN": {
     "loginin": "Sign In",
@@ -191,7 +195,11 @@
     "error_user_not_found": "User not found !",
     "waiting_opponents": "Waiting for opponents",
     "not_joinable": "This lobby is closed",
-    "start_touch": "Press any key to start !"
+    "start_touch": "Press any key to start !",
+    "missing_nickname": "Missing nicknames!",
+    "no_dupli": "No duplicates allowed!",
+    "invalid_conf": "Invalid configuration!",
+    "invalid_nick_size": "Invalid nickname size: must be between 1 and 20 characters."
   },
   "ES": {
     "loginin": "Iniciar sesión",
@@ -213,7 +221,7 @@
     "alertoldnew": "Por favor, ingrese su contraseña anterior y nueva.",
     "ona2f": "Activar 2FA",
     "offa2f": "Desactivar 2FA",
-    "a2f": "2FA ?",
+    "a2f": "¿2FA?",
     "logout": "Cerrar sesión",
     "name": "Nombre de usuario",
     "entercode": "Introduzca el código recibido.",
@@ -241,7 +249,7 @@
     "friends": "Amigos",
     "requests": "Solicitudes",
     "sent": "Enviado",
-    "send_request": "Se ha enviado una solicitud de amistad con éxito!",
+    "send_request": "¡Se ha enviado una solicitud de amistad con éxito!",
     "versus": "Versus",
     "tournament": "Torneo",
     "score_round": "Puntuación/Ronda",
@@ -251,6 +259,7 @@
     "next_match": "Próximo partido",
     "final_match": "Final",
     "incoming_matches": "Partidos próximos",
+    "winner": "Ganador",
     "lobby_creation": "Creación de lobby",
     "create": "Crear",
     "tournament_mode": "Modo torneo",
@@ -276,7 +285,6 @@
     "round": "Turno",
     "plural_round": "Turnos",
     "loss_message": "Perdiste, mejor suerte la próxima vez.",
-    "winner": "Ganadora",
     "start": "Comenzar",
     "error_update_account": "Error al modificar la cuenta, inténtelo más tarde",
     "error_name_length": "Error de nombre :\n mínimo 3 caracteres y máximo 20 caracteres",
@@ -288,6 +296,10 @@
     "error_user_not_found": "¡Usuario no encontrado!",
     "waiting_opponents": "Esperando a los oponentes",
     "not_joinable": "Este vestíbulo está cerrado",
-    "start_touch": "Pulse cualquier tecla para iniciar !"
+    "start_touch": "Pulse cualquier tecla para iniciar !",
+    "missing_nickname": "¡Faltan apodos!",
+    "no_dupli": "¡No se permiten duplicados!",
+    "invalid_conf": "¡Configuración inválida!",
+    "invalid_nick_size": "Tamaño de apodo inválido: debe tener entre 1 y 20 caracteres."
   }
 }
