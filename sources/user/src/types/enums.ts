@@ -10,10 +10,5 @@ export enum ServerEvent {
 	CONNECT = "CONNECT",
 	DECONNECT = "DECONNECT",
 	SENT = "SENT",
-	// REQUEST = "REQUEST",
-	// ACCEPTED = "ACCEPTED",
-	// DECLINED = "DECLINED",
-	// DELETED = "DELETED",
-	// LIST = "LIST",
 	ERROR = "ERROR",
 }

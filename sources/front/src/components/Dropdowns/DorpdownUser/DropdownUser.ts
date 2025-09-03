@@ -30,7 +30,7 @@ const DropdownUser = (props: {
   let { attr, attrContent } = props;
 
   const default_attr = { class: dropdown_default + " w-[220px]" };
-  const default_attr_content = { class: dropdown_content + " w-[220px]" };
+  const default_attr_content = { class: dropdown_content + " w-full" };
 
   attr = { ...default_attr, ...attr };
   attrContent = { ...default_attr_content, ...attrContent };

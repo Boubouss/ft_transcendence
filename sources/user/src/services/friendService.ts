@@ -17,8 +17,7 @@ export async function getUserFriends(id: number) {
 			},
 		},
 	});
-
-	return [...result];
+	return result;
 }
 
 export async function getUserFriendRequests(id: number) {
@@ -47,8 +46,11 @@ export async function getUserFriendRequests(id: number) {
 
 export async function getFriendShip(id: number, users: string[]) {
 	const result = await prisma.$transaction(async (prisma) => {
-		const friends = await getUserFriends(id);
+
+		const { friends } = await getUserFriends(id);
+
 		const requests = await getUserFriendRequests(id);
+
 		const friendShip: FriendShip = {
 			online: [],
 			offline: friends ?? [],
@@ -56,9 +58,11 @@ export async function getFriendShip(id: number, users: string[]) {
 			sent: requests?.sender ?? [],
 		};
 
+
 		friendShip.online = friendShip.offline.filter((user) =>
 			users.includes(user.id.toString())
 		);
+
 		friendShip.offline = friendShip.offline.filter(
 			(user) => friendShip.online.includes(user) == false
 		);

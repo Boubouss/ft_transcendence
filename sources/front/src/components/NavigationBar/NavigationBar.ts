@@ -36,11 +36,11 @@ const NavigationBar = (props: {
     attr,
     createElement(
       "div",
-      { class: "flex gap-10" },
+      { class: "flex h-[100px] gap-10" },
       Button({
         children: createElement("img", {
           src: "/icons/home_icon.png",
-          class: "h-[50px] cursor-pointer invert",
+          class: "h-full cursor-pointer invert",
         }),
         attr: {
           class: btn_default,
@@ -52,14 +52,16 @@ const NavigationBar = (props: {
     createElement(
       "div",
       {
-        class: getStorage(sessionStorage, KeysStorage.USERTRANS) && getStorage(localStorage, KeysStorage.CONFTRANS).token
-          ? "flex gap-10"
-          : "hidden",
+        class:
+          getStorage(sessionStorage, KeysStorage.USERTRANS) &&
+          getStorage(localStorage, KeysStorage.CONFTRANS).token
+            ? "flex gap-10"
+            : "hidden",
       },
       Friends(FriendsBar),
       DropdownUser({
         attr: {
-          class: dropdown_default + " w-[220px]",
+          class: dropdown_default + " w-fit",
         },
       })
     ),

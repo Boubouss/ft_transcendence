@@ -31,6 +31,8 @@ WORKDIR /usr/src/app
 
 COPY . .
 
+RUN rm -rf ./node_modules/ || true
+
 RUN npm install
 
 CMD ["npm", "start"]

@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
 import { socketAuthMiddleware } from "../middlewares/authMiddleware";
-import { Friend, FriendList, FriendShip, SocketList } from "../types/types";
+import { Friend, FriendShip, SocketList } from "../types/types";
 import {
 	getUserFriends,
 	createFriendRequest,
@@ -28,6 +28,7 @@ const socket: FastifyPluginAsync = async (fastify, opts) => {
 		}
 
 		sockets[id] = socket;
+
 		let users: string[] = Object.keys(sockets);
 
 		const friendShip: FriendShip = await getFriendShip(parseInt(id), users);
@@ -116,7 +117,7 @@ const socket: FastifyPluginAsync = async (fastify, opts) => {
 
 		socket.on("close", async () => {
 			users = users.filter((u) => u !== id);
-			const friends = (await getUserFriends(parseInt(id))) ?? [];
+			const { friends } = (await getUserFriends(parseInt(id))) ?? [];
 			const online = friends?.filter((user: Friend) =>
 				users.includes(user.id.toString())
 			);
