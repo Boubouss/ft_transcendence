@@ -39,6 +39,6 @@ COPY . .
 
 RUN npm install
 
-RUN npx prisma generate
+RUN npx prisma migrate dev
 
 CMD ["npm", "run", "dev"]

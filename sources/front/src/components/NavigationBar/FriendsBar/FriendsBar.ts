@@ -14,11 +14,11 @@ const FriendsBar = (props: {
 
   return createElement(
     "div",
-    { class: "flex z-2" },
+    { class: "flex h-[100px] z-2" },
     Button({
       children: createElement("img", {
         src: "/icons/friends_icon.png",
-        class: "h-[50px] cursor-pointer invert",
+        class: "h-full cursor-pointer invert",
       }),
       attr: {
         onClick: () => setModalFriend(true),

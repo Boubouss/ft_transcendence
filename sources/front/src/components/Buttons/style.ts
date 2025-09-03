@@ -5,7 +5,7 @@ text-5xl
 border-3
 border-black
 bg-orange-400
-h-fit
+h-full
 w-fit
 justify-center
 rounded-[20px]
