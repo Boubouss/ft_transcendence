@@ -191,7 +191,7 @@ const Game = (props: {
     return null;
   }
   const getScoreElement = (score: number, player: GamePlayer, side: 0 | 1) => {
-    let _class = scoreStyle + (side === 0 ? " col-1" : " col-2");
+    let _class = `${scoreStyle} row-1` + (side === 0 ? " col-2" : " col-3");
     if (!props.isRemote)
       return createElement("div", { class: _class }, `${score}`);
 
@@ -210,11 +210,21 @@ const Game = (props: {
   return createElement(
     "div",
     attr,
+    createElement(
+      "div",
+      { class: `${scoreStyle} row-1 col-1` },
+      activePlayers[0]
+    ),
+    createElement(
+      "div",
+      { class: `${scoreStyle} row-1 col-4` },
+      activePlayers[1]
+    ),
     getScoreElement(props.scores[0], _.first(props.players)!, 0),
     getScoreElement(props.scores[1], _.first(props.players)!, 1),
     createElement(
       "div",
-      { class: "col-1 col-span-2" },
+      { class: "col-1 col-span-4" },
       GameField({
         id: props.id,
         scores: props.scores,
