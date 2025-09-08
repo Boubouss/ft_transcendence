@@ -8,7 +8,7 @@ export const modal_lobby = `
     left-[50%]
     translate-[-50%]
     rounded-[20px]
-    z-2
+    z-1
     border-3
     border-black
 `;
