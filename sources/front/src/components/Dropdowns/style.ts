@@ -15,6 +15,7 @@ export const dropdown_content = `
     border-3
     border-black
     rounded-[20px]
+    z-1
 `;
 
 export const dropdown_items = `
