@@ -76,7 +76,8 @@ const GameQueue = (props: {
           class: `inline-block border-[2px] px-2 bg-[#FFFFFF99] rounded-[8px] justify-center`,
         },
         matchCurrent.join(" - ")
-      )
+      ),
+      createElement("div", { class: "" }, useLanguage("start_touch"))
     ),
     matchRemaining.length > 0
       ? createElement(

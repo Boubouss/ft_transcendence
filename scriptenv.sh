@@ -41,3 +41,4 @@ API_GAME="https://game:3001"
 
 EOF
 
+echo ".env global généré avec succès ✅ ($GLOBAL_ENV_PATH, domaine détecté : $DOMAIN)"

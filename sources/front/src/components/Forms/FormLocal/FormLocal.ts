@@ -126,7 +126,6 @@ const LocalForm = (props: {
               name: `name`,
               placeholder: useLanguage(`nickname`),
               type: "text",
-              value: crypto.randomUUID().split("-")[0],
             },
           })
         )

@@ -56,10 +56,10 @@ const FormAccount = (
           attr: {
             type: "email",
             name: "email",
-            placeholder: isEditing ? user?.email : "Email",
-            value: isEditing ? "" : user?.email,
+            placeholder: user?.email,
+            value: user?.email,
             class: input_account,
-            ...(!isEditing ? { readonly: true } : {}),
+            readonly: true,
           },
         }),
         Input({
@@ -161,6 +161,8 @@ const FormAccount = (
           class: submit_account_default(isEditing),
           onClick: () => {
             if (isEditing) {
+              console.log(user?.email);
+              setIsView(false);
               handleEditUser(setEditing, setShowMoral, setError);
             }
           },
