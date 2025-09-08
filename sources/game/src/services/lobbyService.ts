@@ -223,13 +223,15 @@ const kickLobbyPlayer = (
   const target = lobby.players.find((p) => p.id === targetId);
 
   if (_.isEmpty(target)) {
-    return whisperData(
-      [owner.id],
-      JSON.stringify({
-        event: ClientEvent.ERROR,
-        data: { message: "resource_not_found" },
-      }),
-    );
+    console.log("NOT FOUND 3");
+    return;
+    // return whisperData(
+    //   [owner.id],
+    //   JSON.stringify({
+    //     event: ClientEvent.ERROR,
+    //     data: { message: "resource_not_found" },
+    //   }),
+    // );
   } else if (lobby.id !== owner.id) {
     return whisperData(
       [owner.id],
@@ -257,13 +259,15 @@ export const handleAction = (player: LobbyPlayer, data: LobbyPlayerAction) => {
 
   const lobby = lobbies.find((l) => l.id === data.target_id);
   if (_.isEmpty(lobby)) {
-    return whisperData(
-      [player.id],
-      JSON.stringify({
-        event: ClientEvent.ERROR,
-        data: { message: "resource_not_found" },
-      }),
-    );
+    console.log("NOT FOUND 2");
+    return;
+    // return whisperData(
+    //   [player.id],
+    //   JSON.stringify({
+    //     event: ClientEvent.ERROR,
+    //     data: { message: "resource_not_found" },
+    //   }),
+    // );
   }
 
   switch (data.action) {

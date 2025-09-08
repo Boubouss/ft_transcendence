@@ -71,12 +71,14 @@ export const lobby: FastifyPluginAsync = async (fastify) => {
 
         const player = players.find((p) => p.id === player_id);
         if (_.isEmpty(player)) {
-          return socket.send(
-            JSON.stringify({
-              event: ClientEvent.ERROR,
-              data: { message: "resource_not_found" },
-            }),
-          );
+          console.log("NOT FOUND 1");
+          return;
+          // return socket.send(
+          //   JSON.stringify({
+          //     event: ClientEvent.ERROR,
+          //     data: { message: "resource_not_found" },
+          //   }),
+          // );
         }
 
         switch (event) {
